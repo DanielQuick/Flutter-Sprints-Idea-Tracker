@@ -45,8 +45,9 @@ android {
 
     defaultConfig {
         applicationId "com.fluttersprints.idea_tracker"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
+        multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
