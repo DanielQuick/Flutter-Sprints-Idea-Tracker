@@ -9,7 +9,7 @@ class LoginScreen extends StatefulWidget {
 class LoginScreenState extends State<LoginScreen>  {
   @override
   Widget build(BuildContext context) {
-    FirebaseCrashlytics.instance.crash();
+    //FirebaseCrashlytics.instance.crash();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
