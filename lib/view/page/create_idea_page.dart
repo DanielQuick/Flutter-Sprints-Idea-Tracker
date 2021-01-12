@@ -5,6 +5,7 @@ import 'package:idea_tracker/controller/page/create_idea_controller.dart';
 class CreateIdeaPage extends StatelessWidget {
   final String title;
   final _formKey = GlobalKey<FormState>();
+  final _focusNode = FocusNode();
 
   CreateIdeaPage({this.title});
 
@@ -42,6 +43,11 @@ class CreateIdeaPage extends StatelessWidget {
                   onChanged: (String value) {
                     controller.ideaTitle = value;
                   },
+                  autofocus: true,
+                  onFieldSubmitted: (_) {
+                    _focusNode.requestFocus();
+                  },
+                  textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
@@ -57,6 +63,7 @@ class CreateIdeaPage extends StatelessWidget {
                   onChanged: (String value) {
                     controller.ideaDescription = value;
                   },
+                  focusNode: _focusNode,
                 ),
               ],
             ),
