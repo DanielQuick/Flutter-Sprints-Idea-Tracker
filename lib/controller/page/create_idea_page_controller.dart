@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/model/idea.dart';
 
-class CreateIdeaController extends ChangeNotifier {
+class CreateIdeaPageController extends ChangeNotifier {
   String _ideaTitle;
   String _ideaDescription;
   bool _ideaCreatedSuccesfully = false;

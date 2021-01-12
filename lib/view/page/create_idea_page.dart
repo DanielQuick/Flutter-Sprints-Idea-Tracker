@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
-import 'package:idea_tracker/controller/page/create_idea_controller.dart';
+import 'package:idea_tracker/controller/page/create_idea_page_controller.dart';
 
 class CreateIdeaPage extends StatelessWidget {
   final String title;
@@ -14,18 +14,12 @@ class CreateIdeaPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<CreateIdeaController>(
+    return BaseView<CreateIdeaPageController>(
       builder: (context, controller, child) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
             title: Text(title),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
           ),
           body: Builder(
             builder: (context) {
