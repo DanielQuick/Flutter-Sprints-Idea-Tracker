@@ -2,14 +2,14 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class LoginScreen extends StatefulWidget {
-  createState() => LoginScreenState();
+class FirebaseCrashlyticsTestScreen extends StatefulWidget {
+  createState() => FirebaseCrashlyticsTestScreenState();
 }
 
-class LoginScreenState extends State<LoginScreen>  {
+class FirebaseCrashlyticsTestScreenState extends State<FirebaseCrashlyticsTestScreen>  {
   @override
   Widget build(BuildContext context) {
-    //FirebaseCrashlytics.instance.crash();
+    FirebaseCrashlytics.instance.crash();
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
