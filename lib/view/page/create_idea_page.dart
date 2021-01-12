@@ -27,33 +27,46 @@ class CreateIdeaPage extends StatelessWidget {
               },
             ),
           ),
-          body: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Idea Title",
-                  ),
-                  validator: controller.validateTitle,
-                  onChanged: controller.setIdeaTitle,
-                  autofocus: true,
-                  onFieldSubmitted: _onFieldSubmitted,
-                  textInputAction: TextInputAction.next,
+          body: Builder(
+            builder: (context) {
+              // Temporary solution to show some feedback
+              if (controller.ideaCreatedSuccesfully) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  Scaffold.of(context).showSnackBar(SnackBar(
+                    content: Text("Your idea has been created"),
+                  ));
+                });
+              }
+
+              return Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Idea Title",
+                      ),
+                      validator: controller.validateTitle,
+                      onChanged: controller.setIdeaTitle,
+                      autofocus: true,
+                      onFieldSubmitted: _onFieldSubmitted,
+                      textInputAction: TextInputAction.next,
+                    ),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: "Idea Description",
+                      ),
+                      validator: controller.validateDescription,
+                      onChanged: controller.setIdeaDescription,
+                      focusNode: _focusNode,
+                    ),
+                  ],
                 ),
-                TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Idea Description",
-                  ),
-                  validator: controller.validateDescription,
-                  onChanged: controller.setIdeaDescription,
-                  focusNode: _focusNode,
-                ),
-              ],
-            ),
+              );
+            },
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
