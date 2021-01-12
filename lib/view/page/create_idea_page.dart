@@ -6,6 +6,9 @@ class CreateIdeaPage extends StatelessWidget {
   final String title;
   final _formKey = GlobalKey<FormState>();
   final _focusNode = FocusNode();
+  void _onFieldSubmitted(String value) {
+    _focusNode.requestFocus();
+  }
 
   CreateIdeaPage({this.title});
 
@@ -32,37 +35,21 @@ class CreateIdeaPage extends StatelessWidget {
                 TextFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: "Idea Title",
+                    labelText: "Idea Title",
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter idea title';
-                    }
-                    return null;
-                  },
-                  onChanged: (String value) {
-                    controller.ideaTitle = value;
-                  },
+                  validator: controller.validateTitle,
+                  onChanged: controller.setIdeaTitle,
                   autofocus: true,
-                  onFieldSubmitted: (_) {
-                    _focusNode.requestFocus();
-                  },
+                  onFieldSubmitted: _onFieldSubmitted,
                   textInputAction: TextInputAction.next,
                 ),
                 TextFormField(
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    hintText: "Idea Description",
+                    labelText: "Idea Description",
                   ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter idea description';
-                    }
-                    return null;
-                  },
-                  onChanged: (String value) {
-                    controller.ideaDescription = value;
-                  },
+                  validator: controller.validateDescription,
+                  onChanged: controller.setIdeaDescription,
                   focusNode: _focusNode,
                 ),
               ],
@@ -73,7 +60,7 @@ class CreateIdeaPage extends StatelessWidget {
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                controller.onCreateIdeaFabPressed();
+                controller.createIdea();
               }
             },
             label: Text('Create'),
