@@ -40,45 +40,59 @@ class CreateIdeaPage extends StatelessWidget {
 
               return Form(
                 key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Idea Title",
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 28,
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Idea Title",
+                        ),
+                        validator: controller.validateTitle,
+                        onChanged: controller.setIdeaTitle,
+                        autofocus: true,
+                        onFieldSubmitted: _onFieldSubmitted,
+                        textInputAction: TextInputAction.next,
+                        maxLength: 50,
                       ),
-                      validator: controller.validateTitle,
-                      onChanged: controller.setIdeaTitle,
-                      autofocus: true,
-                      onFieldSubmitted: _onFieldSubmitted,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: "Idea Description",
+                      SizedBox(height: 12),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: "Idea Description",
+                        ),
+                        validator: controller.validateDescription,
+                        onChanged: controller.setIdeaDescription,
+                        focusNode: _focusNode,
+                        maxLength: 500,
+                        maxLengthEnforced: false,
+                        maxLines: 16,
                       ),
-                      validator: controller.validateDescription,
-                      onChanged: controller.setIdeaDescription,
-                      focusNode: _focusNode,
-                    ),
-                  ],
+                      SizedBox(height: 12),
+                      RaisedButton.icon(
+                        icon: Icon(Icons.add),
+                        label: Text('Create'),
+                        color: Theme.of(context).primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                        ),
+                        textColor: Colors.white,
+                        onPressed: () {
+                          if (_formKey.currentState.validate()) {
+                            controller.createIdea();
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                controller.createIdea();
-              }
-            },
-            label: Text('Create'),
-            icon: Icon(Icons.add),
-            tooltip: 'Create Idea',
           ),
         );
       },
