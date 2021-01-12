@@ -1,16 +1,24 @@
+import 'package:flutter/cupertino.dart';
+
 class User {
-  final String id;
-  final String username;
+  String id;
+  String email;
+  String displayName;
+  String photoURL;
 
   User({
     this.id,
-    this.username,
+    this.email,
+    this.displayName,
+    this.photoURL,
   });
 
-  User copyWith({String id, String username}) {
+  User copyWith({@required String id, @required String email, String displayName, String photoURL}) {
     return User(
       id: id ?? this.id,
-      username: username ?? this.username,
+      email: email ?? this.email,
+      displayName: displayName ?? this.displayName,
+      photoURL: photoURL ?? "_",
     );
   }
 }
