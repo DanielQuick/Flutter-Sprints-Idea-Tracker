@@ -75,8 +75,14 @@ class CreateIdeaPage extends StatelessWidget {
                       ),
                       SizedBox(height: 12),
                       RaisedButton.icon(
-                        icon: Icon(Icons.add),
-                        label: Text('Create'),
+                        icon: Icon(
+                          Icons.add,
+                          size: 26,
+                        ),
+                        label: Text(
+                          'CREATE',
+                          style: TextStyle(fontSize: 16),
+                        ),
                         color: Theme.of(context).primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
