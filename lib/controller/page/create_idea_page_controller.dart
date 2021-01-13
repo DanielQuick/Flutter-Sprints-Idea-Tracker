@@ -4,9 +4,7 @@ import 'package:idea_tracker/model/idea.dart';
 class CreateIdeaPageController extends ChangeNotifier {
   String _ideaTitle;
   String _ideaDescription;
-  bool _ideaCreatedSuccesfully = false;
-
-  bool get ideaCreatedSuccesfully => _ideaCreatedSuccesfully;
+  Function(String) onIdeaCreated;
 
   void setIdeaTitle(String title) {
     _ideaTitle = title;
@@ -34,20 +32,19 @@ class CreateIdeaPageController extends ChangeNotifier {
     return null;
   }
 
-  void createIdea() {
+  void createIdea() async {
     // TODO: POST idea throught IdeaService
-    Future.delayed(Duration(milliseconds: 1000), () {
-      final _idea = Idea(
+    final idea = await Future.delayed(Duration(milliseconds: 1000), () {
+      final idea = Idea(
         id: "1",
         title: _ideaTitle,
         description: _ideaDescription,
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
-      _ideaCreatedSuccesfully = true;
-      notifyListeners();
-
-      print(
-          "Idea created => id: ${_idea.id} | title: ${_idea.title} | description: ${_idea.description} | createdAt: ${_idea.createdAt} | updatedAt: ${_idea.updatedAt} | votes: ${_idea.votes}");
+      return idea;
     });
+    if (onIdeaCreated != null) onIdeaCreated("Success!");
+    print(
+        "Idea created => id: ${idea.id} | title: ${idea.title} | description: ${idea.description} | createdAt: ${idea.createdAt} | updatedAt: ${idea.updatedAt} | votes: ${idea.votes}");
   }
 }
