@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/locator.dart';
+import 'package:idea_tracker/view/page/main_page.dart';
 import 'package:idea_tracker/view/page/splash_page.dart';
 
 void main() {
@@ -23,9 +24,13 @@ class MyApp extends StatelessWidget {
             ),
         "/landing": (context) => Scaffold(
               body: Center(
-                child: Text("This is a temporary page"),
+                child: TextButton(
+                  onPressed: () => Navigator.popAndPushNamed(context, "/main"),
+                  child: Text("Fake sign in"),
+                ),
               ),
             ),
+        "/main": (context) => MainPage(),
       },
     );
   }
