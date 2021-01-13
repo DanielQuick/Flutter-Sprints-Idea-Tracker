@@ -1,5 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -20,15 +18,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   _initialize() async {
-    /// initalize Firebase
-    await Firebase.initializeApp();
-    debugPrint('Firebase initalized...');
-    /// Enable FirebaseCrashlytics
-    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-    debugPrint('Firebase Crashlytics collection enabled...');
-    /// Pass all uncaught errors from the framework to Crashlytics.
-    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-    debugPrint('Firebase Crashlytics flutter errors enabled...');
     // Initialize all app dependencies
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // ensure the onComplete callback cannot be called in the same frame

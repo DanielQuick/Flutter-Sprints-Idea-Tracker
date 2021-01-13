@@ -6,6 +6,7 @@ gradle-wrapper.jar
 /local.properties
 GeneratedPluginRegistrant.java
 keystore.properties
+app/google-services.json
 
 
 # Remember to never publicly share your keystore.

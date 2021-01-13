@@ -17,29 +17,6 @@ dependencies:
   provider: ^4.3.2+3
   get_it: ^5.0.3
 
-  # firebase plugins
-  firebase_core: ^0.7.0
-  firebase_auth: ^0.20.0
-  # for database
-  cloud_firestore: ^0.16.0
-  firebase_crashlytics: ^0.4.0
-  firebase_analytics: ^7.0.1
-  firebase_storage: ^7.0.0
-  # Passwordless authentication with email link use: https://medium.com/firebase-developers/dive-into-firebase-auth-on-flutter-email-and-link-sign-in-e51603eb08f8#id_token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjI1MmZjYjk3ZGY1YjZiNGY2ZDFhODg1ZjFlNjNkYzRhOWNkMjMwYzUiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2MTAxNzE0ODQsImF1ZCI6IjIxNjI5NjAzNTgzNC1rMWs2cWUwNjBzMnRwMmEyamFtNGxqZGNtczAwc3R0Zy5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwMjQ2MzU0NDQ2MDM4OTg5NTYwOSIsImVtYWlsIjoidGFyYWNlbGxlcnlAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF6cCI6IjIxNjI5NjAzNTgzNC1rMWs2cWUwNjBzMnRwMmEyamFtNGxqZGNtczAwc3R0Zy5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsIm5hbWUiOiJUYXJhIENlbGxlcnkiLCJwaWN0dXJlIjoiaHR0cHM6Ly9saDYuZ29vZ2xldXNlcmNvbnRlbnQuY29tLy1xT2NZVm9HUjNyby9BQUFBQUFBQUFBSS9BQUFBQUFBQUFBQS9BTVp1dWNtR3hZTGZkeVdaZnhqR2F4ZzRvZW5lMllVWWl3L3M5Ni1jL3Bob3RvLmpwZyIsImdpdmVuX25hbWUiOiJUYXJhIiwiZmFtaWx5X25hbWUiOiJDZWxsZXJ5IiwiaWF0IjoxNjEwMTcxNzg0LCJleHAiOjE2MTAxNzUzODQsImp0aSI6IjIyMGFmMWEyNGNkODc0MjZkNjQ5NTExMmZiOTI4Y2ViNWM4ZjJmMTYifQ.jgD6alVVFRBK8gkPOv6FpghHHfjxJwflLrx8TDMfIRz9yWlJIalLQy7MXZ68VNIQgvume8BnORrY2bQSF4vDU5UcHdzehZwxnEe3UcYdaYP-NKduYfPzqiwE2HxLgd4bEgvSCje5xqX20V6l3UZYkal3izqeSydj_FIcA7ANymy74aPBehS1-x3huXg39FGU5k-xu2dTs4QWVJTRn1GArHt86cdHuEr2vAyEzCLGYT_2kfwKE99HooBHUusImokpTui9QRApUcfR0DmMw-FhW-xRddi1jLribT1FODujPREjX02BnIMX1jzd9JgOCYMBdHQoYMUUhSl534izKrt2aQ
-  firebase_dynamic_links: ^0.7.0+1
-
-
-  # firebase plugins
-  firebase_core: ^0.5.3
-  firebase_auth: 0.18.4+1
-  # for database
-  cloud_firestore: ^0.14.4
-  firebase_crashlytics: ^0.2.4
-  firebase_analytics: ^6.3.0
-  firebase_storage: ^5.2.0
-  # Passwordless authentication with email link use:
-  firebase_dynamic_links: ^0.6.3
-
 
 dev_dependencies:
   flutter_test:
