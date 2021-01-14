@@ -15,6 +15,8 @@ class CreateIdeaPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final onIdeaCreated = (String content) {
+      Navigator.pop(context);
+      
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(content),
