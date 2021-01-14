@@ -20,6 +20,8 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   _initialize() async {
+    // Initialize all app dependencies
+    
     /// initalize Firebase
     await Firebase.initializeApp();
     debugPrint('Firebase initalized...');
@@ -29,7 +31,7 @@ class _SplashPageState extends State<SplashPage> {
     /// Pass all uncaught errors from the framework to Crashlytics.
     FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
     debugPrint('Firebase Crashlytics flutter errors enabled...');
-    // Initialize all app dependencies
+    
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       // ensure the onComplete callback cannot be called in the same frame
       widget.onComplete();
