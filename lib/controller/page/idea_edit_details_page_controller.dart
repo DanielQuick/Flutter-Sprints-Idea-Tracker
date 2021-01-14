@@ -7,16 +7,8 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
 
   Idea get currentIdea => _currentIdea;
 
-  Future<void> loadIdea(String id) {
-    // TODO: load from Firebase
-    return Future.delayed(Duration(milliseconds: 1000), () {
-      _currentIdea = Idea(
-        id: id,
-        title: "Awesome idea",
-        description: "This is the best idea ever.",
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-      );
-    });
+  set currentIdea(Idea idea) {
+    _currentIdea = idea;
   }
 
   void setIdeaTitle(String title) {
