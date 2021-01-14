@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:idea_tracker/controller/dialog/idea_edit_details_dialog_controller.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
 
-Future<void> showIdeaEditDetailsDialog({
+Future<bool> showIdeaEditDetailsDialog({
   @required BuildContext context,
   @required String title,
 }) async {
-  return showDialog<void>(
+  return showDialog<bool>(
     context: context,
     builder: (context) {
       return BaseView<IdeaEditDetailsDialogController>(
         onControllerReady: (controller) {
           controller.onConfirmDelete = () {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           };
         },
         builder: (context, controller, child) {
@@ -64,7 +64,6 @@ Future<void> showIdeaEditDetailsDialog({
                           borderRadius: BorderRadius.circular(18.0),
                         ),
                         onPressed: () {
-                          // Navigator.pop(context);
                           controller.confirmDelete();
                         },
                       ),
