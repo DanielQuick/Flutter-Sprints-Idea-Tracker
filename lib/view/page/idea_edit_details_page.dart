@@ -17,18 +17,25 @@ class IdeaEditDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onChangesSaved = (String content) {
+    final onDataUpdated = (String content) {
       Navigator.pop(context);
 
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text(content),
       ));
     };
+    final onOpenDeleteDialog = () async {
+      return await showIdeaEditDetailsDialog(
+        context: context,
+        title: "Delete Idea",
+      );
+    };
 
     return BaseView<IdeaEditDetailsPageController>(
       onControllerReady: (controller) {
         controller.currentIdea = this.idea;
-        controller.onChangesSaved = onChangesSaved;
+        controller.onDataUpdated = onDataUpdated;
+        controller.onOpenDeleteDialog = onOpenDeleteDialog;
       },
       builder: (context, controller, child) {
         return Scaffold(
@@ -39,10 +46,7 @@ class IdeaEditDetailsPage extends StatelessWidget {
               IconButton(
                 icon: Icon(Icons.delete),
                 onPressed: () {
-                  showIdeaEditDetailsDialog(
-                    context: context,
-                    title: "Delete Idea",
-                  );
+                  controller.openDeleteDialog();
                 },
               )
             ],
