@@ -1,6 +1,6 @@
 # idea_tracker
 
-A new Flutter project to help keep track of ideas and development sprints for applications.
+A new Flutter project
 
 ## Getting Started
 
