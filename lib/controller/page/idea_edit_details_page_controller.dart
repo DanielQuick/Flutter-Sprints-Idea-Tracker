@@ -3,17 +3,20 @@ import 'package:idea_tracker/model/idea.dart';
 
 class IdeaEditDetailsPageController extends ChangeNotifier {
   Idea _currentIdea;
+  Function(String) onChangesSaved;
 
   Idea get currentIdea => _currentIdea;
 
-  void loadIdea(String id) {
+  Future<void> loadIdea(String id) {
     // TODO: load from Firebase
-    _currentIdea = Idea(
-      id: id,
-      title: "Awesome idea",
-      description: "This is the description of the idea.",
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-    );
+    return Future.delayed(Duration(milliseconds: 1000), () {
+      _currentIdea = Idea(
+        id: id,
+        title: "Awesome idea",
+        description: "This is the best idea ever.",
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      );
+    });
   }
 
   void setIdeaTitle(String title) {
@@ -42,16 +45,16 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
     return null;
   }
 
-  void saveChanges() {
+  void saveChanges() async {
     // TODO: POST idea throught IdeaService
-    Future.delayed(Duration(milliseconds: 1000), () {
-      final _updatedIdea = _currentIdea.copyWith(
+    final updatedIdea = await Future.delayed(Duration(milliseconds: 1000), () {
+      final updatedIdea = _currentIdea.copyWith(
         updatedAt: DateTime.now().millisecondsSinceEpoch,
       );
-
-      print(
-        "Idea updated => id: ${_updatedIdea.id} | title: ${_updatedIdea.title} | description: ${_updatedIdea.description} | createdAt: ${_updatedIdea.createdAt} | updatedAt: ${_updatedIdea.updatedAt} | votes: ${_updatedIdea.votes}",
-      );
+      return updatedIdea;
     });
+    if (onChangesSaved != null) onChangesSaved("Success!");
+    print(
+        "Idea updated => id: ${updatedIdea.id} | title: ${updatedIdea.title} | description: ${updatedIdea.description} | createdAt: ${updatedIdea.createdAt} | updatedAt: ${updatedIdea.updatedAt} | votes: ${updatedIdea.votes}");
   }
 }
