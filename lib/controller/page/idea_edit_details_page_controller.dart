@@ -3,7 +3,8 @@ import 'package:idea_tracker/model/idea.dart';
 
 class IdeaEditDetailsPageController extends ChangeNotifier {
   Idea _currentIdea;
-  Function(String) onChangesSaved;
+  Function(String) onDataUpdated;
+  Future<bool> Function() onOpenDeleteDialog;
 
   Idea get currentIdea => _currentIdea;
 
@@ -45,8 +46,23 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
       );
       return updatedIdea;
     });
-    if (onChangesSaved != null) onChangesSaved("Success!");
+    if (onDataUpdated != null) onDataUpdated("Success!");
     print(
         "Idea updated => id: ${updatedIdea.id} | title: ${updatedIdea.title} | description: ${updatedIdea.description} | createdAt: ${updatedIdea.createdAt} | updatedAt: ${updatedIdea.updatedAt} | votes: ${updatedIdea.votes}");
+  }
+
+  void openDeleteDialog() async {
+    if (onOpenDeleteDialog != null) {
+      final confirmDelete = await onOpenDeleteDialog();
+
+      // Check with "==" because "confirmDelete" will be "null"
+      // if dialog is dismissed
+      if (confirmDelete == true) {
+        // TODO: delete idea throught IdeaService
+        await Future.delayed(Duration(milliseconds: 1000), () {});
+        print("Idea deleted");
+        if (onDataUpdated != null) onDataUpdated("Success!");
+      }
+    }
   }
 }
