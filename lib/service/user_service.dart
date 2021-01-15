@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../model/user.dart';
 
 class UserService{
   ///create variable instances for use
-  //final userRef = FirebaseFirestore.instance.collection("users");
+  final userRef = FirebaseFirestore.instance.collection("users");
   User _user;
 
   User fromMap(Map<String, dynamic> map){
@@ -15,9 +16,9 @@ class UserService{
     );
   }
 
-  toJson(){
+  toJson(String id){
     return {
-      "id": _user.id,
+      "id": id,
       "email": _user.email,
       "userName": _user.userName ?? _user.email,
       "photoURL": _user.photoURL ?? "_",
@@ -26,6 +27,7 @@ class UserService{
 
   setCurrentUser(User user) async{
     this._user = user;
+    debugPrint('Current user: ${_user.id}');
   }
 
   Future<User> getCurrentUser() async {
@@ -33,51 +35,50 @@ class UserService{
   }
 
   Future<void> addToDB() async {
-    await Future.delayed(Duration(seconds: 1));
-    //await userRef.doc(user.id).set(toJson(_user));
-    debugPrint('${_user.id} Added to DB');
+    await userRef.doc(_user.id).set(toJson(_user.id));
+    debugPrint('User ${_user.id} Added to DB');
   }
 
   Future<void> removeFromDB() async {
-    await Future.delayed(Duration(seconds: 1));
-    //await userRef.doc(user.id).delete();
-    debugPrint('${_user.id} removed from DB');
+    await userRef.doc(_user.id).delete();
+    debugPrint('User ${_user.id} removed from DB');
   }
 
   Future<void> updateUserName(String userName) async {
-    await Future.delayed(Duration(seconds: 1));
-    //await userRef.doc(user.id).update({'userName': userName});
-    debugPrint('${_user.id} updated DB');
+    await userRef.doc(_user.id).update({'userName': userName});
+    debugPrint('User ${_user.id} updated DB');
   }
 
   Future<void> updateUserPhotoURL(String photoURL) async {
-    await Future.delayed(Duration(seconds: 1));
-    //await userRef.doc(user.id).update({'photoURL': photoURL});
-    debugPrint('${_user.id} updated PhotoUrl DB');
+    await userRef.doc(_user.id).update({'photoURL': photoURL});
+    debugPrint('User ${_user.id} updated PhotoUrl DB');
   }
 
-  /*
+
   Future<DocumentSnapshot> getCurrentUserDocument()async{
-    await Future.delayed(Duration(seconds: 1));
-    return toMap(user);
-    //return await userRef.doc(user.id).get();
+    DocumentSnapshot doc =  await userRef.doc(_user.id).get();
+    debugPrint('Document Snapshot ID: ${doc.id}');
+    return doc;
   }
 
   Future<Stream> getCurrentUserAsStream() async {
-    return userRef.doc(user.id).get().asStream();
+    return userRef.doc(_user.id).get().asStream();
   }
 
   Future<void> getUserFromDB() async {
-    final DocumentSnapshot doc = await userRef.doc(user.id).get();
+    DocumentSnapshot doc = await userRef.doc(_user.id).get();
     ///if user document does not exist, create user in database from authentication service
     if (doc.data() != null){
       return doc;
     } else {
       addToDB();
-      getUserFromDB();
+      doc = await userRef.doc(_user.id).get();
     }
-    return null;
+    return doc;
   }
-*/
+
+  runUserServiceTest() {
+
+  }
 
 }

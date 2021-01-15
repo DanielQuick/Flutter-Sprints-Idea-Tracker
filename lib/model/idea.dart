@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Idea {
   final String id;
   final String title;
