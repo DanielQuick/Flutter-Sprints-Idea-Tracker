@@ -1,5 +1,3 @@
-import 'package:flutter/cupertino.dart';
-
 class User {
   String id;
   String email;
@@ -13,7 +11,7 @@ class User {
     this.photoURL,
   });
 
-  User copyWith({@required String id, String email, String userName, String photoURL}) {
+  User copyWith({String id, String email, String userName, String photoURL}) {
     return User(
       id: id ?? this.id,
       email: email ?? this.email,

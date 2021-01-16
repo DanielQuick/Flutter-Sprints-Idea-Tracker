@@ -4,20 +4,20 @@ import 'package:flutter/cupertino.dart';
 import '../model/user.dart';
 import 'user_service.dart';
 
-class AuthenticationService {
+class AuthenticationService extends UserService{
 ///create variable instances for use with Firebase
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-  UserService _userService = new UserService();
-  User _user = new User();
-  auth.UserCredential _credential;
 
   ///Sign up with email/password
   Future<String> signUp(String email, String password, String passwordVerify) async {
     if(password == passwordVerify) {
       try {
-        _credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-        await _userService.setCurrentUser(_user.copyWith(id: _credential.user.uid, email: email));
-        await _userService.addToDB();
+        auth.UserCredential _credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+        setCurrentUser(User(id: _credential.user.uid, email: email, userName: email, photoURL: '_'));
+        await addToDB();
+        await new Future.delayed(const Duration(microseconds: 5));
+        getCurrentUserDocument();
+        debugPrint(userToString());
         debugPrint('Signed Up');
         return 'Signed Up';
       } on auth.FirebaseAuthException catch (e) {
@@ -41,10 +41,12 @@ class AuthenticationService {
   ///Sign in user with e-mail
   Future<String> signIn(String email, String password) async {
     try {
-      _credential = await _auth.signInWithEmailAndPassword(
+      auth.UserCredential _credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      await _userService.setCurrentUser(_user.copyWith(id: _credential.user.uid, email: email));
-      await _userService.getUserFromDB();
+      setCurrentUser(User(id: _credential.user.uid, email: email, userName: email, photoURL: '_'));
+      await new Future.delayed(const Duration(microseconds: 5));
+      await getCurrentUserDocument();
+      print("authentication sign in: "+ userToString());
       debugPrint('Signed In');
       return 'Signed In';
     } on auth.FirebaseAuthException catch (e) {

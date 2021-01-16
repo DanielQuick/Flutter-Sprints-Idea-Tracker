@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:idea_tracker/model/user.dart';
-import 'package:idea_tracker/service/authentication_service.dart';
-import 'package:idea_tracker/service/idea_service.dart';
 import 'package:idea_tracker/service/services.dart';
 
 class SplashPage extends StatefulWidget {
@@ -44,15 +42,20 @@ class _SplashPageState extends State<SplashPage> {
     });
 
     AuthenticationService _authenticationService = new AuthenticationService();
-    IdeaService _ideaService = new IdeaService();
-    SprintService _sprintService = new SprintService();
+    //IdeaService _ideaService = new IdeaService();
+    //SprintService _sprintService = new SprintService();
     UserService _userService = new UserService();
-    await _authenticationService.signUp("foobar@test.com", "123qweASD#\$%", "123qweASD#\$%");
-    await _authenticationService.signOut();
+    //await _authenticationService.signUp("foobar@test1.com", "123qweASD#\$%", "123qweASD#\$%");
+    //await new Future.delayed(const Duration(seconds: 3));
+    //await _authenticationService.signOut();
+    //await new Future.delayed(const Duration(seconds: 3));
     await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
-    await _ideaService.runIdeaServiceTest();
-   //await _sprintService.runSprintServicesTest();
-   //await _userService.runUserServiceTest();
+    await new Future.delayed(const Duration(seconds: 3));
+    //await _ideaService.runIdeaServiceTest();
+    await new Future.delayed(const Duration(seconds: 3));
+    //await _sprintService.runSprintServicesTest();
+    await new Future.delayed(const Duration(seconds: 3));
+    await _userService.runUserServiceTest();
 
   }
 
