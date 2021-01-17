@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/locator.dart';
-
 import 'package:idea_tracker/view/page/main_page.dart';
 import 'package:idea_tracker/view/page/splash_page.dart';
 
