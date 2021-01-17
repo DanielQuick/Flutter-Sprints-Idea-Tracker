@@ -1,36 +1,55 @@
 import 'package:flutter/material.dart';
+import 'package:idea_tracker/controller/page/idea_edit_details_page_controller.dart';
+import 'package:idea_tracker/model/idea.dart';
+import 'package:idea_tracker/view/dialog/idea_edit_details_dialog.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
-import 'package:idea_tracker/controller/page/create_idea_page_controller.dart';
 
-class CreateIdeaPage extends StatelessWidget {
+class IdeaEditDetailsPage extends StatelessWidget {
   final String title;
+  final Idea idea;
   final _formKey = GlobalKey<FormState>();
   final _focusNode = FocusNode();
   void _onFieldSubmitted(String value) {
     _focusNode.requestFocus();
   }
 
-  CreateIdeaPage(this.title, {Key key}) : super(key: key);
+  IdeaEditDetailsPage(this.title, this.idea, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final onIdeaCreated = (String content) {
+    final onDataUpdated = (String content) {
       Navigator.pop(context);
 
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text(content),
       ));
     };
+    final onOpenDeleteDialog = () async {
+      return await showIdeaEditDetailsDialog(
+        context: context,
+        title: "Delete Idea",
+      );
+    };
 
-    return BaseView<CreateIdeaPageController>(
+    return BaseView<IdeaEditDetailsPageController>(
       onControllerReady: (controller) {
-        controller.onIdeaCreated = onIdeaCreated;
+        controller.currentIdea = this.idea;
+        controller.onDataUpdated = onDataUpdated;
+        controller.onOpenDeleteDialog = onOpenDeleteDialog;
       },
       builder: (context, controller, child) {
         return Scaffold(
           appBar: AppBar(
             centerTitle: true,
             title: Text(title),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () {
+                  controller.openDeleteDialog();
+                },
+              )
+            ],
           ),
           body: Form(
             key: _formKey,
@@ -49,10 +68,10 @@ class CreateIdeaPage extends StatelessWidget {
                     ),
                     validator: controller.validateTitle,
                     onChanged: controller.setIdeaTitle,
-                    autofocus: true,
                     onFieldSubmitted: _onFieldSubmitted,
                     textInputAction: TextInputAction.next,
                     maxLength: 50,
+                    initialValue: controller.currentIdea.title,
                   ),
                   SizedBox(height: 12),
                   TextFormField(
@@ -66,15 +85,16 @@ class CreateIdeaPage extends StatelessWidget {
                     maxLength: 500,
                     maxLengthEnforced: false,
                     maxLines: 16,
+                    initialValue: controller.currentIdea.description,
                   ),
                   SizedBox(height: 12),
                   RaisedButton.icon(
                     icon: Icon(
-                      Icons.add,
+                      Icons.save,
                       size: 26,
                     ),
                     label: Text(
-                      'CREATE',
+                      'SAVE',
                       style: TextStyle(fontSize: 16),
                     ),
                     color: Theme.of(context).primaryColor,
@@ -84,7 +104,7 @@ class CreateIdeaPage extends StatelessWidget {
                     textColor: Colors.white,
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        controller.createIdea();
+                        controller.saveChanges();
                       }
                     },
                   ),
