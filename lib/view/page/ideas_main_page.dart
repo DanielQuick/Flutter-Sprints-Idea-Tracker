@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/view/page/create_idea_page.dart';
+import 'package:idea_tracker/view/page/idea_details_page.dart';
 
 class IdeasMainPage extends StatelessWidget {
   @override
@@ -72,6 +73,8 @@ class IdeaCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Go to Detail Page
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => IdeaDetailsPage()));
       },
       child: Container(
         height: 180.0,
