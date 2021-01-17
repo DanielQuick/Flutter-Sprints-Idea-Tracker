@@ -73,8 +73,15 @@ class IdeaCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         // Go to Detail Page
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => IdeaDetailsPage()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => IdeaDetailsPage(
+              title: title,
+              description: description,
+            ),
+          ),
+        );
       },
       child: Container(
         height: 180.0,
