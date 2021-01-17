@@ -1,44 +1,38 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:idea_tracker/service/authentication_service.dart';
 import '../model/user.dart';
 
-class UserService {
+class UserService{
   ///create variable instances for use
   final userRef = FirebaseFirestore.instance.collection("users");
-  User _user;
+  User _user = new User();
+
+  ///existing user for testing
+  ///_authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
   final User _testUser = User(
       id: "ZIE1S79L3CRPNn3EaR0yi3sWMOO2",
       email: "foobar@test.com",
       userName: "foobar@test.com",
       photoURL: "_");
-  AuthenticationService _authenticationService;
 
-  User fromMap(Map<String, dynamic> map) {
-    return User(
-      id: map['id'],
-      email: map['email'],
-      userName: map['userName'],
-      photoURL: map['photoURL'],
-    );
-  }
 
   ///method to put the user into the database properly
   toJson(String id) {
     return {
       "id": id,
       "email": _user.email,
-      "userName": _user.userName ?? _user.email,
+      "userName": _user.email ?? _user.userName,
       "photoURL": _user.photoURL ?? "_",
+
     };
   }
 
   ///returns the current user string
   String userToString() {
-    return 'UserService _user:  id: ${_user.id}, '
-        'email: ${_user.email}, '
-        'userName: ${_user.email}, '
-        'photoURL: ${_user.photoURL}';
+    return 'UserService _user:  id: ${_user.id ?? 'null'}, '
+        'email: ${_user.email ?? 'null'}, '
+        'userName: ${_user.email ?? 'null'}, '
+        'photoURL: ${_user.photoURL ?? 'null'}';
   }
 
   ///Current user is always the user that is logged in
@@ -51,12 +45,6 @@ class UserService {
   ///Returns the current user object
   Future<User> getCurrentUser() async {
     return _user;
-  }
-
-  ///adds the current user to the database
-  Future<void> addToDB() async {
-    await userRef.doc(_user.id).set(toJson(_user.id));
-    debugPrint('User ${_user.id} Added to DB');
   }
 
   ///This method can be used to remove the current user from the database.
@@ -89,32 +77,30 @@ class UserService {
   ///create user in database this is performed within authentication service
   Future<DocumentSnapshot> getCurrentUserDocument() async {
     print('1.  getCurrentUserDocument() at start of method: ' + _user.id);
-    DocumentSnapshot doc;
-    await userRef.doc(_user.id).get().then((document) {
-      print('2.  getCurrentUserDocument() before if(document.exists): ' +
-          _user.id);
-      if (document.exists) {
-        doc = document;
-        _user = _user.copyWith(
-          id: _user.id,
-          email: document["email"],
-          userName: document["userName"],
-          photoURL: document["photoURL"],
+    DocumentSnapshot doc = await userRef.doc(_user.id).get();
+      if (doc.exists) {
+        print('2.  getCurrentUserDocument() after if(document.exists): ${_user.id}');
+        print('Document data: ${doc.data().entries}');
+        await setCurrentUser(
+          User(id: _user.id,
+          email: doc["email"],
+          userName: doc["userName"],
+          photoURL: doc["photoURL"],)
         );
         ///setCurrentUser(user);
         print('3.  getCurrentUserDocument() after setCurrentUser(user): ' +
             _user.id);
         print(userToString());
       } else {
-        print('Document does not exist on the database.  Loading to database.');
-        addToDB();
-        getCurrentUserDocument();
+        print('Document does not exist on the database.  Loading to database...');
+        await userRef.doc(_user.id).set(toJson(_user.id));
+        print ('reload currentUserDocument()...');
+        await getCurrentUserDocument();
       }
-    });
     print('4.  getCurrentUserDocument() at end of method: ' + _user.id);
     print(
         "if 1 - 4 show same user id, setCurrentUser() success from this method.");
-    print('Document data: ${doc.data()}');
+    print('Document data: ${doc.data().entries}');
     return doc;
   }
 
@@ -124,23 +110,26 @@ class UserService {
   }
 
   runUserServiceTest() async {
-    print(
-        'start of runUserServiceTest after authentication.  Why is _user.id showing '+userToString());
-    /*await updateUserName("Foo Bar");
-    await new Future.delayed(const Duration(seconds: 3));
-    await updateUserPhotoURL(
-        'https://www.nasa.gov/sites/default/files/styles/image_card_4x3_ratio/public/images/440676main_STScI-2007-04a-full_full.jpg');
-    await new Future.delayed(const Duration(seconds: 3));
 
+    print(
+        'start of runUserServiceTest after authentication with _testUser credentials.  '
+            'Why is ${_user.id} showing '+userToString());
+    print('loading same test user from auth, within service user class');
+    await setCurrentUser(_testUser);
+    print('working after setCurrentUser within class...');
+    print(userToString());
+    await getCurrentUserDocument();
+    await updateUserName("Foo Bar");
+    await new Future.delayed(const Duration(seconds: 3));
+    await updateUserPhotoURL('new image');
+    await new Future.delayed(const Duration(seconds: 3));
     await getCurrentUser();
     print(userToString());
     await new Future.delayed(const Duration(seconds: 3));
     var userStream = await getCurrentUserAsStream();
     await new Future.delayed(const Duration(seconds: 3));
     print('getCurrentUserAsStream(): ${userStream.toString()}');
-    var userStream0 = await getCurrentUserDocument();
-    print('getCurrentUserAsStream(): ${userStream0.toString()}');
-
-     */
+    await new Future.delayed(const Duration(seconds: 3));
+    await getCurrentUserDocument();
   }
 }

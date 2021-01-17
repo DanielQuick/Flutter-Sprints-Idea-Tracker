@@ -4,20 +4,25 @@ import 'package:flutter/cupertino.dart';
 import '../model/user.dart';
 import 'user_service.dart';
 
-class AuthenticationService extends UserService{
-///create variable instances for use with Firebase
+class AuthenticationService {
+  ///create variable instances for use with Firebase
   auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
+  UserService _userService = new UserService();
 
   ///Sign up with email/password
-  Future<String> signUp(String email, String password, String passwordVerify) async {
-    if(password == passwordVerify) {
+  Future<String> signUp(
+      String email, String password, String passwordVerify) async {
+    if (password == passwordVerify) {
       try {
-        auth.UserCredential _credential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-        setCurrentUser(User(id: _credential.user.uid, email: email, userName: email, photoURL: '_'));
-        await addToDB();
+        auth.UserCredential credential = await _auth.createUserWithEmailAndPassword(
+            email: email, password: password);
+        print('${credential.user.metadata}');
+        await _userService.setCurrentUser(User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
+        //await _userService.addToDB(credential.user.uid);
         await new Future.delayed(const Duration(microseconds: 5));
-        getCurrentUserDocument();
-        debugPrint(userToString());
+        print('${credential.user.metadata}');
+        await _userService.getCurrentUserDocument();
+        debugPrint(_userService.userToString());
         debugPrint('Signed Up');
         return 'Signed Up';
       } on auth.FirebaseAuthException catch (e) {
@@ -41,12 +46,14 @@ class AuthenticationService extends UserService{
   ///Sign in user with e-mail
   Future<String> signIn(String email, String password) async {
     try {
-      auth.UserCredential _credential = await _auth.signInWithEmailAndPassword(
+      auth.UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      setCurrentUser(User(id: _credential.user.uid, email: email, userName: email, photoURL: '_'));
       await new Future.delayed(const Duration(microseconds: 5));
-      await getCurrentUserDocument();
-      print("authentication sign in: "+ userToString());
+      await _userService.setCurrentUser(User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
+      await new Future.delayed(const Duration(microseconds: 5));
+      print('${credential.user.metadata}');
+      await _userService.getCurrentUserDocument();
+      print("authentication sign in: " + _userService.userToString());
       debugPrint('Signed In');
       return 'Signed In';
     } on auth.FirebaseAuthException catch (e) {
@@ -73,12 +80,11 @@ class AuthenticationService extends UserService{
   }
 
   ///password verification
-  bool verifyPassword(String password, String passwordVerify){
-    if(password == passwordVerify){
+  bool verifyPassword(String password, String passwordVerify) {
+    if (password == passwordVerify) {
       return true;
-    } else{
+    } else {
       return false;
     }
   }
-
 }

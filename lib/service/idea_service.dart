@@ -5,7 +5,7 @@ import 'package:idea_tracker/service/services.dart';
 import '../model/idea.dart';
 
 ///for this service class, users of this class do not have to worry about the updatedAt
-///or created at variables within the Idea object
+///or createdAt variables within the Idea object
 
 class IdeaService {
   ///create variable instances for use
@@ -29,8 +29,7 @@ class IdeaService {
     title: 'Test c49yHUU9uXSZeVYZN5iN title',
   );
 
-
-
+  ///Create Idea object from Firestore DocumentSnapshot
   fromFirestore(DocumentSnapshot doc) {
       Idea idea = new Idea(
         id: doc.id,
@@ -91,8 +90,8 @@ class IdeaService {
   /// removes _idea from the database
   Future<void> removeFromDB() async {
     await ideaRef.doc(_idea.id).delete();
-    _idea = null;
     debugPrint('removed idea ${_idea.id} from DB');
+    _idea = null;
   }
 
   /// updates _idea title and searchable title array in the database and updates _idea with that title
@@ -128,15 +127,16 @@ class IdeaService {
   /// updates _idea udpatedAt in the database and updates _idea with that update
   /// is called when each field is updated
   Future<void> updateUpdatedAt() async {
-    await ideaRef.doc(_idea.id).set(
-        {'updatedAt': DateTime.now().microsecondsSinceEpoch},
-        SetOptions(merge: true));
+    await ideaRef.doc(_idea.id).update(
+        {'updatedAt': DateTime.now().microsecondsSinceEpoch});
     _idea = _idea.copyWith(updatedAt: DateTime.now().microsecondsSinceEpoch);
     debugPrint('updated idea ${_idea.id} updatedAt DB');
   }
 
   /// updates _idea in the database and udpates _idea with that update
-  /// Please note that every iteration in the list must be unique
+  /// Please note that every vote stored in the list must be unique,
+  /// or firestore will overwrite stored String vote with
+  /// this String vote
   Future<void> updateVotes(String vote) async {
     await ideaRef.doc(_idea.id).update({
       "votes": FieldValue.arrayUnion([vote])}).then((_) {
@@ -233,7 +233,7 @@ class IdeaService {
     //await addToDB();
     await new Future.delayed(const Duration(seconds: 3));
     print(ideaToString());
-   // await updateTitle('New Idea Title');
+    //await updateTitle('New Idea Title');
     //await new Future.delayed(const Duration(seconds: 3));
     //await updateTitle('Updated Title');
     //await new Future.delayed(const Duration(seconds: 3));
@@ -249,6 +249,7 @@ class IdeaService {
     //await new Future.delayed(const Duration(seconds: 3));
     //await updateVotes("Yes");
     //await new Future.delayed(const Duration(seconds: 3));
+    ///This next update overwrites the previous "No" string
     //await updateVotes("No");
     //await new Future.delayed(const Duration(seconds: 3));
     //print(ideaToString());
