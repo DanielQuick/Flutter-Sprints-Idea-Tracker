@@ -45,18 +45,17 @@ class _SplashPageState extends State<SplashPage> {
     //IdeaService _ideaService = new IdeaService();
     //SprintService _sprintService = new SprintService();
     UserService _userService = new UserService();
-    //await _authenticationService.signUp("foobar@test1.com", "123qweASD#\$%", "123qweASD#\$%");
+    await _authenticationService.signUp("foobar@test1.com", "123qweASD#\$%", "123qweASD#\$%");
     //await new Future.delayed(const Duration(seconds: 3));
     //await _authenticationService.signOut();
     //await new Future.delayed(const Duration(seconds: 3));
-    await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
+    //await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
     await new Future.delayed(const Duration(seconds: 3));
     //await _ideaService.runIdeaServiceTest();
     await new Future.delayed(const Duration(seconds: 3));
     //await _sprintService.runSprintServicesTest();
     await new Future.delayed(const Duration(seconds: 3));
     await _userService.runUserServiceTest();
-
   }
 
   @override
