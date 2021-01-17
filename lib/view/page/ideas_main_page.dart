@@ -1,23 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:idea_tracker/view/page/create_idea_page.dart';
 
 class IdeasMainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.white.withOpacity(0.9),
-        appBar: AppBar(
-          title: Text('Ideas'),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Go to Create-Idea-page
-          },
-          child: Icon(Icons.add),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: ideaCards,
+      home: Builder(
+        builder: (context) => Scaffold(
+          backgroundColor: Colors.white.withOpacity(0.9),
+          appBar: AppBar(
+            title: Text('Ideas'),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CreateIdeaPage('Create Idea')));
+            },
+            child: Icon(Icons.add),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: ideaCards,
+            ),
           ),
         ),
       ),
