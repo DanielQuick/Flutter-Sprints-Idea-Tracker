@@ -1,10 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:idea_tracker/model/idea.dart';
+import 'package:idea_tracker/service/idea_service.dart';
 
 class IdeaEditDetailsPageController extends ChangeNotifier {
   Idea _currentIdea;
   Function(String) onDataUpdated;
   Future<bool> Function() onOpenDeleteDialog;
+
+  final _ideaService = IdeaService();
 
   Idea get currentIdea => _currentIdea;
 
@@ -39,16 +42,10 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
   }
 
   void saveChanges() async {
-    // TODO: POST idea throught IdeaService
-    final updatedIdea = await Future.delayed(Duration(milliseconds: 1000), () {
-      final updatedIdea = _currentIdea.copyWith(
-        updatedAt: DateTime.now().millisecondsSinceEpoch,
-      );
-      return updatedIdea;
-    });
+    final idea = await _ideaService.update(idea: _currentIdea);
     if (onDataUpdated != null) onDataUpdated("Success!");
     print(
-        "Idea updated => id: ${updatedIdea.id} | title: ${updatedIdea.title} | description: ${updatedIdea.description} | createdAt: ${updatedIdea.createdAt} | updatedAt: ${updatedIdea.updatedAt} | votes: ${updatedIdea.votes}");
+        "Idea updated => id: ${idea.id} | title: ${idea.title} | description: ${idea.description} | createdAt: ${idea.createdAt} | updatedAt: ${idea.updatedAt} | votes: ${idea.votes}");
   }
 
   void openDeleteDialog() async {
@@ -58,8 +55,7 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
       // Check with "==" because "confirmDelete" will be "null"
       // if dialog is dismissed
       if (confirmDelete == true) {
-        // TODO: delete idea throught IdeaService
-        await Future.delayed(Duration(milliseconds: 1000), () {});
+        await _ideaService.delete(idea: _currentIdea);
         print("Idea deleted");
         if (onDataUpdated != null) onDataUpdated("Success!");
       }
