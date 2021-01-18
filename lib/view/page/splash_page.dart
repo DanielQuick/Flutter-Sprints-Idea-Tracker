@@ -3,7 +3,6 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:idea_tracker/service/services.dart';
 
 class SplashPage extends StatefulWidget {
   final Function onComplete;
@@ -39,24 +38,6 @@ class _SplashPageState extends State<SplashPage> {
       // ensure the onComplete callback cannot be called in the same frame
       widget.onComplete();
     });
-
-    AuthenticationService _authenticationService = new AuthenticationService();
-    IdeaService _ideaService = new IdeaService();
-    SprintService _sprintService = new SprintService();
-    UserService _userService = new UserService();
-    await _authenticationService.signUp("foobar@test1.com", "123qweASD#\$%", "123qweASD#\$%");
-    print('Authentication Sign In Test Complete...Next line should show user details for same as above');
-    await new Future.delayed(const Duration(seconds: 3));
-    await _authenticationService.signOut();
-    await new Future.delayed(const Duration(seconds: 3));
-    await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
-    print('Authentication Sign In Test Complete...Next line should show user details for ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
-    await new Future.delayed(const Duration(seconds: 3));
-    await _userService.runUserServiceTest();
-    await new Future.delayed(const Duration(seconds: 3));
-    await _ideaService.runIdeaServiceTest();
-    await new Future.delayed(const Duration(seconds: 3));
-    await _sprintService.runSprintServicesTest();
   }
 
   @override
