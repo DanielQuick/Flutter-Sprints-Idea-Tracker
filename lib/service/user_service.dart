@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/models.dart';
+import '../model/user.dart';
 
 class UserService{
   ///create variable instances for use
