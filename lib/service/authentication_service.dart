@@ -17,12 +17,10 @@ class AuthenticationService {
         auth.UserCredential credential = await _auth.createUserWithEmailAndPassword(
             email: email, password: password);
         print('${credential.user.metadata}');
-        await _userService.setCurrentUser(User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
-        //await _userService.addToDB(credential.user.uid);
+        User user = (User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
         await new Future.delayed(const Duration(microseconds: 5));
         print('${credential.user.metadata}');
-        await _userService.getCurrentUserDocument();
-        debugPrint(_userService.userToString());
+        await _userService.getCurrentUserDocument(user);
         debugPrint('Signed Up');
         return 'Signed Up';
       } on auth.FirebaseAuthException catch (e) {
@@ -49,11 +47,10 @@ class AuthenticationService {
       auth.UserCredential credential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       await new Future.delayed(const Duration(microseconds: 5));
-      await _userService.setCurrentUser(User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
+      User user = (User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
       await new Future.delayed(const Duration(microseconds: 5));
       print('${credential.user.metadata}');
-      await _userService.getCurrentUserDocument();
-      print("authentication sign in: " + _userService.userToString());
+      await _userService.getCurrentUserDocument(user);
       debugPrint('Signed In');
       return 'Signed In';
     } on auth.FirebaseAuthException catch (e) {

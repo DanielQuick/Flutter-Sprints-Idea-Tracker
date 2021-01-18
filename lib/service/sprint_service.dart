@@ -6,48 +6,9 @@ class SprintService {
   ///create variable instances for use
   final sprintRef = FirebaseFirestore.instance.collection("sprints");
   static Sprint _sprint = new Sprint();
-
-
-  ///Test Sprint objects
-  SprintPost _post0 = new SprintPost(
-      id: 0,
-      title: 'Sprint Post 0',
-      content: 'Content 0',
-      createdAt: DateTime.now().microsecondsSinceEpoch);
-  SprintPost _post1 = new SprintPost(
-      id: 1,
-      title: 'Sprint Post 1',
-      content: 'Content 1',
-      createdAt: DateTime.now().microsecondsSinceEpoch);
-  SprintPost _post2 = new SprintPost(
-      id: 2,
-      title: 'Sprint Post 2',
-      content: 'Content 2',
-      createdAt: DateTime.now().microsecondsSinceEpoch);
-
-  ///full test Sprint Objects
-  Sprint _sprintTest = new Sprint(
-    title: "Sprint Title",
-    description: "test description",
-    members: ['member0', 'member1', 'member2'],
-    potentialLeaders: ['potentialLeaders0', 'potentialLeaders1'],
-    createdAt: DateTime.now().microsecondsSinceEpoch,
-    updatedAt: DateTime.now().microsecondsSinceEpoch,
-    posts: List<SprintPost>(),
-  );
-  Sprint _sprintTest1 = new Sprint(
-    id: 'TodjI69eQV4xwSkuQx2T',
-    title: "Sprint Title",
-    description: "test description",
-    members: ['member0', 'member1', 'member2'],
-    potentialLeaders: ['potentialLeaders0', 'potentialLeaders1'],
-    createdAt: DateTime.now().microsecondsSinceEpoch,
-    updatedAt: DateTime.now().microsecondsSinceEpoch,
-    posts: List<SprintPost>(),
-  );
-
+  
   ///Create Sprint object from a Firestore DocumentSnapshot
-  fromFirestore(DocumentSnapshot doc) {
+  Sprint fromFirestore(DocumentSnapshot doc) {
     ///converts _InternalLinkedHashMap<String, dynamic> to List<SprintPost>
     List<Map<String, dynamic>> sprintPostDataMaps =
         List<Map<String, dynamic>>.from(doc.data()['posts']);
@@ -91,14 +52,14 @@ class SprintService {
   }
 
   ///convert Sprint object to Json Map for Firestore consumption
-  sprintToJson(String id) {
+  sprintToJson(Sprint _sprint, String id) {
     return {
       'id': _sprint.id ?? id,
       "title": _sprint.title,
       "titleArray":
           _sprint.title.toLowerCase().split(new RegExp('\\s+')).toList(),
       "description": _sprint.description,
-      "createdAt": DateTime.now().microsecondsSinceEpoch,
+      "createdAt": DateTime.now().millisecondsSinceEpoch,
       "updatedAt": _sprint.updatedAt,
       "potentialLeaders": _sprint.potentialLeaders ?? new List<String>(),
       "members": _sprint.members ?? new List<String>(),
@@ -106,24 +67,9 @@ class SprintService {
     };
   }
 
-  ///Convert a Sprint object to string for debug purposes
-  sprintToString() {
-    print('Sprint: id: ${_sprint.id}, '
-        'title: ${_sprint.title}, '
-        'description: ${_sprint.description}, '
-        'createdAt: ${_sprint.createdAt}, '
-        'updatedAt: ${_sprint.updatedAt}, '
-        'members: ${_sprint.members}, '
-        'potentialLeaders: ${_sprint.potentialLeaders}, '
-        'posts: ');
-    _sprint.posts.forEach((sprintPost) => print(
-        'SprintPost: ${sprintPost.id}, ${sprintPost.title}, '
-            '${sprintPost.content}, ${sprintPost.createdAt}'));
-  }
-
   ///returns int for updateUpdatedAt();
   getUpdatedAt() {
-    return DateTime.now().microsecondsSinceEpoch;
+    return DateTime.now().millisecondsSinceEpoch;
   }
 
   ///Sets Sprint _sprint for this class usage
@@ -138,93 +84,98 @@ class SprintService {
   }
 
   ///adds Sprint _sprint to the database
-  Future<void> addToDB() async {
+  Future<Sprint> add(Sprint sprint) async {
     DocumentReference docReference = sprintRef.doc();
-    _sprint = _sprint.copyWith(id: docReference.id);
-    await sprintRef.doc(docReference.id).set(sprintToJson(docReference.id));
-    debugPrint('Added sprint id: ${_sprint.id} to DB');
+    sprint = sprint.copyWith(id: docReference.id);
+    await sprintRef.doc(docReference.id).set(sprintToJson(sprint, docReference.id));
+    debugPrint('Added sprint id: ${sprint.id} to DB');
+    return sprint = await getSprint(sprint.id);
   }
 
   ///removes/deletes class Sprint _sprint from the database
-  Future<void> deleteFromDB() async {
-    await sprintRef.doc(_sprint.id).delete();
-    debugPrint('removed Sprint ${_sprint.id} from DB');
+  Future<void> deleteFromDB(Sprint sprint) async {
+    await sprintRef.doc(sprint.id).delete();
+    debugPrint('removed Sprint ${sprint.id} from DB');
   }
   /// updates class _sprint title in database
-  Future<void> updateTitle(String title) async {
-    await sprintRef.doc(_sprint.id).update({'title': title});
-    await sprintRef.doc(_sprint.id).update({"titleArray":
+  Future<Sprint> updateTitle(Sprint sprint, String title) async {
+    await sprintRef.doc(sprint.id).update({'title': title});
+    await sprintRef.doc(sprint.id).update({"titleArray":
     title.toLowerCase().split(new RegExp('\\s+')).toList()});
-    await updateUpdatedAt();
-    debugPrint('updated sprint ${_sprint.id} title in DB');
+    await updateUpdatedAt(sprint);
+    debugPrint('updated sprint ${sprint.id} title in DB');
+    return sprint = await getSprint(sprint.id);
   }
 
   /// updates class _sprint description in database
-  Future<void> updateDescription(String description) async {
-    await sprintRef.doc(_sprint.id).update({'description': description});
-    _sprint = _sprint.copyWith(description: description);
-    await updateUpdatedAt();
+  Future<Sprint> updateDescription(Sprint sprint, String description) async {
+    await sprintRef.doc(sprint.id).update({'description': description});
+    sprint = sprint.copyWith(description: description);
+    await updateUpdatedAt(sprint);
     debugPrint('updated description DB');
+    return sprint = await getSprint(sprint.id);
   }
 
   /// updates class _sprint updatedAt in database
-  Future<void> updateUpdatedAt() async {
+  Future<void> updateUpdatedAt(Sprint sprint) async {
     await sprintRef.doc(_sprint.id).update({'updatedAt': getUpdatedAt()});
     _sprint = _sprint.copyWith(updatedAt: getUpdatedAt());
     debugPrint('updated updatedAt DB');
+    return sprint = await getSprint(sprint.id);
   }
 
   /// updates class _sprint updateTeamLeader in database
-  Future<void> updateTeamLeader(String teamLeader) async {
+  Future<void> updateTeamLeader(Sprint sprint, String teamLeader) async {
     await sprintRef.doc(_sprint.id).update({'teamLeader': teamLeader});
     _sprint = _sprint.copyWith(teamLeader: teamLeader);
-    updateUpdatedAt();
+    updateUpdatedAt(sprint);
     debugPrint('updated teamLeader DB');
+    return sprint = await getSprint(sprint.id);
   }
   /// updates class _sprint potentialLeaders in database
   /// Please note that every potentialLeader stored in the list must be unique,
   /// or firestore will overwrite stored String potentialLeaders with
   /// this String potentialLeaders
-  Future<void> updatePotentialLeaders(String potentialLeaders) async {
-    sprintRef.doc(_sprint.id).update({
+  Future<Sprint> updatePotentialLeaders(Sprint sprint, String potentialLeaders) async {
+    sprintRef.doc(sprint.id).update({
       "potentialLeaders": FieldValue.arrayUnion(['$potentialLeaders'])
     }).then((_) {
       debugPrint(
-          'Added potentialLeaders: $potentialLeaders to sprint ${_sprint.id}');
+          'Added potentialLeaders: $potentialLeaders to sprint ${sprint.id}');
     });
-    updateUpdatedAt();
+    updateUpdatedAt(sprint);
     ///to get and store correct properties into class _sprint object
-    getSprintFromDBDocument(_sprint.id);
+    return sprint = await getSprint(sprint.id);
   }
 
   /// updates _sprint in database
   /// Please note that every member stored in the list must be unique,
   /// or firestore will overwrite stored String member with
   /// this String member
-  Future<void> addMembers(String member) async {
-    sprintRef.doc(_sprint.id).update({
+  Future<Sprint> addMembers(Sprint sprint, String member) async {
+    sprintRef.doc(sprint.id).update({
       "members": FieldValue.arrayUnion(['$member'])
     }).then((_) {
-      debugPrint('Added member: $member to sprint ${_sprint.id}');
+      debugPrint('Added member: $member to sprint ${sprint.id}');
     });
-    updateUpdatedAt();
+    updateUpdatedAt(sprint);
     ///to get and store correct properties into class _sprint object
-    getSprintFromDBDocument(_sprint.id);
+    return sprint = await getSprint(sprint.id);
   }
 
   /// remove _sprint members from database
   /// Please note that every member stored in the list must be unique,
   /// or firestore will overwrite stored String member with
   /// this String member
-  Future<void> removeMembers(String member) async {
-    sprintRef.doc(_sprint.id).update({
+  Future<Sprint> removeMembers(Sprint sprint, String member) async {
+    sprintRef.doc(sprint.id).update({
       "members": FieldValue.arrayRemove(['$member'])
     }).then((_) {
-      debugPrint('removed member: $member sprint ${_sprint.id}');
+      debugPrint('removed member: $member sprint ${sprint.id}');
     });
-    updateUpdatedAt();
+    updateUpdatedAt(sprint);
     ///to get and store correct properties into class _sprint object
-    getSprintFromDBDocument(_sprint.id);
+    return sprint = await getSprint(sprint.id);
   }
 
 
@@ -232,15 +183,15 @@ class SprintService {
   /// Please note that every SprintPost stored in the list must be unique,
   /// or firestore will overwrite stored SprintPost with
   /// this SprintPost
-  Future<void> addPosts(SprintPost post) async {
-    sprintRef.doc(_sprint.id).update({
+  Future<Sprint> addPosts(Sprint sprint, SprintPost post) async {
+    sprintRef.doc(sprint.id).update({
       "posts": FieldValue.arrayUnion([sprintPostToJson(post)])
     }).then((_) {
-      debugPrint('Added post: $post to sprint ${_sprint.id}');
+      debugPrint('Added post: $post to sprint ${sprint.id}');
     });
-    updateUpdatedAt();
+    updateUpdatedAt(sprint);
     ///to get and store correct properties into class _sprint object
-    getSprintFromDBDocument(_sprint.id);
+    return sprint = await getSprint(sprint.id);
   }
 
   /// The idea here is to get a document ID from a Stream of multiple documents
@@ -252,19 +203,20 @@ class SprintService {
   ///  2. ListView -> children: snapshot.data.docs.map((document) widgets for each document)
   ///  3. access a specific sprint's details "onTapped" with this method passing "document.id"
   ///     to this method
-  Future<DocumentSnapshot> getSprintFromDBDocument(String documentId) async {
+  Future<Sprint> getSprint(String documentId) async {
     DocumentSnapshot doc;
-    await sprintRef.doc(documentId).get().then((document) {
+    Sprint sprint;
+    await sprintRef.doc(documentId).get().then((document) async{
       if (document.exists) {
         doc = document;
         print('Document data: ${doc.data()}');
-        setCurrentSprint(fromFirestore(doc));
+        sprint = fromFirestore(doc);
       } else {
         print('Document does not exist on the database');
       }
     });
-    sprintToString();
-    return doc;
+    print(sprint.toString());
+    return sprint;
   }
 
   ///get all sprint documents from database,returns Instance of '_MapStream<QuerySnapshotPlatform, QuerySnapshot>'
@@ -279,37 +231,5 @@ class SprintService {
     debugPrint('getAllSprintsFromDBStream() performing...');
     return sprintRef.snapshots();
   }
-
-  runSprintServicesTest() async {
-    setCurrentSprint(_sprintTest);
-    await addToDB();
-    await new Future.delayed(const Duration(seconds: 3));
-    addPosts(_post0);
-    addPosts(_post1);
-    addPosts(_post2);
-    await new Future.delayed(const Duration(seconds: 3));
-    updateTitle("Update Sprint Title");
-    await new Future.delayed(const Duration(seconds: 3));
-    updateDescription("Update Sprint Description");
-    await new Future.delayed(const Duration(seconds: 3));
-    addMembers ("member3");
-    await new Future.delayed(const Duration(seconds: 3));
-    updatePotentialLeaders ("potentialLeader2");
-    await new Future.delayed(const Duration(seconds: 3));
-
-    await getSprintFromDBDocument("KI746fvW68f4pG5p9DrR");
-    ///works for stored class _sprint
-    deleteFromDB();
-    setCurrentSprint(_sprintTest1);
-    await new Future.delayed(const Duration(seconds: 3));
-    await addPosts(_post0);
-    await addPosts(_post1);
-    await addPosts(_post2);
-    await new Future.delayed(const Duration(seconds: 3));
-    await addMembers('member4');
-    await new Future.delayed(const Duration(seconds: 3));
-    await removeMembers('member0');
-    await new Future.delayed(const Duration(seconds: 3));
-    await sprintToString();
-  }
+  
 }

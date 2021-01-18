@@ -19,4 +19,13 @@ class User {
       photoURL: photoURL ?? "_",
     );
   }
+
+  @override
+  ///returns the user string
+  toString() {
+    return 'User:  id: ${this.id ?? 'null'}, '
+        'email: ${this.email ?? 'null'}, '
+        'userName: ${this.email ?? 'null'}, '
+        'photoURL: ${this.photoURL ?? 'null'}';
+  }
 }

@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Idea {
   final String id;
   final String title;
@@ -33,5 +31,15 @@ class Idea {
       updatedAt: updatedAt ?? this.updatedAt,
       votes: votes ?? this.votes,
     );
+  }
+
+  /// print the current stored idea to a string for debugging purposes
+  toString() {
+    return 'Idea: id: ${this.id}, '
+        'title: ${this.title}, '
+        'description: ${this.description}, '
+        'createdAt: ${this.createdAt}, '
+        'updatedAt: ${this.updatedAt}, '
+        'votes: ${this.votes}';
   }
 }
