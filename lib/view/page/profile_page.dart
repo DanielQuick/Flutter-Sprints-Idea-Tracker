@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           actions: [
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pop();
+                                Navigator.popAndPushNamed(context, "/landing");
                               },
                               child: Text('Yes'),
                             ),
