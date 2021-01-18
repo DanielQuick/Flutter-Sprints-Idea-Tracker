@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/user.dart';
+import '../model/models.dart';
 
 class UserService{
   ///create variable instances for use
   final userRef = FirebaseFirestore.instance.collection("users");
-  User _user = new User();
+  static User _user = new User();
 
   ///existing user for testing
   ///_authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
@@ -21,7 +21,7 @@ class UserService{
     return {
       "id": id,
       "email": _user.email,
-      "userName": _user.email ?? _user.userName,
+      "userName": _user.userName ?? _user.email,
       "photoURL": _user.photoURL ?? "_",
 
     };
@@ -38,7 +38,7 @@ class UserService{
   ///Current user is always the user that is logged in
   ///this is performed within authentication service upon sign up/in
   setCurrentUser(User user) async {
-    this._user = user;
+    _user = user;
     debugPrint('setCurrentUser(User user): ${_user.id}');
   }
 
@@ -115,13 +115,13 @@ class UserService{
         'start of runUserServiceTest after authentication with _testUser credentials.  '
             'Why is ${_user.id} showing '+userToString());
     print('loading same test user from auth, within service user class');
-    await setCurrentUser(_testUser);
+    //await setCurrentUser(_testUser);
     print('working after setCurrentUser within class...');
     print(userToString());
     await getCurrentUserDocument();
-    await updateUserName("Foo Bar");
+    await updateUserName("Foo Bar Bar Bar");
     await new Future.delayed(const Duration(seconds: 3));
-    await updateUserPhotoURL('new image');
+    await updateUserPhotoURL('new images of myself');
     await new Future.delayed(const Duration(seconds: 3));
     await getCurrentUser();
     print(userToString());

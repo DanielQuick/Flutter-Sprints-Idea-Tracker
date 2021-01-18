@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:idea_tracker/service/services.dart';
-
 import '../model/idea.dart';
+import 'services.dart';
+
 
 ///for this service class, users of this class do not have to worry about the updatedAt
 ///or createdAt variables within the Idea object
@@ -14,7 +14,7 @@ class IdeaService {
   ///This is the current stored Idea that most all functions within this class will depend on
   ///Make sure to set this idea for updates it is important to note that creation of an
   ///Idea only needs title and description
-  Idea _idea;
+  static Idea _idea;
 
   Idea _testIdea = new Idea(
     description: 'Test description',
@@ -68,7 +68,7 @@ class IdeaService {
 
   /// stores an Idea into _idea
   setCurrentIdea(Idea idea) async {
-    this._idea = idea;
+    _idea = idea;
     debugPrint("setCurrentIdea()) ${_idea.id}");
   }
 
@@ -264,8 +264,8 @@ class IdeaService {
     int number = await streamedCurrentIdea.length;
     await new Future.delayed(const Duration(seconds: 3));
     print('from getCurrentIdeaFromDBAsStream(): $number');
-    List<QuerySnapshot> titles = await searchIdeasByTitle('TiTle');
-    print('from searchIdeasByTitle(): ${titles.toString()}');
+    var titles = await searchIdeasByTitle('TiTle');
+    print('from searchIdeasByTitle(): $titles');
     await new Future.delayed(const Duration(seconds: 3));
     var title0 =  await getIdeasFromDBForCurrentMonthStream();
     print('from getIdeasFromDBForCurrentMonthStream(): ${title0.toString()}');

@@ -1,8 +1,8 @@
 import 'dart:core';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
-import '../model/user.dart';
-import 'user_service.dart';
+import '../model/models.dart';
+import 'services.dart';
 
 class AuthenticationService {
   ///create variable instances for use with Firebase
