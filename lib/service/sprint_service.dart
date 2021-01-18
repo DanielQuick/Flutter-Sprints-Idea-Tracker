@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/sprint.dart';
+import '../model/models.dart';
 
 class SprintService {
   ///create variable instances for use
