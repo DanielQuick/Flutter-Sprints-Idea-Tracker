@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:idea_tracker/locator.dart';
 import 'package:idea_tracker/model/idea.dart';
 import 'package:idea_tracker/service/idea_service.dart';
 
@@ -7,7 +8,7 @@ class CreateIdeaPageController extends ChangeNotifier {
   String _ideaDescription;
   Function(String) onIdeaCreated;
 
-  final _ideaService = IdeaService();
+  final _ideaService = locator<IdeaService>();
 
   void setIdeaTitle(String title) {
     _ideaTitle = title;
