@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:idea_tracker/locator.dart';
 import 'package:idea_tracker/model/idea.dart';
 import 'package:idea_tracker/service/idea_service.dart';
 
@@ -7,7 +8,7 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
   Function(String) onDataUpdated;
   Future<bool> Function() onOpenDeleteDialog;
 
-  final _ideaService = IdeaService();
+  final _ideaService = locator<IdeaService>();
 
   Idea get currentIdea => _currentIdea;
 
