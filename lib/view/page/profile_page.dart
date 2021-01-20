@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:idea_tracker/view/dialog/confirm_logout_dialog.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -35,24 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     return showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Logging Out'),
-                          content: Text('Are you sure you want to log out?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.popAndPushNamed(context, "/landing");
-                              },
-                              child: Text('Yes'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('No'),
-                            ),
-                          ],
-                        );
+                        return Confim_Logout_Dialog();
                       },
                     );
                   }

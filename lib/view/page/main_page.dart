@@ -35,13 +35,7 @@ class MainPage extends StatelessWidget {
     final profileTab = Navigator(
       initialRoute: "/",
       onGenerateRoute: (settings) {
-        return MaterialPageRoute(
-          builder: (context) => Scaffold(
-            body: Center(
-              child: ProfilePage(),
-            ),
-          ),
-        );
+        return MaterialPageRoute(builder: (context) => ProfilePage());
       },
     );
 
