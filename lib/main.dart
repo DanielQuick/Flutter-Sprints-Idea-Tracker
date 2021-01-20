@@ -6,13 +6,6 @@ import 'package:idea_tracker/view/page/main_page.dart';
 import 'package:idea_tracker/view/page/splash_page.dart';
 
 void main() async{
-  ///required here because setupLocator() implements firebase usage, otherwise app will not load
-  WidgetsFlutterBinding.ensureInitialized();
-
-  ///initalize Firebase
-  await Firebase.initializeApp();
-  setupFirebase();
-
   setupLocator();
   runApp(MyApp());
 }
@@ -20,6 +13,7 @@ void main() async{
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: "Idea Tracker",
       theme: ThemeData(

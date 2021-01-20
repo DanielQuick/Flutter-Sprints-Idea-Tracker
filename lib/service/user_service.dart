@@ -4,8 +4,13 @@ import '../model/user.dart';
 
 class UserService{
   ///create variable instances for use
-  final userRef = FirebaseFirestore.instance.collection("users");
+  CollectionReference userRef;
   static User _user;
+
+  ///this initializes the class variables
+  initialize() {
+    userRef = FirebaseFirestore.instance.collection("users");
+  }
 
   ///method to put the user into the database properly
   toJson(User _user) {
@@ -20,13 +25,13 @@ class UserService{
 
   ///Current user is always the user that is logged in
   ///this is performed within authentication service upon sign up/in
-  setCurrentUser(User user) async {
+  setUser(User user) async {
     _user = user;
     debugPrint('setCurrentUser(User user): ${_user.id}');
   }
 
   ///Returns the current user object
-  Future<User> getCurrentUser() async {
+  Future<User> getUser() async {
     return _user;
   }
 
@@ -66,6 +71,7 @@ class UserService{
     DocumentSnapshot doc = await userRef.doc(user.id).get();
       if (doc.exists) {
         print(user.toString());
+        setUser(user);
         print('Document data: ${doc.data().entries}');
       } else {
         print('Document does not exist on the database.  Loading to database...');

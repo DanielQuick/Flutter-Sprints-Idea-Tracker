@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/service/services.dart';
-import '../lib/model/models.dart';
+import 'services.dart';
+import '../model/models.dart';
 
 class TestServices {
   AuthenticationService _authenticationService = new AuthenticationService();
@@ -12,20 +12,18 @@ class TestServices {
   testServices() async {
     await _authenticationService.signUp(
         "foobar@test1.com", "123qweASD#\$%", "123qweASD#\$%");
-    print(
-       'Authentication Sign In Test Complete...Next line should show user details for same as above');
-    await new Future.delayed(const Duration(seconds: 3));
+    await new Future.delayed(const Duration(seconds: 10));
     await _authenticationService.signOut();
     await new Future.delayed(const Duration(seconds: 3));
     await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
     print(
         'Authentication Sign In Test Complete...Next line should show user details for ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
+   // await new Future.delayed(const Duration(seconds: 3));
+   // await runUserServiceTest();
     await new Future.delayed(const Duration(seconds: 3));
-    await runUserServiceTest();
-    await new Future.delayed(const Duration(seconds: 3));
-    await runIdeaServiceTest();
+   // await runIdeaServiceTest();
     await new Future.delayed(const Duration(seconds: 6));
-    await runSprintServicesTest();
+    //await runSprintServicesTest();
   }
 
   runUserServiceTest() async {
@@ -41,10 +39,9 @@ class TestServices {
     await _userService
         .updateUserName(_testUser.copyWith(userName: "Foo Bar Bar Bar"));
     await new Future.delayed(const Duration(seconds: 3));
-    await _userService.updateUserPhotoURL(
-        _testUser.copyWith(photoURL: 'new images of myself'));
+    await _userService.updateUserPhotoURL(_testUser.copyWith(photoURL: 'new images of myself'));
     await new Future.delayed(const Duration(seconds: 3));
-    await _userService.getCurrentUser();
+    await _userService.getUser();
     print(_testUser.toString());
     await new Future.delayed(const Duration(seconds: 3));
     var userStream = await _userService.getCurrentUserAsStream(_testUser);

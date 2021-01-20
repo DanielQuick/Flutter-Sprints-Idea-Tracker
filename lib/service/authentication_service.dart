@@ -6,8 +6,14 @@ import 'services.dart';
 
 class AuthenticationService {
   ///create variable instances for use with Firebase
-  auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
-  UserService _userService = new UserService();
+  auth.FirebaseAuth _auth;
+  UserService _userService;
+
+  ///this initializes the class variables
+  initialize(){
+    _auth = auth.FirebaseAuth.instance;
+    _userService = new UserService();
+  }
 
   ///Sign up with email/password
   Future<String> signUp(
@@ -48,6 +54,7 @@ class AuthenticationService {
           email: email, password: password);
       await new Future.delayed(const Duration(microseconds: 5));
       User user = (User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
+
       await new Future.delayed(const Duration(microseconds: 5));
       print('${credential.user.metadata}');
       await _userService.getCurrentUserDocument(user);

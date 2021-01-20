@@ -3,13 +3,25 @@ import 'package:flutter/cupertino.dart';
 import '../model/sprint.dart';
 
 ///Use these enums to update parts of the Sprint Object
-enum UpdateSprint {title, description, addPotentialLeader,
-  deletePotentialLeader, addMember, deleteMember, teamLeader}
-enum UpdatePost {create, delete}
+enum UpdateSprint {
+  title,
+  description,
+  addPotentialLeader,
+  deletePotentialLeader,
+  addMember,
+  deleteMember,
+  teamLeader
+}
+enum UpdatePost { create, delete }
 
 class SprintService {
   ///create variable instances for use
-  final sprintRef = FirebaseFirestore.instance.collection("sprints");
+  CollectionReference sprintRef;
+
+  ///this initializes the class variables
+  initialize() {
+    sprintRef = FirebaseFirestore.instance.collection("sprints");
+  }
 
   ///adds Sprint sprint to the database
   Future<Sprint> create(Sprint sprint) async {
@@ -30,7 +42,8 @@ class SprintService {
 
   ///Switch to update sprint object...use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
   ///returns the updated Sprint
-  Future<Sprint> update(Sprint sprint, UpdateSprint update, String updateString) async {
+  Future<Sprint> update(
+      Sprint sprint, UpdateSprint update, String updateString) async {
     switch (update) {
       case UpdateSprint.title:
         {
@@ -76,18 +89,18 @@ class SprintService {
         break;
       default:
         {
-          print(
-              "Nothing was updated, please use 'title' 'description' "
-                  "'potentialLeader' 'addMember' 'deleteMember' 'teamLeader' "
-                  "to update your Sprint ${sprint.id}.");
+          print("Nothing was updated, please use 'title' 'description' "
+              "'potentialLeader' 'addMember' 'deleteMember' 'teamLeader' "
+              "to update your Sprint ${sprint.id}.");
           return sprint;
         }
     }
   }
-  
+
   ///update posts within Sprint
   ///...to update a post first delete post then create new post
-  Future<Sprint> updatePost(Sprint sprint, UpdatePost updatePost, SprintPost sprintPost) async {
+  Future<Sprint> updatePost(
+      Sprint sprint, UpdatePost updatePost, SprintPost sprintPost) async {
     switch (updatePost) {
       case UpdatePost.create:
         {
@@ -137,8 +150,8 @@ class SprintService {
   Sprint _fromFirestore(DocumentSnapshot doc) {
     ///converts _InternalLinkedHashMap<String, dynamic> to List<SprintPost>
     List<Map<String, dynamic>> sprintPostDataMaps =
-    List<Map<String, dynamic>>.from(doc.data()['posts']);
-    List<SprintPost> sprintPostData = sprintPostDataMaps
+        List<Map<String, dynamic>>.from(doc.data()['posts']);
+    List<SprintPost> sprintPostList = sprintPostDataMaps
         .map((post) => _sprintPostFromJson(post))
         .toList()
         .cast<SprintPost>();
@@ -152,7 +165,7 @@ class SprintService {
       updatedAt: doc.data()["updatedAt"],
       members: doc.data()['members'].cast<String>(),
       potentialLeaders: doc.data()['potentialLeaders'].cast<String>(),
-      posts: sprintPostData,
+      posts: sprintPostList,
     );
     return sprint;
   }
@@ -184,7 +197,7 @@ class SprintService {
       'id': sprint.id ?? id,
       "title": sprint.title,
       "titleArray":
-      sprint.title.toLowerCase().split(new RegExp('\\s+')).toList(),
+          sprint.title.toLowerCase().split(new RegExp('\\s+')).toList(),
       "description": sprint.description,
       "createdAt": DateTime.now().millisecondsSinceEpoch,
       "teamLeader": sprint.teamLeader,
@@ -279,6 +292,7 @@ class SprintService {
       debugPrint('Added member: $member to sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
+
     ///return sprint to user
     return sprint = await get(sprint.id);
   }
@@ -310,6 +324,7 @@ class SprintService {
       debugPrint('Added post: $post to sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
+
     ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
@@ -322,6 +337,7 @@ class SprintService {
       debugPrint('Removed post: $post from sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
+
     ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
@@ -329,7 +345,7 @@ class SprintService {
   ///get all sprint documents from database,returns Instance of '_MapStream<QuerySnapshotPlatform, QuerySnapshot>'
   ///suggested use:
   ///           StreamBuilder(
-  ///             stream: sprintService.getAllSprintsFromDBStream(),
+  ///             stream: sprintService.getAll(),
   ///             builder:
   ///                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
   ///                 ...

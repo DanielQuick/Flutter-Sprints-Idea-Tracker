@@ -1,14 +1,16 @@
 class Idea {
   final String id;
   final String title;
+  final String creatorId;
   final String description;
   final int createdAt;
   final int updatedAt;
-  final List<String> votes;
+  final List<Map<String, dynamic>> votes;
 
   Idea({
     this.id,
     this.title,
+    this.creatorId,
     this.description,
     this.createdAt,
     this.updatedAt,
@@ -17,14 +19,16 @@ class Idea {
 
   Idea copyWith({
     String id,
+    String creatorId,
     String title,
     String description,
     int createdAt,
     int updatedAt,
-    List<String> votes,
+    List<Map<String, dynamic>> votes,
   }) {
     return Idea(
       id: id ?? this.id,
+      creatorId: creatorId ?? this.creatorId,
       title: title ?? this.title,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
@@ -40,6 +44,7 @@ class Idea {
         'description: ${this.description}, '
         'createdAt: ${this.createdAt}, '
         'updatedAt: ${this.updatedAt}, '
+        'creatorId: ${this.creatorId} '
         'votes: ${this.votes}';
   }
 }

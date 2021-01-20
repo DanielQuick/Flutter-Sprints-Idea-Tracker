@@ -10,7 +10,12 @@ enum UpdateIdea {title, description, vote}
 
 class IdeaService {
   ///create variable instances for use
-  final _ideaRef = FirebaseFirestore.instance.collection("ideas");
+  CollectionReference _ideaRef;
+
+  ///this initializes  the class
+  initialize(){
+    _ideaRef = FirebaseFirestore.instance.collection("ideas");
+  }
 
   /// adds the idea to the database and returns that idea
   Future<Idea> create(Idea idea) async {
@@ -114,7 +119,7 @@ class IdeaService {
       "description": idea.description,
       "createdAt": idea.createdAt ?? DateTime.now().millisecondsSinceEpoch,
       "updatedAt": idea.updatedAt ?? DateTime.now().millisecondsSinceEpoch,
-      "votes": idea.votes ?? new List<String>(),
+      "votes": idea.votes ?? new List<Map<String, dynamic>>(),
     };
   }
 
@@ -126,7 +131,7 @@ class IdeaService {
         description: doc.data()["description"],
         createdAt: doc.data()["createdAt"],
         updatedAt: doc.data()["updatedAt"],
-        votes: doc.data()['votes'].cast<String>());
+        votes: doc.data()['votes'].cast<List<Map<String, dynamic>>>());
     return idea;
   }
 
