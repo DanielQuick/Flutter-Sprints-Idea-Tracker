@@ -84,4 +84,30 @@ class AuthenticationService {
       return false;
     }
   }
+
+  ///enable send user a password reset e-mail
+  Future<void> resetPassword(String email) async {
+    await _auth.sendPasswordResetEmail(email: email);
+  }
+
+  ///enable a change password from within app
+  Future<String> changePassword(String password, String passwordVerify) async{
+    //Create an instance of the current user.
+    auth.User user = _auth.currentUser;
+    if(password == passwordVerify) {
+      //Pass in the password to updatePassword.
+      user.updatePassword(password).then((_) {
+        debugPrint ('Your password changed Successfully!');
+        return 'Your password changed Successfully!';
+      }).catchError((err) {
+        debugPrint ("You can't change the Password" + err.toString());
+        return "You can't change the Password" + err.toString();
+        ///This might happen, when the wrong password is in, the user isn't found, or if the user hasn't logged in recently.
+      });
+    } else {
+      debugPrint ('Your passwords do not match, please try again.');
+      return 'Your passwords do not match, please try again.';
+    }
+    return null;
+  }
 }
