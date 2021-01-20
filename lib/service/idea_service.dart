@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../model/idea.dart';
-import 'services.dart';
 
 ///for this service class, users of this class do not have to worry about the updatedAt
 ///or createdAt variables within the Idea object
 
 ///Use this enum to update parts of the Idea Object
+enum UpdateIdea {title, description, vote}
 
 class IdeaService {
   ///create variable instances for use
@@ -17,7 +17,7 @@ class IdeaService {
     DocumentReference docReference = _ideaRef.doc();
     await _ideaRef.doc(docReference.id).set(_toJson(idea, docReference.id));
     idea =
-        idea.copyWith(id: docReference.id, createdAt: currentTimeInSeconds());
+        idea.copyWith(id: docReference.id, createdAt: DateTime.now().millisecondsSinceEpoch);
     debugPrint('Added idea id: ${idea.id} to DB');
     return idea;
   }
@@ -25,21 +25,21 @@ class IdeaService {
   ///Switch to update idea object...use case: ideaService.update(idea, title, "new Title');
   ///String updateWhat should equal 'title' or 'description' or 'vote' only
   ///returns the updated idea
-  Future<Idea> update(Idea idea, String updateWhat, String updateString) async {
-    switch (updateWhat.toLowerCase()) {
-      case 'title':
+  Future<Idea> update(Idea idea, UpdateIdea update, String updateString) async {
+    switch (update) {
+      case UpdateIdea.title:
         {
           idea = await _updateTitle(idea, updateString);
           return idea;
         }
         break;
-      case 'description':
+      case UpdateIdea.description:
         {
           idea = await _updateDescription(idea, updateString);
           return idea;
         }
         break;
-      case 'vote':
+      case UpdateIdea.vote:
         {
           idea = await _updateVotes(idea, updateString);
           return idea;
@@ -112,8 +112,8 @@ class IdeaService {
       "title": idea.title,
       "titleArray": idea.title.toLowerCase().split(new RegExp('\\s+')).toList(),
       "description": idea.description,
-      "createdAt": idea.createdAt ?? currentTimeInSeconds(),
-      "updatedAt": idea.updatedAt ?? currentTimeInSeconds(),
+      "createdAt": idea.createdAt ?? DateTime.now().millisecondsSinceEpoch,
+      "updatedAt": idea.updatedAt ?? DateTime.now().millisecondsSinceEpoch,
       "votes": idea.votes ?? new List<String>(),
     };
   }
