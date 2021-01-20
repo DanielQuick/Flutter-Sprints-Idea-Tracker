@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:idea_tracker/controller/dialog/idea_edit_details_dialog_controller.dart';
+import 'package:idea_tracker/controller/dialog/idea_edit_details_page_delete_dialog_controller.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
 
-Future<bool> showIdeaEditDetailsDialog({
+Future<bool> showIdeaEditDetailsPageDeleteDialog({
   @required BuildContext context,
   @required String title,
 }) async {
   return showDialog<bool>(
     context: context,
     builder: (context) {
-      return BaseView<IdeaEditDetailsDialogController>(
+      return BaseView<IdeaEditDetailsPageDeleteDialogController>(
         onControllerReady: (controller) {
           controller.onConfirmDelete = () {
             Navigator.pop(context, true);

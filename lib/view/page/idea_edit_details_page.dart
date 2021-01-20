@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/controller/page/idea_edit_details_page_controller.dart';
 import 'package:idea_tracker/model/idea.dart';
-import 'package:idea_tracker/view/dialog/idea_edit_details_dialog.dart';
+import 'package:idea_tracker/view/dialog/idea_edit_details_page_delete_dialog.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
 
 class IdeaEditDetailsPage extends StatelessWidget {
@@ -25,7 +25,7 @@ class IdeaEditDetailsPage extends StatelessWidget {
       ));
     };
     final onOpenDeleteDialog = () async {
-      return await showIdeaEditDetailsDialog(
+      return await showIdeaEditDetailsPageDeleteDialog(
         context: context,
         title: "Delete Idea",
       );
