@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/controller/page/main_page_controller.dart';
+import 'package:idea_tracker/view/page/profile_page.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
 
 class MainPage extends StatelessWidget {
@@ -34,13 +35,7 @@ class MainPage extends StatelessWidget {
     final profileTab = Navigator(
       initialRoute: "/",
       onGenerateRoute: (settings) {
-        return MaterialPageRoute(
-          builder: (context) => Scaffold(
-            body: Center(
-              child: Text("Profile Tab"),
-            ),
-          ),
-        );
+        return MaterialPageRoute(builder: (context) => ProfilePage());
       },
     );
 
