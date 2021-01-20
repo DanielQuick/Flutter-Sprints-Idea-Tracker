@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/model/idea.dart';
+import 'package:idea_tracker/view/page/idea_edit_details_page.dart';
 
-class DetailsScreen extends StatelessWidget {
+class IdeaDetailsPage extends StatelessWidget {
   final Idea idea;
 
-  DetailsScreen({this.idea});
+  IdeaDetailsPage({this.idea});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Idea Details'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => IdeaEditDetailsPage('Edit Idea', idea),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

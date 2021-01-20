@@ -71,7 +71,7 @@ class IdeaCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailsScreen(idea: idea),
+            builder: (context) => IdeaDetailsPage(idea: idea),
           ),
         );
       },
