@@ -2,6 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../model/sprint.dart';
 
+///Use these enums to update parts of the Sprint Object
+enum UpdateSprint {title, description, addPotentialLeader, deletePotentialLeader, addMember, deleteMember, teamLeader}
+enum UpdatePost {create, delete}
+
 class SprintService {
   ///create variable instances for use
   final sprintRef = FirebaseFirestore.instance.collection("sprints");
@@ -23,44 +27,47 @@ class SprintService {
     debugPrint('removed Sprint ${sprint.id} from DB');
   }
 
-  ///Switch to update sprint object...use case: sprintService.update(idea, title, "new Title');
-  ///String updateWhat should equal one of the following only
-  /// 'title' 'description' 'potentialLeader' 'addMember' 'deleteMember' 'teamLeader'
-  /// 
+  ///Switch to update sprint object...use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
   ///returns the updated Sprint
-  Future<Sprint> updateSprint(Sprint sprint, String updateWhat, String updateString) async {
-    switch (updateWhat.toLowerCase()) {
-      case 'title':
+  Future<Sprint> update(Sprint sprint, UpdateSprint update, String updateString) async {
+    switch (update) {
+      case UpdateSprint.title:
         {
           sprint = await _updateTitle(sprint, updateString);
           return sprint;
         }
         break;
-      case 'description':
+      case UpdateSprint.description:
         {
           sprint = await _updateDescription(sprint, updateString);
           return sprint;
         }
         break;
-      case 'teamLeader':
+      case UpdateSprint.teamLeader:
         {
           sprint = await _updateTeamLeader(sprint, updateString);
           return sprint;
         }
         break;
-      case 'potentialLeaders':
+      case UpdateSprint.addPotentialLeader:
         {
-          sprint = await _updatePotentialLeaders(sprint, updateString);
+          sprint = await _addPotentialLeaders(sprint, updateString);
           return sprint;
         }
         break;
-      case 'addMember':
+      case UpdateSprint.deletePotentialLeader:
+        {
+          sprint = await _deletePotentialLeaders(sprint, updateString);
+          return sprint;
+        }
+        break;
+      case UpdateSprint.addMember:
         {
           sprint = await _addMember(sprint, updateString);
           return sprint;
         }
         break;
-      case 'deleteMember':
+      case UpdateSprint.deleteMember:
         {
           sprint = await _deleteMember(sprint, updateString);
           return sprint;
@@ -79,15 +86,15 @@ class SprintService {
   
   ///update posts within Sprint
   ///...to update a post first delete post then create new post
-  Future<Sprint> updatePost(Sprint sprint, String updateWhat, SprintPost sprintPost) async {
-    switch (updateWhat.toLowerCase()) {
-      case 'create':
+  Future<Sprint> updatePost(Sprint sprint, UpdatePost updatePost, SprintPost sprintPost) async {
+    switch (updatePost) {
+      case UpdatePost.create:
         {
           sprint = await _createPost(sprint, sprintPost);
           return sprint;
         }
         break;
-      case 'delete':
+      case UpdatePost.delete:
         {
           sprint = await _deletePost(sprint, sprintPost);
           return sprint;
@@ -117,13 +124,11 @@ class SprintService {
     await sprintRef.doc(documentId).get().then((document) async {
       if (document.exists) {
         doc = document;
-        print('Document data: ${doc.data()}');
         sprint = _fromFirestore(doc);
       } else {
         print('Document does not exist on the database');
       }
     });
-    //print(sprint.toString());
     return sprint;
   }
 
@@ -214,7 +219,7 @@ class SprintService {
   }
 
   /// updates class sprint updatedAt in database
-  Future<void> _updateUpdatedAt(Sprint sprint) async {
+  Future<Sprint> _updateUpdatedAt(Sprint sprint) async {
     await sprintRef.doc(sprint.id).update({'updatedAt': _getUpdatedAt()});
     sprint = sprint.copyWith(updatedAt: _getUpdatedAt());
     debugPrint('updated updatedAt DB');
@@ -234,13 +239,27 @@ class SprintService {
   /// Please note that every potentialLeader stored in the list must be unique,
   /// or firestore will overwrite stored String potentialLeaders with
   /// this String potentialLeaders
-  Future<Sprint> _updatePotentialLeaders(
-      Sprint sprint, String potentialLeaders) async {
+  Future<Sprint> _addPotentialLeaders(
+      Sprint sprint, String potentialLeader) async {
     sprintRef.doc(sprint.id).update({
-      "potentialLeaders": FieldValue.arrayUnion(['$potentialLeaders'])
+      "potentialLeaders": FieldValue.arrayUnion(['$potentialLeader'])
     }).then((_) {
       debugPrint(
-          'Added potentialLeaders: $potentialLeaders to sprint ${sprint.id}');
+          'Added potentialLeader: $potentialLeader to sprint ${sprint.id}');
+    });
+    _updateUpdatedAt(sprint);
+
+    ///to get and store correct properties into class sprint object
+    return sprint = await get(sprint.id);
+  }
+
+  Future<Sprint> _deletePotentialLeaders(
+      Sprint sprint, String potentialLeader) async {
+    sprintRef.doc(sprint.id).update({
+      "potentialLeaders": FieldValue.arrayRemove(['$potentialLeader'])
+    }).then((_) {
+      debugPrint(
+          'Deleted potentialLeaders: $potentialLeader to sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
 
