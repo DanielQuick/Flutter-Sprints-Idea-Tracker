@@ -3,7 +3,8 @@ import 'package:flutter/cupertino.dart';
 import '../model/sprint.dart';
 
 ///Use these enums to update parts of the Sprint Object
-enum UpdateSprint {title, description, addPotentialLeader, deletePotentialLeader, addMember, deleteMember, teamLeader}
+enum UpdateSprint {title, description, addPotentialLeader,
+  deletePotentialLeader, addMember, deleteMember, teamLeader}
 enum UpdatePost {create, delete}
 
 class SprintService {
