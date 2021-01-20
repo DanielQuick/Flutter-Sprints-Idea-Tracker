@@ -28,16 +28,8 @@ class _SplashPageState extends State<SplashPage> {
     await Firebase.initializeApp();
     debugPrint('Firebase initialized...');
 
-    ///initialize Firebase and related services
+    ///initialize Firebase related services
     setupFirebase();
-    AuthenticationService auth = AuthenticationService();
-    auth.initialize();
-    UserService user = new UserService();
-    user.initialize();
-    IdeaService idea = new IdeaService();
-    idea.initialize();
-    SprintService sprint = new SprintService();
-    sprint.initialize();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       /// ensure the onComplete callback cannot be called in the same frame

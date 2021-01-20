@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:idea_tracker/locator.dart';
 import 'package:idea_tracker/model/idea.dart';
+import 'package:idea_tracker/service/idea_service.dart';
 
 class CreateIdeaPageController extends ChangeNotifier {
   String _ideaTitle;
   String _ideaDescription;
   Function(String) onIdeaCreated;
+
+  final _ideaService = locator<IdeaService>();
 
   void setIdeaTitle(String title) {
     _ideaTitle = title;
@@ -33,16 +37,12 @@ class CreateIdeaPageController extends ChangeNotifier {
   }
 
   void createIdea() async {
-    // TODO: POST idea throught IdeaService
-    final idea = await Future.delayed(Duration(milliseconds: 1000), () {
-      final idea = Idea(
-        id: "1",
+    final idea = await _ideaService.create(
+      Idea(
         title: _ideaTitle,
         description: _ideaDescription,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-      );
-      return idea;
-    });
+      ),
+    );
     if (onIdeaCreated != null) onIdeaCreated("Success!");
     print(
         "Idea created => id: ${idea.id} | title: ${idea.title} | description: ${idea.description} | createdAt: ${idea.createdAt} | updatedAt: ${idea.updatedAt} | votes: ${idea.votes}");
