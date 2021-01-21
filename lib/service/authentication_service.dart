@@ -6,8 +6,8 @@ import 'services.dart';
 
 class AuthenticationService {
   ///create variable instances for use with Firebase
-  auth.FirebaseAuth _auth;
-  UserService _userService;
+  static auth.FirebaseAuth _auth;
+  static UserService _userService;
 
   ///this initializes the class variables
   initialize(){
@@ -24,9 +24,9 @@ class AuthenticationService {
             email: email, password: password);
         print('${credential.user.metadata}');
         User user = (User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
+        _userService.getUserDocument(user);
         await new Future.delayed(const Duration(microseconds: 5));
-        print('${credential.user.metadata}');
-        await _userService.getCurrentUserDocument(user);
+        print('credential: ${credential.user.uid}');
         debugPrint('Signed Up');
         return 'Signed Up';
       } on auth.FirebaseAuthException catch (e) {
@@ -54,10 +54,9 @@ class AuthenticationService {
           email: email, password: password);
       await new Future.delayed(const Duration(microseconds: 5));
       User user = (User(id: credential.user.uid, email: email, userName: email, photoURL: '_'));
-
+      print('credential: ${credential.user.uid}');
+      await _userService.getUserDocument(user);
       await new Future.delayed(const Duration(microseconds: 5));
-      print('${credential.user.metadata}');
-      await _userService.getCurrentUserDocument(user);
       debugPrint('Signed In');
       return 'Signed In';
     } on auth.FirebaseAuthException catch (e) {

@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -24,11 +23,7 @@ class _SplashPageState extends State<SplashPage> {
   _initialize() async {
     /// Initialize all app dependencies
 
-    ///initalize Firebase
-    await Firebase.initializeApp();
-    debugPrint('Firebase initialized...');
-
-    ///initialize Firebase related services
+    ///initialize Firebase and related services
     setupFirebase();
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {

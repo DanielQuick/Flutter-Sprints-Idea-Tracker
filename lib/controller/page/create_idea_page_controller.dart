@@ -44,7 +44,6 @@ class CreateIdeaPageController extends ChangeNotifier {
       ),
     );
     if (onIdeaCreated != null) onIdeaCreated("Success!");
-    print(
-        "Idea created => id: ${idea.id} | title: ${idea.title} | description: ${idea.description} | createdAt: ${idea.createdAt} | updatedAt: ${idea.updatedAt} | votes: ${idea.votes}");
+    print(idea.toString());
   }
 }

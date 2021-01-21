@@ -1,27 +1,28 @@
 import 'package:flutter_test/flutter_test.dart';
-
+import '../locator.dart';
 import 'services.dart';
 import '../model/models.dart';
 
 class TestServices {
-  AuthenticationService _authenticationService = new AuthenticationService();
-  IdeaService _ideaService = new IdeaService();
-  SprintService _sprintService = new SprintService();
-  UserService _userService = new UserService();
+
+  UserService _userService = locator<UserService>();
+  IdeaService  _ideaService = locator<IdeaService>();
+  SprintService _sprintService = locator<SprintService>();
+  AuthenticationService _authenticationService = locator<AuthenticationService>();
 
   testServices() async {
-    await _authenticationService.signUp(
-        "foobar@test1.com", "123qweASD#\$%", "123qweASD#\$%");
-    await new Future.delayed(const Duration(seconds: 10));
-    await _authenticationService.signOut();
+   // await _authenticationService.signUp(
+   //     "foobar@test2.com", "123qweASD#\$%", "123qweASD#\$%");
+    await new Future.delayed(const Duration(seconds: 3));
+    //await _authenticationService.signOut();
     await new Future.delayed(const Duration(seconds: 3));
     await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
-    print(
-        'Authentication Sign In Test Complete...Next line should show user details for ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
+   // print(
+      //'Authentication Sign In Test Complete...Next line should show user details for ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
    // await new Future.delayed(const Duration(seconds: 3));
    // await runUserServiceTest();
     await new Future.delayed(const Duration(seconds: 3));
-   // await runIdeaServiceTest();
+   await runIdeaServiceTest();
     await new Future.delayed(const Duration(seconds: 6));
     //await runSprintServicesTest();
   }
@@ -35,7 +36,7 @@ class TestServices {
         userName: "foobar@test.com",
         photoURL: "_");
 
-    await _userService.getCurrentUserDocument(_testUser);
+    await _userService.getUserDocument(_testUser);
     await _userService
         .updateUserName(_testUser.copyWith(userName: "Foo Bar Bar Bar"));
     await new Future.delayed(const Duration(seconds: 3));
@@ -48,7 +49,7 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
     print('getCurrentUserAsStream(): ${userStream.toString()}');
     await new Future.delayed(const Duration(seconds: 3));
-    await _userService.getCurrentUserDocument(_testUser);
+    await _userService.getUserDocument(_testUser);
   }
 
   ///testing all functions of this service class
@@ -61,39 +62,43 @@ class TestServices {
     ///This is the Idea used for testing with minimal input for operation within firestore
     ///it already exists
     Idea _testIdea1 = new Idea(
-      id: 'c49yHUU9uXSZeVYZN5iN',
-      description: 'Test c49yHUU9uXSZeVYZN5iN description',
-      title: 'Test c49yHUU9uXSZeVYZN5iN title',
+      id: 'hqw103o7xuRJ8ObUYijZ'
     );
 
     _testIdea = await _ideaService.create(_testIdea);
+    //_testIdea = await _ideaService.get(_testIdea.id);
     await new Future.delayed(const Duration(seconds: 3));
-    await _ideaService.update(_testIdea, UpdateIdea.title, 'New Idea Title');
+    _testIdea =await _ideaService.update(_testIdea, UpdateIdea.title, 'New Idea Title');
     await new Future.delayed(const Duration(seconds: 3));
-    await _ideaService.update(_testIdea, UpdateIdea.title,'Updated Title');
+    _testIdea =await _ideaService.update(_testIdea, UpdateIdea.title,'Updated Title');
     await new Future.delayed(const Duration(seconds: 3));
-    await _ideaService.update(_testIdea, UpdateIdea.title, 'Updated Title Again');
+    _testIdea =await _ideaService.update(_testIdea, UpdateIdea.title, 'Updated Title Again');
     await new Future.delayed(const Duration(seconds: 3));
     print(_testIdea.toString());
-    await _ideaService.update(_testIdea, UpdateIdea.description, "New Description");
-    await _ideaService.update(_testIdea, UpdateIdea.description, "Updated Description");
-    await _ideaService.update(
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea =await _ideaService.update(_testIdea, UpdateIdea.description, "New Description");
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea =await _ideaService.update(_testIdea, UpdateIdea.description, "Updated Description");
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea =await _ideaService.update(
         _testIdea, UpdateIdea.description,'Updated Description Again');
     await new Future.delayed(const Duration(seconds: 3));
     print(_testIdea.toString());
-    await _ideaService.update(_testIdea1, UpdateIdea.vote,"No");
-    await new Future.delayed(const Duration(seconds: 3));
-    await _ideaService.update(_testIdea1, UpdateIdea.vote, "Yes");
+    _testIdea = await _ideaService.update(_testIdea, UpdateIdea.vote,"Yes");
     await new Future.delayed(const Duration(seconds: 3));
 
-    ///This next update overwrites the previous "No" string
-    await _ideaService.update(_testIdea1, UpdateIdea.vote, "No");
-    print('{$_testIdea.toString()}...');
-    await _ideaService.delete(_testIdea);
-
-    await _ideaService.get(_testIdea1.id);
+    ///shouldn't let vote go through user already voted this idea
+    _testIdea =await _ideaService.update(_testIdea, UpdateIdea.vote, "No");
     await new Future.delayed(const Duration(seconds: 3));
-    var number = _ideaService.getAsStream(_testIdea1).toString();
+
+    ///shouldn't let vote go through user already voted this idea
+    _testIdea = await _ideaService.update(_testIdea, UpdateIdea.vote, "No");
+    print('{Should have 1 yes and 0 No:  ${_testIdea.toString()}...');
+    //await _ideaService.delete(_testIdea);
+
+    //_testIdea = await _ideaService.get(_testIdea.id);
+    await new Future.delayed(const Duration(seconds: 3));
+    var number = _ideaService.getAsStream(_testIdea).toString();
     await new Future.delayed(const Duration(seconds: 3));
     print('from getCurrentIdeaFromDBAsStream(): $number');
     var titles = await _ideaService.searchByTitle('TiTle');
@@ -104,6 +109,7 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
     var title1 = await _ideaService.getAllIdeas();
     print('from getAllIdeasFromDBStream(): ${title1.toString()}');
+
   } //end test
 
   runSprintServicesTest() async {

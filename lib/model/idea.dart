@@ -1,39 +1,47 @@
 class Idea {
   final String id;
   final String title;
-  final String creatorId;
   final String description;
+  final String creatorId;
   final int createdAt;
   final int updatedAt;
-  final List<Map<String, dynamic>> votes;
+  final int voteYes;
+  final int voteNo;
+  final List<String> voters;
 
   Idea({
     this.id,
     this.title,
-    this.creatorId,
     this.description,
+    this.creatorId,
     this.createdAt,
     this.updatedAt,
-    this.votes,
+    this.voteYes,
+    this.voteNo,
+    this.voters,
   });
 
   Idea copyWith({
     String id,
-    String creatorId,
     String title,
     String description,
+    String creatorId,
     int createdAt,
     int updatedAt,
-    List<Map<String, dynamic>> votes,
+    int voteYes,
+    int voteNo,
+    List<String> voters,
   }) {
     return Idea(
       id: id ?? this.id,
-      creatorId: creatorId ?? this.creatorId,
       title: title ?? this.title,
       description: description ?? this.description,
+      creatorId: creatorId ?? this.creatorId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      votes: votes ?? this.votes,
+      voteYes: voteYes ?? this.voteYes,
+      voteNo: voteNo ?? this.voteNo,
+      voters: voters ?? this.voters,
     );
   }
 
@@ -42,9 +50,12 @@ class Idea {
     return 'Idea: id: ${this.id}, '
         'title: ${this.title}, '
         'description: ${this.description}, '
+        'creatorId: ${this.creatorId}, '
         'createdAt: ${this.createdAt}, '
         'updatedAt: ${this.updatedAt}, '
-        'creatorId: ${this.creatorId} '
-        'votes: ${this.votes}';
+        'creatorId: ${this.creatorId}, '
+        'voteYes: ${this.voteYes}, '
+        'voteNo: ${this.voteNo}, '
+        'voters: ${this.voters}';
   }
 }

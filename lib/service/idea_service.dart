@@ -1,61 +1,89 @@
 import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../model/idea.dart';
+import 'package:idea_tracker/service/services.dart';
+import 'package:idea_tracker/model/idea.dart';
+import 'package:idea_tracker/model/user.dart';
 
 ///for this service class, users of this class do not have to worry about the updatedAt
 ///or createdAt variables within the Idea object
 
 ///Use this enum to update parts of the Idea Object
-enum UpdateIdea {title, description, vote}
+enum UpdateIdea { title, description, vote }
 
 class IdeaService {
   ///create variable instances for use
-  CollectionReference _ideaRef;
+  static CollectionReference _ideaRef;
 
   ///this initializes  the class
-  initialize(){
+  initialize() {
     _ideaRef = FirebaseFirestore.instance.collection("ideas");
   }
 
   /// adds the idea to the database and returns that idea
   Future<Idea> create(Idea idea) async {
     DocumentReference docReference = _ideaRef.doc();
-    await _ideaRef.doc(docReference.id).set(_toJson(idea, docReference.id));
-    idea =
-        idea.copyWith(id: docReference.id, createdAt: DateTime.now().millisecondsSinceEpoch);
+    await _ideaRef.doc(docReference.id).set(await _toJson(idea, docReference.id));
+    idea = idea.copyWith(
+        id: docReference.id, createdAt: DateTime.now().millisecondsSinceEpoch);
     debugPrint('Added idea id: ${idea.id} to DB');
     return idea;
   }
 
-  ///Switch to update idea object...use case: ideaService.update(idea, title, "new Title');
-  ///String updateWhat should equal 'title' or 'description' or 'vote' only
+  ///gets user from User Service
+  Future<User> _getUser()async{
+    UserService _userService = new UserService();
+    User user = await _userService.getUser();
+    print(user.id);
+    return user;
+  }
+
+  ///Switch to update idea object...use case: _ideaService.update(idea, Update.title, "new Title');
   ///returns the updated idea
   Future<Idea> update(Idea idea, UpdateIdea update, String updateString) async {
+    User user = await _getUser();
+    Idea updatedIdea = idea;
     switch (update) {
       case UpdateIdea.title:
         {
-          idea = await _updateTitle(idea, updateString);
-          return idea;
+          if(user.id == idea.creatorId) {
+            updatedIdea = await _updateTitle(idea, updateString);
+          }
+          return updatedIdea;
         }
         break;
       case UpdateIdea.description:
         {
-          idea = await _updateDescription(idea, updateString);
-          return idea;
+          if(user.id == idea.creatorId) {
+            updatedIdea = await _updateDescription(idea, updateString);
+          }
+          return updatedIdea;
         }
         break;
       case UpdateIdea.vote:
         {
-          idea = await _updateVotes(idea, updateString);
-          return idea;
+          ///checks to see if user already voted
+          if (!updatedIdea.voters.contains(user.id)) {
+            ///adds logged in user to voter list
+            updatedIdea = await _updateVoters(idea);
+            if (updateString.toLowerCase() == 'yes') {
+              updatedIdea = await _updateVoteYes(idea);
+            } else if (updateString.toLowerCase() == 'no') {
+              updatedIdea = await _updateVoteNo(idea);
+            } else {
+              print('Vote must be yes or no');
+            }
+          } else {
+            print('User ${user.id} has already voted for this idea.');
+          }
+          return updatedIdea;
         }
         break;
       default:
         {
           print(
-              'Nothing was updated, please use title, description, or vote to update your idea.');
-          idea = await get(idea.id);
-          return idea;
+              'Nothing was updated, please try again your idea.');
+          updatedIdea = await get(idea.id);
+          return updatedIdea;
         }
     }
   }
@@ -73,7 +101,7 @@ class IdeaService {
     Idea idea;
     await _ideaRef.doc(documentId).get().then((document) {
       if (document.exists) {
-        print('Document data: ${document.data()}');
+        //print('Document data: ${document.data()}');
         idea = _fromFirestore(document);
       } else {
         print('Document does not exist on the database');
@@ -94,11 +122,12 @@ class IdeaService {
   ///                 },)
   getAll() async {
     DateTime dateTime = DateTime.now();
-    Duration days = new Duration(days:dateTime.day-1);
+    Duration days = new Duration(days: dateTime.day - 1);
     debugPrint('getIdeasFromDBForCurrentMonthStream() performing...');
     return _ideaRef
         .where('createdAt',
-        isGreaterThanOrEqualTo: dateTime.subtract(days).millisecondsSinceEpoch)
+            isGreaterThanOrEqualTo:
+                dateTime.subtract(days).millisecondsSinceEpoch)
         .snapshots();
   }
 
@@ -111,15 +140,19 @@ class IdeaService {
 
   ///used to input the idea into the database.
   ///This is only used the first time an idea is input into the database
-  _toJson(Idea idea, String id) {
+  Future<Map<String, dynamic>>_toJson(Idea idea, String id) async{
+    User user = await _getUser();
     return {
       "id": id,
       "title": idea.title,
       "titleArray": idea.title.toLowerCase().split(new RegExp('\\s+')).toList(),
+      "creatorId": user.id,
       "description": idea.description,
       "createdAt": idea.createdAt ?? DateTime.now().millisecondsSinceEpoch,
       "updatedAt": idea.updatedAt ?? DateTime.now().millisecondsSinceEpoch,
-      "votes": idea.votes ?? new List<Map<String, dynamic>>(),
+      "voteYes": idea.voteYes ?? 0,
+      "voteNo": idea.voteNo ?? 0,
+      "voters": idea.voters ?? new List<String>(),
     };
   }
 
@@ -129,9 +162,12 @@ class IdeaService {
         id: doc.id,
         title: doc.data()["title"],
         description: doc.data()["description"],
+        creatorId: doc.data()["creatorId"],
         createdAt: doc.data()["createdAt"],
         updatedAt: doc.data()["updatedAt"],
-        votes: doc.data()['votes'].cast<List<Map<String, dynamic>>>());
+        voteYes: doc.data()["voteYes"],
+        voteNo: doc.data()["voteNo"],
+        voters: doc.data()["voters"].cast<String>());
     return idea;
   }
 
@@ -171,7 +207,7 @@ class IdeaService {
   Future<Idea> _updateDescription(Idea idea, String description) async {
     await _ideaRef
         .doc(idea.id)
-        .update({'description': idea.description})
+        .update({'description': description})
         .then((value) => print("description Updated for ${idea.id}"))
         .catchError((error) => print("Failed to update description: $error"));
     _updateUpdatedAt(idea);
@@ -179,17 +215,27 @@ class IdeaService {
   }
 
   /// updates _idea in the database and udpates _idea with that update
-  /// Please note that every vote stored in the list must be unique,
-  /// or firestore will overwrite stored String vote with
-  /// this String vote
-  Future<Idea> _updateVotes(Idea idea, vote) async {
+  /// Please note that every user stored in the list must be unique
+  /// voters can only vote once per idea
+  Future<Idea> _updateVoters(Idea idea) async {
+    User user = await _getUser();
     await _ideaRef.doc(idea.id).update({
-      "votes": FieldValue.arrayUnion([vote])
+      "voters": FieldValue.arrayUnion([user.id])
     }).then((_) async {
       idea = await _updateUpdatedAt(idea);
       await new Future.delayed(const Duration(microseconds: 5));
-      debugPrint('Added votes: $vote to idea ${idea.id}');
+      debugPrint('Added voter: $user.id to idea ${idea.id}');
     });
+    return idea = await get(idea.id);
+  }
+
+  Future<Idea> _updateVoteYes(Idea idea) async {
+    await _ideaRef.doc(idea.id).update({'voteYes': FieldValue.increment(1)});
+    return idea = await get(idea.id);
+  }
+
+  Future<Idea> _updateVoteNo(Idea idea) async {
+    await _ideaRef.doc(idea.id).update({'voteNo': FieldValue.increment(1)});
     return idea = await get(idea.id);
   }
 

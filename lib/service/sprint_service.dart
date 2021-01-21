@@ -16,7 +16,7 @@ enum UpdatePost { create, delete }
 
 class SprintService {
   ///create variable instances for use
-  CollectionReference sprintRef;
+  static CollectionReference sprintRef;
 
   ///this initializes the class variables
   initialize() {

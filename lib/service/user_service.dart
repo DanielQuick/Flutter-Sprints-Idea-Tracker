@@ -4,10 +4,10 @@ import '../model/user.dart';
 
 class UserService{
   ///create variable instances for use
-  CollectionReference userRef;
+  static CollectionReference userRef;
   static User _user;
 
-  ///this initializes the class variables
+  ///this initializes the collection reference
   initialize() {
     userRef = FirebaseFirestore.instance.collection("users");
   }
@@ -67,19 +67,20 @@ class UserService{
   ///
   ///gets current logged in user from the database and stores it to _user.
   ///create user in database this is performed within authentication service
-  Future<DocumentSnapshot> getCurrentUserDocument(User user) async {
-    DocumentSnapshot doc = await userRef.doc(user.id).get();
-      if (doc.exists) {
+  Future<DocumentSnapshot> getUserDocument(User user) async {
+    DocumentSnapshot snapshot = await userRef.doc(user.id).get();
+      if (snapshot.exists) {
         print(user.toString());
         setUser(user);
-        print('Document data: ${doc.data().entries}');
+        print('Document data: ${snapshot.data().entries}');
       } else {
         print('Document does not exist on the database.  Loading to database...');
         await add(user);
-        print ('reload currentUserDocument()...');
-        await getCurrentUserDocument(user);
+        print ('reload getUserDocument()...');
+        getUserDocument(user);
       }
-    return doc;
+      print(snapshot.data());
+    return snapshot;
   }
 
   ///Used to get the user as a stream
