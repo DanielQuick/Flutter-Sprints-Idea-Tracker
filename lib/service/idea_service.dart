@@ -4,6 +4,8 @@ import 'package:idea_tracker/service/services.dart';
 import 'package:idea_tracker/model/idea.dart';
 import 'package:idea_tracker/model/user.dart';
 
+import '../locator.dart';
+
 ///for this service class, users of this class do not have to worry about the updatedAt
 ///or createdAt variables within the Idea object
 
@@ -12,7 +14,7 @@ enum UpdateIdea { title, description, vote }
 
 class IdeaService {
   ///create variable instances for use
-  static CollectionReference _ideaRef;
+  CollectionReference _ideaRef;
 
   ///this initializes  the class
   initialize() {
@@ -29,18 +31,20 @@ class IdeaService {
     return idea;
   }
 
-  ///gets user from User Service
-  Future<User> _getUser()async{
-    UserService _userService = new UserService();
-    User user = await _userService.getUser();
+  ///gets user from Authentication Service
+  User _getUser() {
+    AuthenticationService _auth = locator<AuthenticationService>();
+    User user = _auth.authenticatedUser();
     print(user.id);
     return user;
   }
 
-  ///Switch to update idea object...use case: _ideaService.update(idea, Update.title, "new Title');
+  ///Switch to update idea object...this uses the Enum UpdateIdea at the top of
+  ///this class.
+  ///use case: _ideaService.update(idea, Update.title, "new Title');
   ///returns the updated idea
   Future<Idea> update(Idea idea, UpdateIdea update, String updateString) async {
-    User user = await _getUser();
+    User user = _getUser();
     Idea updatedIdea = idea;
     switch (update) {
       case UpdateIdea.title:
@@ -81,7 +85,7 @@ class IdeaService {
       default:
         {
           print(
-              'Nothing was updated, please try again your idea.');
+              'Nothing was updated, please try again.');
           updatedIdea = await get(idea.id);
           return updatedIdea;
         }
@@ -115,7 +119,7 @@ class IdeaService {
   /// current day/time - 1 month.
   ///suggested use:
   ///           StreamBuilder(
-  ///             stream: _ideaService.getIdeasFromDBForCurrentMonthStream(),
+  ///             stream: _ideaService.getAll(),
   ///             builder:
   ///                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
   ///                 ...
@@ -141,7 +145,7 @@ class IdeaService {
   ///used to input the idea into the database.
   ///This is only used the first time an idea is input into the database
   Future<Map<String, dynamic>>_toJson(Idea idea, String id) async{
-    User user = await _getUser();
+    User user = _getUser();
     return {
       "id": id,
       "title": idea.title,
@@ -218,7 +222,7 @@ class IdeaService {
   /// Please note that every user stored in the list must be unique
   /// voters can only vote once per idea
   Future<Idea> _updateVoters(Idea idea) async {
-    User user = await _getUser();
+    User user = _getUser();
     await _ideaRef.doc(idea.id).update({
       "voters": FieldValue.arrayUnion([user.id])
     }).then((_) async {

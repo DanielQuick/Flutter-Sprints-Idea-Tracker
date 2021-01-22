@@ -28,8 +28,8 @@ setupFirebase() async {
   SprintService _sprintService = locator<SprintService>();
   AuthenticationService _authenticationService =
       locator<AuthenticationService>();
-  _authenticationService.initialize();
   _userService.initialize();
+  _authenticationService.initialize();
   _ideaService.initialize();
   _sprintService.initialize();
 

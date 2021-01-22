@@ -25,7 +25,7 @@ class User {
   toString() {
     return 'User:  id: ${this.id ?? 'null'}, '
         'email: ${this.email ?? 'null'}, '
-        'userName: ${this.email ?? 'null'}, '
+        'userName: ${this.userName ?? 'null'}, '
         'photoURL: ${this.photoURL ?? 'null'}';
   }
 }
