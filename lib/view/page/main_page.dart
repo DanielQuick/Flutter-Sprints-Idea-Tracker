@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/controller/page/main_page_controller.dart';
+import 'package:idea_tracker/view/page/sprints_page.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
 
 class MainPage extends StatelessWidget {
@@ -11,11 +12,11 @@ class MainPage extends StatelessWidget {
       initialRoute: "/",
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-          builder: (context) => Scaffold(
-            body: Center(
-              child: Text("Ideas Tab"),
+            builder: (context) => Scaffold(
+              body: Center(
+                child: Text("Ideas Tab"),
+              ),
             ),
-          ),
         );
       },
     );
@@ -23,11 +24,7 @@ class MainPage extends StatelessWidget {
       initialRoute: "/",
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-          builder: (context) => Scaffold(
-            body: Center(
-              child: Text("Sprints Tab"),
-            ),
-          ),
+          builder: (context) => SprintsPage()
         );
       },
     );
