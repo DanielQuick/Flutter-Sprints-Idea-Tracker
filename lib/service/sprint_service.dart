@@ -152,10 +152,9 @@ class SprintService {
     List<Map<String, dynamic>> sprintPostDataMaps =
         List<Map<String, dynamic>>.from(doc.data()['posts']);
     List<SprintPost> sprintPostList = sprintPostDataMaps
-        .map((post) => _sprintPostFromJson(post))
+        .map((post) => _sprintPostFromFirestore(post))
         .toList()
         .cast<SprintPost>();
-
     Sprint sprint = new Sprint(
       id: doc.id,
       title: doc.data()["title"],
@@ -171,7 +170,7 @@ class SprintService {
   }
 
   ///convert a SprintPost object from Json Map for Firestore consumption
-  _sprintPostFromJson(post) {
+  SprintPost _sprintPostFromFirestore(post) {
     SprintPost sprintPost = new SprintPost(
       id: post['id'],
       title: post['title'],
@@ -292,7 +291,6 @@ class SprintService {
       debugPrint('Added member: $member to sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
-
     ///return sprint to user
     return sprint = await get(sprint.id);
   }
@@ -308,7 +306,6 @@ class SprintService {
       debugPrint('removed member: $member from sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
-
     ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
@@ -342,16 +339,10 @@ class SprintService {
     return sprint = await get(sprint.id);
   }
 
-  ///get all sprint documents from database,returns Instance of '_MapStream<QuerySnapshotPlatform, QuerySnapshot>'
-  ///suggested use:
-  ///           StreamBuilder(
-  ///             stream: sprintService.getAll(),
-  ///             builder:
-  ///                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-  ///                 ...
-  ///                 },)
-  getAll() async {
+  ///get all sprint documents from database,returns List<Sprints>'
+  Future <List<Sprint>> getAll() async {
     debugPrint('getAllSprintsFromDBStream() performing...');
-    return sprintRef.snapshots();
+    QuerySnapshot querySnapshots = await sprintRef.get();
+    return querySnapshots.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 }

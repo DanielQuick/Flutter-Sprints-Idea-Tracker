@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../locator.dart';
-import 'services.dart';
-import '../model/models.dart';
+import '../lib/locator.dart';
+import '../lib/service/services.dart';
+import '../lib/model/models.dart';
 
 class TestServices {
   UserService _userService = locator<UserService>();
@@ -15,10 +15,9 @@ class TestServices {
     bool isSignedIn;
     //User user = _authenticationService.authenticatedUser();
     //print(user.toString());
-    //await _authenticationService.signUp("fluttersprints@gmail.com",
-    // "123qweASD#\$%", "123qweASD#\$%");
+    //await _authenticationService.signUp("test@user.com", "testUser123", "testUser123");
     //await new Future.delayed(const Duration(seconds: 3));
-    await _authenticationService.signOut();
+    //await _authenticationService.signOut();
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
     await new Future.delayed(const Duration(seconds: 3));
@@ -26,7 +25,7 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
-    await _authenticationService.signIn("foobar@test.com", "123qweASD#\$%");
+    //await _authenticationService.signIn("test@user.com", "testUser123");
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
     await new Future.delayed(const Duration(seconds: 3));
@@ -39,9 +38,9 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
     //await runUserServiceTest();
     await new Future.delayed(const Duration(seconds: 3));
-    //await runIdeaServiceTest();
+    await runIdeaServiceTest();
     await new Future.delayed(const Duration(seconds: 6));
-    //await runSprintServicesTest();
+    await runSprintServicesTest();
   }
 
   runUserServiceTest() async {
@@ -52,6 +51,7 @@ class TestServices {
         email: "foobar@test.com",
         userName: "foobar@test.com",
         photoURL: "_");
+
     _userService.setUserFromFirestore(_testUser);
     _testUser = _userService.getUser();
     await _userService
@@ -78,6 +78,7 @@ class TestServices {
 
     ///This is the Idea used for testing with minimal input for operation within
     /// firestore it already exists
+    /*
     Idea _testIdea1 = new Idea(id: 'hqw103o7xuRJ8ObUYijZ');
 
     _testIdea = await _ideaService.create(_testIdea);
@@ -126,14 +127,17 @@ class TestServices {
     var titles = await _ideaService.searchByTitle('TiTle');
     print('from searchIdeasByTitle(): $titles');
     await new Future.delayed(const Duration(seconds: 3));
+
+     */
     var title0 = await _ideaService.getAll();
-    print('from getIdeasFromDBForCurrentMonthStream(): ${title0.toString()}');
+    print('from getAll(): $title0');
     await new Future.delayed(const Duration(seconds: 3));
-    var title1 = await _ideaService.getAllIdeas();
-    print('from getAllIdeasFromDBStream(): ${title1.toString()}');
+   // var title1 = await _ideaService.getAllIdeas();
+    //print('from getAllIdeasFromDBStream(): ${title1.toString()}');
   } //end test
 
   runSprintServicesTest() async {
+    /*
     ///Test Sprint objects
     SprintPost _post0 = new SprintPost(
         id: 0,
@@ -228,5 +232,8 @@ class TestServices {
     _sprintTest1 = await _sprintService.update(
         _sprintTest1, UpdateSprint.deleteMember, 'member4');
     await new Future.delayed(const Duration(seconds: 3));
+     */
+    var title0 = await _sprintService.getAll();
+    print('Sprint from getAll(): $title0');
   }
 }

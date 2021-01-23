@@ -39,7 +39,7 @@ class UserService {
     debugPrint('setCurrentUser(User user): ${_user.id}');
   }
 
-  ///Returns the current user object
+  ///Returns the latest getUserDocument() user object
   getUser() {
     return _user;
   }
