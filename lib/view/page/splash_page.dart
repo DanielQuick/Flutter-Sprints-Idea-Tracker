@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:idea_tracker/service/services.dart';
 
+import '../../locator.dart';
+
 class SplashPage extends StatefulWidget {
   final Function onComplete;
   SplashPage({Key key, this.onComplete}) : super(key: key);
@@ -24,12 +26,28 @@ class _SplashPageState extends State<SplashPage> {
     /// Initialize all app dependencies
 
     ///initialize Firebase and related services
-    setupFirebase();
+    await setupFirebase().then((_){
+      /// this is here to ensure initialization of each Firebase Service happens
+      /// after Firebase.initializeApp()
+      UserService _userService = locator<UserService>();
+      IdeaService _ideaService = locator<IdeaService>();
+      SprintService _sprintService = locator<SprintService>();
+      AuthenticationService _authenticationService =
+      locator<AuthenticationService>();
+      _userService.initialize();
+      _authenticationService.initialize();
+      _ideaService.initialize();
+      _sprintService.initialize();
+      //TestServices testServices = new TestServices();
+      //testServices.testServices();
+    });
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
       /// ensure the onComplete callback cannot be called in the same frame
       widget.onComplete();
     });
+
+
   }
 
   @override

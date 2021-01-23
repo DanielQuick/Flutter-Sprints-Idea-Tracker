@@ -29,7 +29,7 @@ class AuthenticationService {
             email: email,
             userName: email,
             photoURL: '_'));
-        _userService.setUserFromFirestore(user);
+        _userService.getUser(user);
         print('credential: ${credential.user.uid}');
         debugPrint('Signed Up');
         return 'Signed Up';
@@ -63,7 +63,7 @@ class AuthenticationService {
           userName: email,
           photoURL: '_'));
       print('credential: ${credential.user.uid}');
-      _userService.setUserFromFirestore(user);
+      _userService.getUser(user);
       await new Future.delayed(const Duration(microseconds: 5));
       debugPrint('Signed In');
       return 'Signed In';
@@ -101,9 +101,8 @@ class AuthenticationService {
       } else {
         _authenticatedUser = User(
             id: user.uid,);
-        _userService.setUserFromFirestore(_authenticatedUser);
         new Future.delayed(const Duration(microseconds: 20));
-        _authenticatedUser = _userService.getUser();
+        _authenticatedUser = _userService.getUser(_authenticatedUser);
         print('2. User from _authenticatedUser function: '+ _authenticatedUser.toString());
         print('User is signed in!');
         return _authenticatedUser;

@@ -24,7 +24,9 @@ class IdeaService {
   /// adds the idea to the database and returns that idea
   Future<Idea> create(Idea idea) async {
     DocumentReference docReference = _ideaRef.doc();
-    await _ideaRef.doc(docReference.id).set(await _toJson(idea, docReference.id));
+    await _ideaRef
+        .doc(docReference.id)
+        .set(await _toJson(idea, docReference.id));
     idea = idea.copyWith(
         id: docReference.id, createdAt: DateTime.now().millisecondsSinceEpoch);
     debugPrint('Added idea id: ${idea.id} to DB');
@@ -49,7 +51,7 @@ class IdeaService {
     switch (update) {
       case UpdateIdea.title:
         {
-          if(user.id == idea.creatorId) {
+          if (user.id == idea.creatorId) {
             updatedIdea = await _updateTitle(idea, updateString);
           }
           return updatedIdea;
@@ -57,7 +59,7 @@ class IdeaService {
         break;
       case UpdateIdea.description:
         {
-          if(user.id == idea.creatorId) {
+          if (user.id == idea.creatorId) {
             updatedIdea = await _updateDescription(idea, updateString);
           }
           return updatedIdea;
@@ -84,8 +86,7 @@ class IdeaService {
         break;
       default:
         {
-          print(
-              'Nothing was updated, please try again.');
+          print('Nothing was updated, please try again.');
           updatedIdea = await get(idea.id);
           return updatedIdea;
         }
@@ -105,7 +106,6 @@ class IdeaService {
     Idea idea;
     await _ideaRef.doc(documentId).get().then((document) {
       if (document.exists) {
-        //print('Document data: ${document.data()}');
         idea = _fromFirestore(document);
       } else {
         print('Document does not exist on the database');
@@ -115,24 +115,19 @@ class IdeaService {
     return idea;
   }
 
-  /// returns all ideas that were created for the current month as stream of
-  /// current day/time - 1 month.
-  ///suggested use:
-  ///           StreamBuilder(
-  ///             stream: _ideaService.getAll(),
-  ///             builder:
-  ///                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-  ///                 ...
-  ///                 },)
-  getAll() async {
+  /// returns all ideas that were created for the current month as Future List<Idea>
+  Future<List<Idea>> getAll() async {
     DateTime dateTime = DateTime.now();
     Duration days = new Duration(days: dateTime.day - 1);
-    debugPrint('getIdeasFromDBForCurrentMonthStream() performing...');
-    return _ideaRef
+    debugPrint('getAll() performing...');
+    QuerySnapshot querySnapshot = await _ideaRef
         .where('createdAt',
             isGreaterThanOrEqualTo:
                 dateTime.subtract(days).millisecondsSinceEpoch)
-        .snapshots();
+        .get();
+    return querySnapshot.docs
+        .map((doc) => _fromFirestore(doc))
+        .toList();
   }
 
   /// removes idea from the database and returns that idea
@@ -144,7 +139,7 @@ class IdeaService {
 
   ///used to input the idea into the database.
   ///This is only used the first time an idea is input into the database
-  Future<Map<String, dynamic>>_toJson(Idea idea, String id) async{
+  Future<Map<String, dynamic>> _toJson(Idea idea, String id) async {
     User user = _getUser();
     return {
       "id": id,
@@ -161,7 +156,7 @@ class IdeaService {
   }
 
   ///Create Idea object from Firestore DocumentSnapshot
-  _fromFirestore(DocumentSnapshot doc) {
+  Idea _fromFirestore(DocumentSnapshot doc) {
     Idea idea = new Idea(
         id: doc.id,
         title: doc.data()["title"],
