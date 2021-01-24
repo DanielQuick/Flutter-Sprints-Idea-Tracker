@@ -24,7 +24,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 value: 'Log Out',
               )
             ],
-            onSelected: (value) {
+            onSelected: (value) async {
               switch (value) {
                 case "Change Password":
                   {
@@ -33,12 +33,16 @@ class _ProfilePageState extends State<ProfilePage> {
                   break;
                 case "Log Out":
                   {
-                    return showDialog(
+                    bool confirmed = await showDialog<bool>(
+                      barrierDismissible: false,
                       context: context,
-                      builder: (BuildContext context) {
-                        return Confim_Logout_Dialog();
-                      },
+                      builder: (context) => Confim_Logout_Dialog(),
                     );
+                    if (confirmed == true) {
+                      print(confirmed);
+                      Navigator.of(context, rootNavigator: true)
+                          .popAndPushNamed("/landing");
+                    }
                   }
                   break;
               }

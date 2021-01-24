@@ -33,3 +33,16 @@ class _BaseViewState<T extends ChangeNotifier> extends State<BaseView<T>> {
     );
   }
 }
+
+//  TODO: onLogoutSuccess function for profile_page_controller file
+//  BaseView<PageController>(
+//     onControllerReady: (controller) {
+//         controller.onLogoutSuccess = () {
+//         // navigate to landing page
+//           Navigator.popAndPushNamed(context, "/landing");
+//         }
+//     },
+//     builder: (context, controller, child) {
+//         return Container();
+//     }
+// )
