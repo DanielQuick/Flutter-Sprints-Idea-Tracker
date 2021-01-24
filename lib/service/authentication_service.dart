@@ -18,7 +18,7 @@ class AuthenticationService {
 
   ///Sign up with email/password
   Future<String> signUp(
-      String email, String password, String passwordVerify) async {
+      String email, String userName, String password, String passwordVerify) async {
     if (password == passwordVerify) {
       try {
         auth.UserCredential credential = await _auth
@@ -27,7 +27,7 @@ class AuthenticationService {
         User user = (User(
             id: credential.user.uid,
             email: email,
-            userName: email,
+            userName: userName,
             photoURL: '_'));
         _userService.getUser(user);
         print('credential: ${credential.user.uid}');

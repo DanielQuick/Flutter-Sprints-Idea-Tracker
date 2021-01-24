@@ -15,7 +15,7 @@ class TestServices {
     bool isSignedIn;
     //User user = _authenticationService.authenticatedUser();
     //print(user.toString());
-    //await _authenticationService.signUp("test@user.com", "testUser123", "testUser123");
+    await _authenticationService.signUp("test@user.com", "Test User", "testUser123", "testUser123");
     //await new Future.delayed(const Duration(seconds: 3));
     //await _authenticationService.signOut();
     isSignedIn = _authenticationService.isSignedIn();

@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:idea_tracker/service/services.dart';
-
-import '../../locator.dart';
+import 'package:idea_tracker/locator.dart';
 
 class SplashPage extends StatefulWidget {
   final Function onComplete;
