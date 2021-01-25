@@ -1,11 +1,9 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/locator.dart';
-import 'package:idea_tracker/service/firebase_service.dart';
 import 'package:idea_tracker/view/page/main_page.dart';
 import 'package:idea_tracker/view/page/splash_page.dart';
 
-void main() async{
+void main() {
   setupLocator();
   runApp(MyApp());
 }
@@ -13,7 +11,6 @@ void main() async{
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: "Idea Tracker",
       theme: ThemeData(
