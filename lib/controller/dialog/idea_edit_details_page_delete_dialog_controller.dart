@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class IdeaEditDetailsDialogController extends ChangeNotifier {
+class IdeaEditDetailsPageDeleteDialogController extends ChangeNotifier {
   Function() onConfirmDelete;
 
   void confirmDelete() async {
