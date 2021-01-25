@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:idea_tracker/model/idea.dart';
+import 'package:idea_tracker/model/user.dart';
 import 'package:idea_tracker/view/page/idea_edit_details_page.dart';
 
 class IdeaDetailsPage extends StatelessWidget {
   final Idea idea;
 
   IdeaDetailsPage({this.idea});
+
+  Widget getEditButton(String userId, BuildContext context) {
+    if (userId == idea.creatorId) {
+      return IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => IdeaEditDetailsPage('Edit Idea', idea),
+            ),
+          );
+        },
+      );
+    } else {
+      return SizedBox.shrink();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Idea Details'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => IdeaEditDetailsPage('Edit Idea', idea),
-                ),
-              );
-            },
-          ),
+          getEditButton(User().id, context),
         ],
       ),
       body: Column(

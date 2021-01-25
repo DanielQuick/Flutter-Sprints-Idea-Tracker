@@ -45,17 +45,17 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
   }
 
   void saveTitleChange() async {
-    final idea = await _ideaService.update(_currentIdea, UpdateIdea.title, updateString);
+    final idea = await _ideaService
+        .update(_currentIdea, [UpdateIdea.title], [updateString]);
     if (onDataUpdated != null) onDataUpdated("Success!");
-    print(
-        "Idea updated => ${idea.toString()}");
+    print("Idea updated => ${idea.toString()}");
   }
 
   void saveDescriptionChange() async {
-    final idea = await _ideaService.update(_currentIdea, UpdateIdea.description, updateString);
+    final idea = await _ideaService
+        .update(_currentIdea, [UpdateIdea.description], [updateString]);
     if (onDataUpdated != null) onDataUpdated("Success!");
-    print(
-        "Idea updated => ${idea.toString()}");
+    print("Idea updated => ${idea.toString()}");
   }
 
   void openDeleteDialog() async {
