@@ -40,9 +40,18 @@ class SprintService {
     debugPrint('removed Sprint ${sprint.id} from DB');
   }
 
+  Future<Sprint> update(Sprint sprint, List<UpdateSprint> updates,
+      List<String> updateStrings) async {
+    for (var i = 0; i < updates.length; i++) {
+      sprint = await _update(sprint, updates[i], updateStrings[i]);
+    }
+
+    return sprint;
+  }
+
   ///Switch to update sprint object...use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
   ///returns the updated Sprint
-  Future<Sprint> update(
+  Future<Sprint> _update(
       Sprint sprint, UpdateSprint update, String updateString) async {
     switch (update) {
       case UpdateSprint.title:
@@ -89,7 +98,8 @@ class SprintService {
         break;
       default:
         {
-          print("Nothing was updated, please use Enum UpdateSprint your Sprint ${sprint.id}.");
+          print(
+              "Nothing was updated, please use Enum UpdateSprint your Sprint ${sprint.id}.");
           return sprint;
         }
     }
@@ -290,6 +300,7 @@ class SprintService {
       debugPrint('Added member: $member to sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
+
     ///return sprint to user
     return sprint = await get(sprint.id);
   }
@@ -305,6 +316,7 @@ class SprintService {
       debugPrint('removed member: $member from sprint ${sprint.id}');
     });
     _updateUpdatedAt(sprint);
+
     ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
@@ -339,7 +351,7 @@ class SprintService {
   }
 
   ///get all sprint documents from database,returns List<Sprints>'
-  Future <List<Sprint>> getAll() async {
+  Future<List<Sprint>> getAll() async {
     debugPrint('getAllSprintsFromDBStream() performing...');
     QuerySnapshot querySnapshots = await sprintRef.get();
     return querySnapshots.docs.map((doc) => _fromFirestore(doc)).toList();

@@ -41,11 +41,21 @@ class IdeaService {
     return user;
   }
 
+  Future<Idea> update(
+      Idea idea, List<UpdateIdea> updates, List<String> updateStrings) async {
+    for (var i = 0; i < updates.length; i++) {
+      idea = await _update(idea, updates[i], updateStrings[i]);
+    }
+
+    return idea;
+  }
+
   ///Switch to update idea object...this uses the Enum UpdateIdea at the top of
   ///this class.
   ///use case: _ideaService.update(idea, Update.title, "new Title');
   ///returns the updated idea
-  Future<Idea> update(Idea idea, UpdateIdea update, String updateString) async {
+  Future<Idea> _update(
+      Idea idea, UpdateIdea update, String updateString) async {
     User user = _getUser();
     Idea updatedIdea = idea;
     switch (update) {
@@ -125,9 +135,7 @@ class IdeaService {
             isGreaterThanOrEqualTo:
                 dateTime.subtract(days).millisecondsSinceEpoch)
         .get();
-    return querySnapshot.docs
-        .map((doc) => _fromFirestore(doc))
-        .toList();
+    return querySnapshot.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
   /// removes idea from the database and returns that idea
