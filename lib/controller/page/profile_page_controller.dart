@@ -11,9 +11,6 @@ class ProfilePageController extends ChangeNotifier {
 
   logout() async {
     await locator<AuthenticationService>().signOut();
-    if (onLogoutSuccess != null) {
-      onLogoutSuccess();
-    }
-    ;
+    if (onLogoutSuccess != null) onLogoutSuccess();
   }
 }
