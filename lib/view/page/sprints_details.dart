@@ -4,10 +4,10 @@ import 'package:idea_tracker/model/sprint.dart';
 
 class SprintsDetails extends StatefulWidget {
 
-  //final Sprint sprint;
-  //SprintsDetails(this.sprint)
+  final Sprint sprint;
+  SprintsDetails(this.sprint);
 
-   @override
+  @override
   _SprintsDetailsState createState() => _SprintsDetailsState();
 }
 
@@ -27,14 +27,12 @@ class _SprintsDetailsState extends State<SprintsDetails> {
             tooltip: 'share this sprint',
             onPressed: () => null,
           ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            tooltip: 'delete this sprint',
-            onPressed: () => null,
-          ),
-          IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed:  () => null,
+          Padding(
+            padding: const EdgeInsets.only(left:8.0),
+            child: IconButton(
+                icon: Icon(Icons.more_vert),
+                onPressed:  () => null,
+            ),
           )
         ],
         backgroundColor: Colors.black87,
@@ -76,7 +74,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                   ),
                                   SizedBox(width: 10.0,),
                                   Text(
-                                    'DanielQuick',
+                                    widget.sprint.teamLeader,
                                     style: TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 12.0),
                                   ),
                                 ],
@@ -86,13 +84,13 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Idea tracker',
+                                    widget.sprint.title,
                                     maxLines: 1,
                                     style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width: 15.0,),
                                   Text(
-                                    '-   24/01/2021',
+                                    '-   ${widget.sprint.createdAt}',
                                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                                   ),
                                 ],
@@ -104,7 +102,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                     child: Container(
                                       width: 365,
                                       child: Text(
-                                        'Create an idea - Describe the idea, maybe under predefined requirements or templates - Resources for implementing the idea - Voting',
+                                        widget.sprint.description,
                                         maxLines: 5,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -118,6 +116,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                   Icon(Icons.star_border , size: 18.0, color: Colors.black.withOpacity(0.6),),
                                   SizedBox(width: 5.0,),
                                   Text(
+                                    //TODO: make it work with button.
                                     '69 Stars',
                                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                                   ),
@@ -125,7 +124,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                   Icon(Icons.person_outline , size: 18.0, color: Colors.black.withOpacity(0.6),),
                                   SizedBox(width: 5.0,),
                                   Text(
-                                    '7 contributers',
+                                    '${widget.sprint.members.length} contributers',
                                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                                   ),
                                 ],
@@ -180,43 +179,11 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                               SizedBox(height: 10.0,),
                               ListTile(
                                   leading: Icon(Icons.military_tech),
-                                  title: Text("DanielQuick"),
+                                  title: Text(widget.sprint.teamLeader),
                                   subtitle: Text("Teamleader"),
                               ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("OsamaBinNaughty-hub"),
-                                subtitle: Text("Contributer"),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("labody"),
-                                subtitle: Text("Contributer"),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("xopherw"),
-                                subtitle: Text("Contributer"),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("Abdul-Aziz"),
-                                subtitle: Text("Contributer"),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("manuelvargastapia"),
-                                subtitle: Text("Contributer"),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("taracell"),
-                                subtitle: Text("Contributer"),
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.account_circle),
-                                title: Text("DanielQuick"),
-                                subtitle: Text("Contributer"),
+                              Column(
+                                children: _loadMembersOnListTiles(widget.sprint),
                               ),
                             ],
                           ),
@@ -232,21 +199,17 @@ class _SprintsDetailsState extends State<SprintsDetails> {
       ),
     );
   }
-  Widget _memberCards(String contributer){
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Column(
-        children: [
-          ListTile(
-            leading: Icon(Icons.account_circle),
-            title: Text(contributer),
-            subtitle: Text(
-              'Team leader: }',
-              style: TextStyle(color: Colors.black.withOpacity(0.6)),
-            ),
-          ),
-        ],
-      ),
+  
+  List<Widget> _loadMembersOnListTiles(Sprint sprint){
+    List<String> members = sprint.members;
+    return members.map((e) => _members(e)).toList();
+  }
+  
+  Widget _members(String contributer){
+    return ListTile(
+      leading: Icon(Icons.account_circle),
+      title: Text(contributer),
+      subtitle: Text("Contributer"),
     );
   }
 }
