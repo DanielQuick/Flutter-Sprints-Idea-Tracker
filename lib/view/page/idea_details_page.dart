@@ -28,39 +28,37 @@ class IdeaDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Idea Details'),
-          actions: [
-            getEditButton(User().id, context),
-          ],
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.only(left: 10.0, top: 25.0),
-              child: Text(
-                idea.title,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20.0,
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Idea Details'),
+        actions: [
+          getEditButton(User().id, context),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: EdgeInsets.only(left: 10.0, top: 25.0),
+            child: Text(
+              idea.title,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20.0,
               ),
             ),
-            SizedBox(height: 20.0),
-            Container(
-              padding: EdgeInsets.only(left: 10.0, right: 5.0),
-              child: Text(
-                idea.description,
-                style: TextStyle(
-                  fontSize: 18.0,
-                ),
+          ),
+          SizedBox(height: 20.0),
+          Container(
+            padding: EdgeInsets.only(left: 10.0, right: 5.0),
+            child: Text(
+              idea.description,
+              style: TextStyle(
+                fontSize: 18.0,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
