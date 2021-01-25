@@ -4,6 +4,7 @@ import 'package:idea_tracker/controller/dialog/landing_page_recover_password_dia
 import 'package:idea_tracker/controller/page/create_idea_page_controller.dart';
 import 'package:idea_tracker/controller/page/idea_edit_details_page_controller.dart';
 import 'package:idea_tracker/controller/page/main_page_controller.dart';
+import 'package:idea_tracker/controller/page/sprints_page_controller.dart';
 import 'package:idea_tracker/service/authentication_service.dart';
 import 'package:idea_tracker/service/idea_service.dart';
 import 'package:idea_tracker/service/sprint_service.dart';
@@ -17,6 +18,7 @@ void setupLocator() {
   locator.registerFactory(() => IdeaEditDetailsPageController());
   locator.registerFactory(() => IdeaEditDetailsPageDeleteDialogController());
   locator.registerFactory(() => LandingPageRecoverPasswordDialogController());
+  locator.registerFactory(() => SprintsPageController());
 
   // Services
   locator.registerSingleton(IdeaService());
