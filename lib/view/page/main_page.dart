@@ -20,7 +20,9 @@ class MainPage extends StatelessWidget {
     final sprintsTab = Navigator(
       initialRoute: "/",
       onGenerateRoute: (settings) {
-        return MaterialPageRoute(builder: (context) => SprintsPage());
+        return MaterialPageRoute(
+          builder: (context) => SprintsPage()
+        );
       },
     );
     final profileTab = Navigator(

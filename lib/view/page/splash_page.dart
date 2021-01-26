@@ -1,8 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:idea_tracker/service/services.dart';
-import 'package:idea_tracker/locator.dart';
 
 class SplashPage extends StatefulWidget {
   final Function onComplete;
@@ -13,8 +13,6 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
-
   @override
   void initState() {
     super.initState();
@@ -22,36 +20,26 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   _initialize() async {
-    /// Initialize all app dependencies
-
-    ///initialize Firebase and related services
-    await setupFirebase().then((_){
-      /// this is here to ensure initialization of each Firebase Service happens
-      /// after Firebase.initializeApp()
-      UserService _userService = locator<UserService>();
-      IdeaService _ideaService = locator<IdeaService>();
-      SprintService _sprintService = locator<SprintService>();
-      AuthenticationService _authenticationService =
-      locator<AuthenticationService>();
-      _userService.initialize();
-      _authenticationService.initialize();
-      _ideaService.initialize();
-      _sprintService.initialize();
-      //TestServices testServices = new TestServices();
-      //testServices.testServices();
-    });
-
+    // Initialize all app dependencies
+    
+    /// initalize Firebase
+    await Firebase.initializeApp();
+    debugPrint('Firebase initalized...');
+    /// Enable FirebaseCrashlytics
+    FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+    debugPrint('Firebase Crashlytics collection enabled...');
+    /// Pass all uncaught errors from the framework to Crashlytics.
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+    debugPrint('Firebase Crashlytics flutter errors enabled...');
+    
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-      /// ensure the onComplete callback cannot be called in the same frame
+      // ensure the onComplete callback cannot be called in the same frame
       widget.onComplete();
     });
-
-
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       body: Center(
         child: CircularProgressIndicator(),

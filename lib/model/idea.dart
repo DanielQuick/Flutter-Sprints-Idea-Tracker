@@ -2,60 +2,38 @@ class Idea {
   final String id;
   final String title;
   final String description;
-  final String creatorId;
+  final String userId;
   final int createdAt;
   final int updatedAt;
-  final int voteYes;
-  final int voteNo;
-  final List<String> voters;
+  final List<String> votes;
 
   Idea({
     this.id,
     this.title,
     this.description,
-    this.creatorId,
+    this.userId,
     this.createdAt,
     this.updatedAt,
-    this.voteYes,
-    this.voteNo,
-    this.voters,
+    this.votes,
   });
 
   Idea copyWith({
     String id,
     String title,
     String description,
-    String creatorId,
+    String userId,
     int createdAt,
     int updatedAt,
-    int voteYes,
-    int voteNo,
-    List<String> voters,
+    List<String> votes,
   }) {
     return Idea(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,
-      creatorId: creatorId ?? this.creatorId,
+      userId: userId ?? this.userId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      voteYes: voteYes ?? this.voteYes,
-      voteNo: voteNo ?? this.voteNo,
-      voters: voters ?? this.voters,
+      votes: votes ?? this.votes,
     );
-  }
-
-  /// print the current stored idea to a string for debugging purposes
-  toString() {
-    return 'Idea: id: ${this.id}, '
-        'title: ${this.title}, '
-        'description: ${this.description}, '
-        'creatorId: ${this.creatorId}, '
-        'createdAt: ${this.createdAt}, '
-        'updatedAt: ${this.updatedAt}, '
-        'creatorId: ${this.creatorId}, '
-        'voteYes: ${this.voteYes}, '
-        'voteNo: ${this.voteNo}, '
-        'voters: ${this.voters}';
   }
 }

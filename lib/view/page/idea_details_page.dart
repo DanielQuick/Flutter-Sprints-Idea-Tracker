@@ -9,7 +9,7 @@ class IdeaDetailsPage extends StatelessWidget {
   IdeaDetailsPage({this.idea});
 
   Widget getEditButton(String userId, BuildContext context) {
-    if (userId == idea.creatorId) {
+    if (userId == idea.userId) {
       return IconButton(
         icon: Icon(Icons.edit),
         onPressed: () {

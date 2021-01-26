@@ -1,31 +1,16 @@
 class User {
-  String id;
-  String email;
-  String userName;
-  String photoURL;
+  final String id;
+  final String username;
 
   User({
     this.id,
-    this.email,
-    this.userName,
-    this.photoURL,
+    this.username,
   });
 
-  User copyWith({String id, String email, String userName, String photoURL}) {
+  User copyWith({String id, String username}) {
     return User(
       id: id ?? this.id,
-      email: email ?? this.email,
-      userName: userName ?? this.userName,
-      photoURL: photoURL ?? this.photoURL ?? '_',
+      username: username ?? this.username,
     );
-  }
-
-  @override
-  ///returns the user string
-  toString() {
-    return 'User:  id: ${this.id ?? 'null'}, '
-        'email: ${this.email ?? 'null'}, '
-        'userName: ${this.userName ?? 'null'}, '
-        'photoURL: ${this.photoURL ?? 'null'}';
   }
 }
