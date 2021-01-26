@@ -84,9 +84,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   color: Colors.grey,
                 ),
               ),
-              Container(child: Text('Sprints Participant')),
-              Container(child: Text('Team Lead')),
-              Container(child: Text('Voted')),
             ],
           ),
         );
