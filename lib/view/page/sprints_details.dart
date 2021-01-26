@@ -74,7 +74,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                   ),
                                   SizedBox(width: 10.0,),
                                   Text(
-                                    widget.sprint.teamLeader,
+                                    _teamleader(widget.sprint),
                                     style: TextStyle(color: Colors.black.withOpacity(0.6), fontSize: 12.0),
                                   ),
                                 ],
@@ -89,10 +89,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                     style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width: 15.0,),
-                                  Text(
-                                    '-   ${widget.sprint.createdAt}',
-                                    style: TextStyle(color: Colors.black.withOpacity(0.6)),
-                                  ),
+                                  _createdAt(widget.sprint),
                                 ],
                               ),
                               SizedBox(height: 10.0,),
@@ -124,7 +121,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                   Icon(Icons.person_outline , size: 18.0, color: Colors.black.withOpacity(0.6),),
                                   SizedBox(width: 5.0,),
                                   Text(
-                                    '${widget.sprint.members.length} contributers',
+                                    '${_numberOfContributers(widget.sprint.members, widget.sprint)} contributers',
                                     style: TextStyle(color: Colors.black.withOpacity(0.6)),
                                   ),
                                 ],
@@ -177,14 +174,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                 ],
                               ),
                               SizedBox(height: 10.0,),
-                              ListTile(
-                                  leading: Icon(Icons.military_tech),
-                                  title: Text(widget.sprint.teamLeader),
-                                  subtitle: Text("Teamleader"),
-                              ),
-                              Column(
-                                children: _loadMembersOnListTiles(widget.sprint),
-                              ),
+                              _membersListTile(widget.sprint),
                             ],
                           ),
                         ),
@@ -199,7 +189,34 @@ class _SprintsDetailsState extends State<SprintsDetails> {
       ),
     );
   }
-  
+
+  Widget _membersListTile(Sprint sprint){
+    if(sprint.members == null){
+      return Row(
+        children: [
+          Text(
+            'There are no contributers',
+            style: TextStyle(color: Colors.black.withOpacity(0.6),),
+          ),
+        ],
+      );
+    } else {
+      return Column(
+        children: [
+          ListTile(
+            leading: Icon(Icons.military_tech),
+            title: Text(sprint.teamLeader),
+            subtitle: Text("Teamleader"),
+          ),
+          Column(
+            children: _loadMembersOnListTiles(sprint),
+          ),
+
+        ],
+      );
+    }
+  }
+
   List<Widget> _loadMembersOnListTiles(Sprint sprint){
     List<String> members = sprint.members;
     return members.map((e) => _members(e)).toList();
@@ -211,5 +228,32 @@ class _SprintsDetailsState extends State<SprintsDetails> {
       title: Text(contributer),
       subtitle: Text("Contributer"),
     );
+  }
+
+  String _numberOfContributers(List<String> members, Sprint sprint){
+    if(sprint.members == null || sprint.members.length == 0){
+      return '0';
+    } else {
+      return '${sprint.members.length}';
+    }
+  }
+
+  String _teamleader(Sprint sprint){
+    if(sprint.teamLeader == null){
+      return 'There is no teamleader';
+    } else {
+      return sprint.teamLeader;
+    }
+  }
+
+  Widget _createdAt(Sprint sprint){
+    if(sprint.createdAt == null){
+      return null;
+    } else {
+      return Text(
+          '-   ${sprint.createdAt}',
+          style: TextStyle(color: Colors.black.withOpacity(0.6)),
+      );
+    }
   }
 }
