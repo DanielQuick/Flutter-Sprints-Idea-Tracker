@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/locator.dart';
-import '../lib/service/services.dart';
-import '../lib/model/models.dart';
+import '../../locator.dart';
+import '../../service/services.dart';
+import '../../model/models.dart';
 
 class TestServices {
   UserService _userService = locator<UserService>();
@@ -13,11 +13,11 @@ class TestServices {
 
   testServices() async {
     bool isSignedIn;
-    //User user = _authenticationService.authenticatedUser();
-    //print(user.toString());
+    user = _authenticationService.authenticatedUser();
+    print(user.toString());
     await _authenticationService.signUp("test@user.com", "Test User", "testUser123", "testUser123");
     //await new Future.delayed(const Duration(seconds: 3));
-    //await _authenticationService.signOut();
+    await _authenticationService.signOut();
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
     await new Future.delayed(const Duration(seconds: 3));
@@ -25,7 +25,7 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
-    //await _authenticationService.signIn("test@user.com", "testUser123");
+    await _authenticationService.signIn("test@user.com", "testUser123");
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
     await new Future.delayed(const Duration(seconds: 3));
@@ -52,25 +52,27 @@ class TestServices {
         userName: "foobar@test.com",
         photoURL: "_");
 
-    _userService.getCurrentAuthenticatedUser(_testUser);
-    _testUser = _userService.getCurrentAuthenticatedUser(_testUser);
+    _testUser = await _userService.get(user.id);
+    await new Future.delayed(const Duration(seconds: 3));
+    print('about to update user: ${_testUser.toString()} ');
     await _userService
-        .update(_testUser,UpdateUser.userName, 'foo bar');
+        .update(_testUser, UpdateUser.userName, 'FOO BAR');
     await new Future.delayed(const Duration(seconds: 3));
     await _userService.update(
-        _testUser, UpdateUser.photo, 'some url to a photo');
+        _testUser, UpdateUser.photo, 'some photo url string that shows a pic');
     await new Future.delayed(const Duration(seconds: 3));
-    _testUser = _userService.getCurrentAuthenticatedUser(_testUser);
-    print("Authenticated user"+_testUser.toString());
-    await new Future.delayed(const Duration(seconds: 3));
+    _testUser = await _userService.get(_testUser.id);
+    print('updated user: ${_testUser.toString()}');
+    //await new Future.delayed(const Duration(seconds: 3));
+    //_testUser = _authenticationService.authenticatedUser();
+    //print("Authenticated user is: "+_testUser.toString());
+    //await new Future.delayed(const Duration(seconds: 3));
     //var userStream = await _userService.getCurrentUserAsStream(_testUser);
-    await new Future.delayed(const Duration(seconds: 3));
+    //await new Future.delayed(const Duration(seconds: 3));
     //print('getCurrentUserAsStream(): ${userStream.toString()}');
-    await new Future.delayed(const Duration(seconds: 3));
-    User user = await _userService.get('ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
-    print(user.toString());
+    //await new Future.delayed(const Duration(seconds: 3));
     User user0 = await _userService.get('asdf');
-    print(user0.toString());
+    print('should show null: ${user0.toString()}');
 
 
   }

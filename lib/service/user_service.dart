@@ -33,21 +33,21 @@ class UserService {
         photoURL: doc.data()['photoURL'] ?? 'null');
     return user;
   }
-  
-  ///Central update command to update user objects.  Uses Enum UpdateUser for 
+
+  ///Central update command to update user objects.  Uses Enum UpdateUser for
   /// the switch() case :  Returns the updated user object as Future
   Future<User> update(User user, UpdateUser update, String updateString) async {
     User updatedUser = user;
     switch (update) {
       case UpdateUser.userName:
         {
-          updatedUser = await _updateUserName(user);
+          updatedUser = await _updateUserName(user, updateString);
           return updatedUser;
         }
         break;
       case UpdateUser.photo:
         {
-          updatedUser = await _updateUserPhotoURL(user);
+          updatedUser = await _updateUserPhotoURL(user, updateString);
           return updatedUser;
         }
         break;
@@ -68,14 +68,14 @@ class UserService {
     debugPrint('setCurrentUser(User user): ${_user.id}');
   }
 
-  /// Returns the latest _setAuthenticatedUserFromFirestore() user object for authentication 
+  /// Returns the latest _setAuthenticatedUserFromFirestore() user object for authentication
   /// user object...this is like this in order to avoid return Future User object
   User getCurrentAuthenticatedUser(User user) {
     _setAuthenticatedUserFromFirestore(user);
     return _user;
   }
 
-  /// Returns the requested User Object from Firestore if the user is not found 
+  /// Returns the requested User Object from Firestore if the user is not found
   /// Returns null
   Future<User> get(String id) async {
     User user;
@@ -105,21 +105,22 @@ class UserService {
   }
 
   ///to update the user name in the database
-  Future<User> _updateUserName(User user) async {
+  Future<User> _updateUserName(User user, String newUserName) async {
     print("updateUserName(String userName): ${user.id} / ${user.userName}");
-    await _userRef.doc(user.id).update({'userName': user.userName});
-    debugPrint('User ${user.id} updated userName: ${user.userName} DB');
-    await _setAuthenticatedUserFromFirestore(user);
-    return getCurrentAuthenticatedUser(user);
+    return await _userRef.doc(user.id).update({'userName': newUserName}).then((_){
+      debugPrint(
+          'User ${user.id} updated userName: ${user.userName} to $newUserName DB');
+      return get(user.id);
+    });
   }
 
   ///used to update a photoURL if someone wants to include a picture with their
   ///user profile
-  Future<User> _updateUserPhotoURL(User user) async {
-    await _userRef.doc(user.id).update({'photoURL': user.photoURL});
-    debugPrint('User ${user.id} updated PhotoUrl DB');
-    await _setAuthenticatedUserFromFirestore(user);
-    return getCurrentAuthenticatedUser(user);
+  Future<User> _updateUserPhotoURL(User user, String updatePhotoURL) async {
+    return await _userRef.doc(user.id).update({'photoURL': updatePhotoURL}).then((_) {
+      debugPrint('User ${user.id} updated PhotoUrl DB');
+      return get(user.id);
+    });
   }
 
   ///used to get the document to show user attributes within the database
