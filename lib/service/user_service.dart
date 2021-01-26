@@ -7,7 +7,6 @@ enum UpdateUser { userName, photo }
 class UserService {
   ///create variable instances for use
   CollectionReference _userRef;
-  User _user;
 
   ///this initializes the collection reference
   initialize() {
@@ -61,19 +60,7 @@ class UserService {
     }
   }
 
-  ///Current _user is always set from _setAuthenticatedUserFromFirestore()
-  ///this is performed within authentication service upon sign up/in
-  void _setUser(User user) {
-    _user = user;
-    debugPrint('setCurrentUser(User user): ${_user.id}');
-  }
 
-  /// Returns the latest _setAuthenticatedUserFromFirestore() user object for authentication
-  /// user object...this is like this in order to avoid return Future User object
-  User getCurrentAuthenticatedUser(User user) {
-    _setAuthenticatedUserFromFirestore(user);
-    return _user;
-  }
 
   /// Returns the requested User Object from Firestore if the user is not found
   /// Returns null
@@ -129,18 +116,16 @@ class UserService {
   ///this creates user in database if the user doesn't exist yet
   ///if the document is found within the User is stored
   ///
-  Future<DocumentSnapshot> _setAuthenticatedUserFromFirestore(User user) async {
+  Future<DocumentSnapshot> setAuthenticatedUserFromFirestore(User user) async {
     DocumentSnapshot snapshot = await _userRef.doc(user.id).get();
-    User userFromDocument;
     if (snapshot.exists) {
-      userFromDocument = _fromFirestore(snapshot);
-      _setUser(userFromDocument);
+      _fromFirestore(snapshot);
       print('Found User: ${snapshot.data()['id']}');
     } else {
       print('Document does not exist on the database.  Loading to database...');
       await _add(user);
       print('reload getUserDocument()...');
-      _setAuthenticatedUserFromFirestore(user);
+      setAuthenticatedUserFromFirestore(user);
     }
     print(snapshot.data());
     return snapshot;

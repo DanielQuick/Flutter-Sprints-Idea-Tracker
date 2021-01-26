@@ -9,6 +9,7 @@ class AuthenticationService {
   ///create variable instances for use with Firebase
   auth.FirebaseAuth _auth;
   UserService _userService;
+  User _authenticatedUser;
 
   ///this initializes the class variables
   initialize() {
@@ -23,13 +24,20 @@ class AuthenticationService {
       try {
         auth.UserCredential credential = await _auth
             .createUserWithEmailAndPassword(email: email, password: password)
-            .then((credential) {
-          User user = (User(
+            .then((credential) async {
+          User user0 = (User(
               id: credential.user.uid,
               email: email,
               userName: userName,
               photoURL: '_'));
-          user = _userService.getCurrentAuthenticatedUser(user);
+          await _userService
+              .setAuthenticatedUserFromFirestore(user0)
+              .then((snapshot) =>
+          _authenticatedUser = User(
+              id: snapshot.data()["id"],
+              userName: snapshot.data()["userName"],
+              email: snapshot.data()["email"],
+              photoURL: snapshot.data()["photoURL"]));
           return credential;
         });
         print('credential: ${credential.user.uid}');
@@ -58,24 +66,24 @@ class AuthenticationService {
     try {
       auth.UserCredential credential = await _auth
           .signInWithEmailAndPassword(email: email, password: password)
-          .then((credential) {
-        //print('${credential.user.metadata}');
-        User user = (User(
+          .then((credential) async {
+        User user0 = (User(
             id: credential.user.uid,
             email: email,
             userName: email,
             photoURL: '_'));
-        _userService.getCurrentAuthenticatedUser(user);
+        await _userService
+            .setAuthenticatedUserFromFirestore(user0)
+            .then((snapshot) =>
+        _authenticatedUser = User(
+            id: snapshot.data()["id"],
+            userName: snapshot.data()["userName"],
+            email: snapshot.data()["email"],
+            photoURL: snapshot.data()["photoURL"]));
         return credential;
       });
       await new Future.delayed(const Duration(microseconds: 5));
-      User user = (User(
-          id: credential.user.uid,
-          email: email,
-          userName: email,
-          photoURL: '_'));
       print('credential: ${credential.user.uid}');
-      _userService.getCurrentAuthenticatedUser(user);
       await new Future.delayed(const Duration(microseconds: 5));
       debugPrint('Signed In');
       return 'Signed In';
@@ -91,9 +99,10 @@ class AuthenticationService {
         return 'Something went wrong, please try again.';
       }
     } catch (e) {
+      debugPrint('Something went wrong, please try again.');
       print(e);
+      return 'Something went wrong, please try again.';
     }
-    return null;
   }
 
   ///sign out
@@ -103,24 +112,26 @@ class AuthenticationService {
   }
 
   ///returns the current authenticated user as User object
-  User authenticatedUser() {
-    User _authenticatedUser;
-    auth.User user = _auth.currentUser;
-    if (user == null) {
+  Future<User> authenticatedUser() async {
+    if (_auth.currentUser == null) {
       _authenticatedUser = null;
       print('User is currently signed out!');
       return _authenticatedUser;
     } else {
-      _authenticatedUser = User(
-        id: user.uid,
-      );
-      new Future.delayed(const Duration(microseconds: 20));
       _authenticatedUser =
-          _userService.getCurrentAuthenticatedUser(_authenticatedUser);
+      await _userService.get(_auth.currentUser.uid).then((user) {
+        debugPrint('authenticatedUser() ' + _authenticatedUser.toString());
+        return user;
+      });
       print('User is signed in!');
       return _authenticatedUser;
     }
   }
+
+  User getAuthenticatedUser() {
+    return this._authenticatedUser;
+  }
+
 
   ///return
   bool isSignedIn() {
@@ -170,4 +181,5 @@ class AuthenticationService {
     }
     return null;
   }
+
 }

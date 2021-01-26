@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:idea_tracker/service/services.dart';
 import 'package:idea_tracker/locator.dart';
-import 'test_services.dart';
+//import '../../../test/test_services.dart';
 
 class SplashPage extends StatefulWidget {
   final Function onComplete;
@@ -39,8 +39,8 @@ class _SplashPageState extends State<SplashPage> {
       _ideaService.initialize();
       _sprintService.initialize();
       ///Test services is located under the Test File
-      TestServices testServices = new TestServices();
-      testServices.testServices();
+      //TestServices testServices = new TestServices();
+      //testServices.testServices();
     });
 
     SchedulerBinding.instance.addPostFrameCallback((timeStamp) {

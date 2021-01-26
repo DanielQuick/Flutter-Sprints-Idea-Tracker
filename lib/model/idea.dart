@@ -47,15 +47,15 @@ class Idea {
 
   /// print the current stored idea to a string for debugging purposes
   toString() {
-    return 'Idea: id: ${this.id}, '
-        'title: ${this.title}, '
-        'description: ${this.description}, '
-        'creatorId: ${this.creatorId}, '
-        'createdAt: ${this.createdAt}, '
-        'updatedAt: ${this.updatedAt}, '
-        'creatorId: ${this.creatorId}, '
-        'voteYes: ${this.voteYes}, '
-        'voteNo: ${this.voteNo}, '
-        'voters: ${this.voters}';
+    return 'Idea: id: ${this.id ?? 'null'}, '
+        'title: ${this.title ?? 'null'}, '
+        'description: ${this.description ?? 'null'}, '
+        'creatorId: ${this.creatorId ?? 'null'}, '
+        'createdAt: ${this.createdAt ?? 'null'}, '
+        'updatedAt: ${this.updatedAt  ?? 'null'}, '
+        'creatorId: ${this.creatorId ?? 'null'}, '
+        'voteYes: ${this.voteYes ?? 'null'}, '
+        'voteNo: ${this.voteNo ?? 'null'}, '
+        'voters: ${this.voters ?? 'null'}';
   }
 }

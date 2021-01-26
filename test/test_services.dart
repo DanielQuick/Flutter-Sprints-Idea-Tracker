@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../../locator.dart';
-import '../../service/services.dart';
-import '../../model/models.dart';
+import '../lib/locator.dart';
+import '../lib/service/services.dart';
+import '../lib/model/models.dart';
 
 class TestServices {
   UserService _userService = locator<UserService>();
@@ -13,34 +13,34 @@ class TestServices {
 
   testServices() async {
     bool isSignedIn;
-    user = _authenticationService.authenticatedUser();
-    print(user.toString());
-    await _authenticationService.signUp("test@user.com", "Test User", "testUser123", "testUser123");
+    user = await _authenticationService.authenticatedUser();
+    print('testServices() '+user.toString());
+    //await _authenticationService.signUp("test@user.com", "Test User", "testUser123", "testUser123");
     //await new Future.delayed(const Duration(seconds: 3));
-    await _authenticationService.signOut();
+    //await _authenticationService.signOut();
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
-    await new Future.delayed(const Duration(seconds: 3));
+    //await new Future.delayed(const Duration(seconds: 3));
     //await _authenticationService.forgotPassword('fluttersprints@gmail.com');
-    await new Future.delayed(const Duration(seconds: 3));
+    //await new Future.delayed(const Duration(seconds: 3));
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
-    await _authenticationService.signIn("test@user.com", "testUser123");
+    //await _authenticationService.signIn("test@user.com", "testUser123");
     isSignedIn = _authenticationService.isSignedIn();
     print(isSignedIn);
+    //await new Future.delayed(const Duration(seconds: 3));
+    //user = _authenticationService.authenticatedUser();
     await new Future.delayed(const Duration(seconds: 3));
-    user = _authenticationService.authenticatedUser();
-    await new Future.delayed(const Duration(seconds: 3));
-    print('User from Test file auth test: '+user.toString());
+    print('User from testServices() auth test: ' + user.toString());
     // print(
     //'Authentication Sign In Test Complete...Next line should show user details
     // for ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
     await new Future.delayed(const Duration(seconds: 3));
-    await runUserServiceTest();
+    //await runUserServiceTest();
     await new Future.delayed(const Duration(seconds: 3));
     await runIdeaServiceTest();
     await new Future.delayed(const Duration(seconds: 6));
-    await runSprintServicesTest();
+    //await runSprintServicesTest();
   }
 
   runUserServiceTest() async {
@@ -52,17 +52,18 @@ class TestServices {
         userName: "foobar@test.com",
         photoURL: "_");
 
-    _testUser = await _userService.get(user.id);
+    User _testUser0 = await _userService.get(user.id);
     await new Future.delayed(const Duration(seconds: 3));
-    print('about to update user: ${_testUser.toString()} ');
-    await _userService
-        .update(_testUser, UpdateUser.userName, 'FOO BAR');
+    print('about to update user: ${_testUser0.toString()} ');
+    await _userService.update(_testUser0, UpdateUser.userName, 'Test User');
     await new Future.delayed(const Duration(seconds: 3));
     await _userService.update(
-        _testUser, UpdateUser.photo, 'some photo url string that shows a pic');
+        _testUser0, UpdateUser.photo, 'some new photo url');
     await new Future.delayed(const Duration(seconds: 3));
-    _testUser = await _userService.get(_testUser.id);
-    print('updated user: ${_testUser.toString()}');
+    _testUser = await _userService.get(_testUser.id).then((user) {
+      print('updated user: ${user.toString()}');
+      return user;
+    });
     //await new Future.delayed(const Duration(seconds: 3));
     //_testUser = _authenticationService.authenticatedUser();
     //print("Authenticated user is: "+_testUser.toString());
@@ -73,12 +74,11 @@ class TestServices {
     //await new Future.delayed(const Duration(seconds: 3));
     User user0 = await _userService.get('asdf');
     print('should show null: ${user0.toString()}');
-
-
   }
 
   ///testing all functions of this service class
   runIdeaServiceTest() async {
+    /*
     Idea _testIdea = new Idea(
       description: 'Test description',
       title: 'Test title',
@@ -86,11 +86,18 @@ class TestServices {
 
     ///This is the Idea used for testing with minimal input for operation within
     /// firestore it already exists
-    /*
-    Idea _testIdea1 = new Idea(id: 'hqw103o7xuRJ8ObUYijZ');
+
+    Idea _testIdea1 = await _ideaService.get('jmECu4ce5aTWL6EnCpP2');
+    await new Future.delayed(const Duration(seconds: 3));
+    print('_testIdea1: '+_testIdea1.toString());
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea1 = await _ideaService.update(
+        _testIdea1, UpdateIdea.title, 'New Idea Title');
+    await new Future.delayed(const Duration(seconds: 3));
+    print(_testIdea1.toString());
+
 
     _testIdea = await _ideaService.create(_testIdea);
-    //_testIdea = await _ideaService.get(_testIdea.id);
     await new Future.delayed(const Duration(seconds: 3));
     _testIdea = await _ideaService.update(
         _testIdea, UpdateIdea.title, 'New Idea Title');
@@ -136,13 +143,19 @@ class TestServices {
     print('from searchIdeasByTitle(): $titles');
     await new Future.delayed(const Duration(seconds: 3));
 
-     */
-    List<Idea> title0 = (await _ideaService.getAll()).cast<Idea>();
-    print('from getAll(): $title0');
+
+    List<Idea> title0 = await _ideaService.getAll().then((list) {
+      print('from getAll(): $list');
+      return list;
+    });
     await new Future.delayed(const Duration(seconds: 3));
-   // var title1 = await _ideaService.getAllIdeas();
+    // var title1 = await _ideaService.getAllIdeas();
     //print('from getAllIdeasFromDBStream(): ${title1.toString()}');
+
+     */
   } //end test
+
+
 
   runSprintServicesTest() async {
     /*
@@ -241,8 +254,9 @@ class TestServices {
         _sprintTest1, UpdateSprint.deleteMember, 'member4');
     await new Future.delayed(const Duration(seconds: 3));
      */
-    List<Sprint> title0 = (await _sprintService.getAll()).cast<Sprint>();
-    print('Sprint from getAll(): $title0');
-
+    await _sprintService.getAll().then((list) {
+      print('Sprint from getAll(): $list');
+      return list;
+    });
   }
 }
