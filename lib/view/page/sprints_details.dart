@@ -160,6 +160,16 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                             ],
                           ),
                         ),
+
+                        // NOT A USED FEATURE!! IGNORE !!
+
+                        //Divider(
+                          //height: 20.0,
+                          //color: Colors.grey,
+                        //),
+                        //_latestTeamleaderPost(),
+                        //SizedBox(height: 10.0,),
+
                         Divider(
                           height: 20.0,
                           color: Colors.grey,
@@ -178,6 +188,14 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                             ],
                           ),
                         ),
+
+                        // NOT A USED FEATURE!! IGNORE !!
+
+                        //Divider(
+                          //height: 20.0,
+                          //color: Colors.grey,
+                        //),
+                        //_teamleaderPosts(),
                       ],
                     ),
                   ),
@@ -211,7 +229,6 @@ class _SprintsDetailsState extends State<SprintsDetails> {
           Column(
             children: _loadMembersOnListTiles(sprint),
           ),
-
         ],
       );
     }
@@ -256,4 +273,103 @@ class _SprintsDetailsState extends State<SprintsDetails> {
       );
     }
   }
+
+  Widget _teamleaderPost(String teamleader, String timeSincePosted, String post){
+    return Padding(
+      padding: const EdgeInsets.only(right:15.0),
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 10.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    Icons.account_circle,
+                    size: 40.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15.0,),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              teamleader,
+                              style: TextStyle(
+                                fontSize: 20.0,
+                              ),
+                            ),
+                            SizedBox(width: 10.0,),
+                            Text(
+                              '-  ${timeSincePosted}',
+                              style: TextStyle(
+                                color: Colors.black.withOpacity(0.6),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: 280,
+                          child: Text(
+                            post,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // NOT A USED FEATURE !! IGNORE !!
+  Widget _latestTeamleaderPost(){
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text('Latest Teamleader Post', style: TextStyle(fontSize: 25.0),),
+            ],
+          ),
+          SizedBox(height: 10.0,),
+          _teamleaderPost(
+              'DanielQuick',
+              '3d',
+              'sup'
+          ),
+        ],
+      ),
+    );
+  }
+
+  // NOT A USED FEATURE !! IGNORE !!
+  Widget _teamleaderPosts(){
+    return Padding(
+      padding: const EdgeInsets.only(left: 15.0),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text('Teamleader Post\'s', style: TextStyle(fontSize: 25.0),),
+            ],
+          ),
+          SizedBox(height: 10.0,),
+          _teamleaderPost('DanielQuick', '6d', 'hey'),
+          _teamleaderPost('DanielQuick', '7d', 'heyyyy'),
+          _teamleaderPost('DanielQuick', '8d', 'hallo'),
+          _teamleaderPost('DanielQuick', '9d', 'bonjour'),
+        ],
+      ),
+    );
+  }
+
 }
