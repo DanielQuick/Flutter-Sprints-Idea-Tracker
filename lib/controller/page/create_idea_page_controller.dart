@@ -38,13 +38,12 @@ class CreateIdeaPageController extends ChangeNotifier {
 
   void createIdea() async {
     final idea = await _ideaService.create(
-      idea: Idea(
+      Idea(
         title: _ideaTitle,
         description: _ideaDescription,
       ),
     );
     if (onIdeaCreated != null) onIdeaCreated("Success!");
-    print(
-        "Idea created => id: ${idea.id} | title: ${idea.title} | description: ${idea.description} | createdAt: ${idea.createdAt} | updatedAt: ${idea.updatedAt} | votes: ${idea.votes}");
+    print(idea.toString());
   }
 }

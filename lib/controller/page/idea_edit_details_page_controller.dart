@@ -12,6 +12,8 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
 
   Idea get currentIdea => _currentIdea;
 
+  String get updateString => null;
+
   set currentIdea(Idea idea) {
     _currentIdea = idea;
   }
@@ -42,11 +44,18 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
     return null;
   }
 
-  void saveChanges() async {
-    final idea = await _ideaService.update(idea: _currentIdea);
+  void saveTitleChange() async {
+    final idea = await _ideaService
+        .update(_currentIdea, [UpdateIdea.title], [updateString]);
     if (onDataUpdated != null) onDataUpdated("Success!");
-    print(
-        "Idea updated => id: ${idea.id} | title: ${idea.title} | description: ${idea.description} | createdAt: ${idea.createdAt} | updatedAt: ${idea.updatedAt} | votes: ${idea.votes}");
+    print("Idea updated => ${idea.toString()}");
+  }
+
+  void saveDescriptionChange() async {
+    final idea = await _ideaService
+        .update(_currentIdea, [UpdateIdea.description], [updateString]);
+    if (onDataUpdated != null) onDataUpdated("Success!");
+    print("Idea updated => ${idea.toString()}");
   }
 
   void openDeleteDialog() async {
@@ -56,7 +65,7 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
       // Check with "==" because "confirmDelete" will be "null"
       // if dialog is dismissed
       if (confirmDelete == true) {
-        await _ideaService.delete(idea: _currentIdea);
+        await _ideaService.delete(_currentIdea);
         print("Idea deleted");
         if (onDataUpdated != null) onDataUpdated("Success!");
       }

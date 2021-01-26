@@ -45,6 +45,23 @@ class Sprint {
       posts: posts ?? this.posts,
     );
   }
+
+  ///Convert a Sprint object to string for debug purposes
+  toString() {
+    String toString =  'Sprint: id: ${this.id}, '
+        'title: ${this.title}, '
+        'description: ${this.description}, '
+        'createdAt: ${this.createdAt}, '
+        'updatedAt: ${this.updatedAt}, '
+        'members: ${this.members}, '
+        'potentialLeaders: ${this.potentialLeaders}, '
+        'teamLeader: ${this.teamLeader}, '
+        'posts: ';
+      this.posts.forEach((sprintPost) => toString = toString +
+      'SprintPost: ${sprintPost.id}, ${sprintPost.title}, '
+          '${sprintPost.content}, ${sprintPost.createdAt}');
+    return toString;
+  }
 }
 
 class SprintPost {
