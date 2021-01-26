@@ -127,13 +127,13 @@ class IdeaService {
 
   /// returns all ideas that were created for the current month as Future List<Idea>
   Future<List<Idea>> getAll() async {
-    DateTime dateTime = DateTime.now();
-    Duration days = new Duration(days: dateTime.day - 1);
+    DateTime now = DateTime.now();
+    DateTime startOfMonth = DateTime(now.year, now.month);
     debugPrint('getAll() performing...');
     QuerySnapshot querySnapshot = await _ideaRef
         .where('createdAt',
             isGreaterThanOrEqualTo:
-                dateTime.subtract(days).millisecondsSinceEpoch)
+            startOfMonth.millisecondsSinceEpoch)
         .get();
     return querySnapshot.docs.map((doc) => _fromFirestore(doc)).toList();
   }

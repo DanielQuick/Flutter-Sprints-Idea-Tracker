@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import '../model/user.dart';
-enum UpdateUser {userName, photo}
+
+enum UpdateUser { userName, photo }
+
 class UserService {
   ///create variable instances for use
   CollectionReference _userRef;
@@ -25,13 +27,15 @@ class UserService {
   ///Method to convert Firestore DocumentSnapshot to a User Object
   User _fromFirestore(DocumentSnapshot doc) {
     User user = new User(
-        id: doc.id ,
+        id: doc.id,
         email: doc.data()['email'] ?? 'null',
         userName: doc.data()['userName'] ?? 'null',
         photoURL: doc.data()['photoURL'] ?? 'null');
     return user;
   }
-
+  
+  ///Central update command to update user objects.  Uses Enum UpdateUser for 
+  /// the switch() case :  Returns the updated user object as Future
   Future<User> update(User user, UpdateUser update, String updateString) async {
     User updatedUser = user;
     switch (update) {
@@ -57,17 +61,32 @@ class UserService {
     }
   }
 
-  ///Current _user is always set from setUserFromFirestore()
+  ///Current _user is always set from _setAuthenticatedUserFromFirestore()
   ///this is performed within authentication service upon sign up/in
   void _setUser(User user) {
     _user = user;
     debugPrint('setCurrentUser(User user): ${_user.id}');
   }
 
-  ///Returns the latest setUserFromFirestore() user object
-  User getUser(User user) {
-    _setUserFromFirestore(user);
+  /// Returns the latest _setAuthenticatedUserFromFirestore() user object for authentication 
+  /// user object...this is like this in order to avoid return Future User object
+  User getCurrentAuthenticatedUser(User user) {
+    _setAuthenticatedUserFromFirestore(user);
     return _user;
+  }
+
+  /// Returns the requested User Object from Firestore if the user is not found 
+  /// Returns null
+  Future<User> get(String id) async {
+    User user;
+    await _userRef.doc(id).get().then((snapshot) {
+      if (snapshot.exists) {
+        user = _fromFirestore(snapshot);
+      } else {
+        user = null;
+      }
+    });
+    return user;
   }
 
   ///This method can be used to remove the current user from the database.
@@ -90,8 +109,8 @@ class UserService {
     print("updateUserName(String userName): ${user.id} / ${user.userName}");
     await _userRef.doc(user.id).update({'userName': user.userName});
     debugPrint('User ${user.id} updated userName: ${user.userName} DB');
-    await _setUserFromFirestore(user);
-    return getUser(user);
+    await _setAuthenticatedUserFromFirestore(user);
+    return getCurrentAuthenticatedUser(user);
   }
 
   ///used to update a photoURL if someone wants to include a picture with their
@@ -99,8 +118,8 @@ class UserService {
   Future<User> _updateUserPhotoURL(User user) async {
     await _userRef.doc(user.id).update({'photoURL': user.photoURL});
     debugPrint('User ${user.id} updated PhotoUrl DB');
-    await _setUserFromFirestore(user);
-    return getUser(user);
+    await _setAuthenticatedUserFromFirestore(user);
+    return getCurrentAuthenticatedUser(user);
   }
 
   ///used to get the document to show user attributes within the database
@@ -109,20 +128,20 @@ class UserService {
   ///this creates user in database if the user doesn't exist yet
   ///if the document is found within the User is stored
   ///
-  Future<DocumentSnapshot> _setUserFromFirestore(User user) async {
+  Future<DocumentSnapshot> _setAuthenticatedUserFromFirestore(User user) async {
     DocumentSnapshot snapshot = await _userRef.doc(user.id).get();
     User userFromDocument;
-      if (snapshot.exists) {
-        userFromDocument = _fromFirestore(snapshot);
-        _setUser(userFromDocument);
-        print('Found User: ${snapshot.data()['id']}');
-      } else {
-        print('Document does not exist on the database.  Loading to database...');
-        await _add(user);
-        print ('reload getUserDocument()...');
-        _setUserFromFirestore(user);
-      }
-      print(snapshot.data());
+    if (snapshot.exists) {
+      userFromDocument = _fromFirestore(snapshot);
+      _setUser(userFromDocument);
+      print('Found User: ${snapshot.data()['id']}');
+    } else {
+      print('Document does not exist on the database.  Loading to database...');
+      await _add(user);
+      print('reload getUserDocument()...');
+      _setAuthenticatedUserFromFirestore(user);
+    }
+    print(snapshot.data());
     return snapshot;
   }
 

@@ -29,7 +29,7 @@ class AuthenticationService {
             email: email,
             userName: userName,
             photoURL: '_'));
-        _userService.getUser(user);
+        _userService.getCurrentAuthenticatedUser(user);
         print('credential: ${credential.user.uid}');
         debugPrint('Signed Up');
         return 'Signed Up';
@@ -63,7 +63,7 @@ class AuthenticationService {
           userName: email,
           photoURL: '_'));
       print('credential: ${credential.user.uid}');
-      _userService.getUser(user);
+      _userService.getCurrentAuthenticatedUser(user);
       await new Future.delayed(const Duration(microseconds: 5));
       debugPrint('Signed In');
       return 'Signed In';
@@ -102,8 +102,7 @@ class AuthenticationService {
         _authenticatedUser = User(
             id: user.uid,);
         new Future.delayed(const Duration(microseconds: 20));
-        _authenticatedUser = _userService.getUser(_authenticatedUser);
-        print('2. User from _authenticatedUser function: '+ _authenticatedUser.toString());
+        _authenticatedUser = _userService.getCurrentAuthenticatedUser(_authenticatedUser);
         print('User is signed in!');
         return _authenticatedUser;
       }
@@ -133,7 +132,11 @@ class AuthenticationService {
     await _auth.sendPasswordResetEmail(email: email);
   }
 
-  ///enable a change password from within app
+  /// this enables a change password from within app and always returns a string
+  /// if passwords supplied match and the change goes through: 'Your password changed Successfully!'
+  /// if there is an error: "You can't change the Password" + err.toString()
+  /// if the passwords do not match: 'Your passwords do not match, please try again.'
+  /// await locator<AuthenticationService>().changePassword(String password, String passwordVerify)
   Future<String> changePassword(String password, String passwordVerify) async {
     ///Create an instance of the current user.
     auth.User user = _auth.currentUser;

@@ -36,7 +36,7 @@ class TestServices {
     //'Authentication Sign In Test Complete...Next line should show user details
     // for ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
     await new Future.delayed(const Duration(seconds: 3));
-    //await runUserServiceTest();
+    await runUserServiceTest();
     await new Future.delayed(const Duration(seconds: 3));
     await runIdeaServiceTest();
     await new Future.delayed(const Duration(seconds: 6));
@@ -52,21 +52,27 @@ class TestServices {
         userName: "foobar@test.com",
         photoURL: "_");
 
-    _userService.getUser(_testUser);
-    _testUser = _userService.getUser(_testUser);
+    _userService.getCurrentAuthenticatedUser(_testUser);
+    _testUser = _userService.getCurrentAuthenticatedUser(_testUser);
     await _userService
         .update(_testUser,UpdateUser.userName, 'foo bar');
     await new Future.delayed(const Duration(seconds: 3));
     await _userService.update(
         _testUser, UpdateUser.photo, 'some url to a photo');
     await new Future.delayed(const Duration(seconds: 3));
-    _testUser = _userService.getUser(_testUser);
-    print(_testUser.toString());
+    _testUser = _userService.getCurrentAuthenticatedUser(_testUser);
+    print("Authenticated user"+_testUser.toString());
     await new Future.delayed(const Duration(seconds: 3));
-    var userStream = await _userService.getCurrentUserAsStream(_testUser);
+    //var userStream = await _userService.getCurrentUserAsStream(_testUser);
     await new Future.delayed(const Duration(seconds: 3));
-    print('getCurrentUserAsStream(): ${userStream.toString()}');
+    //print('getCurrentUserAsStream(): ${userStream.toString()}');
     await new Future.delayed(const Duration(seconds: 3));
+    User user = await _userService.get('ZIE1S79L3CRPNn3EaR0yi3sWMOO2');
+    print(user.toString());
+    User user0 = await _userService.get('asdf');
+    print(user0.toString());
+
+
   }
 
   ///testing all functions of this service class
@@ -129,7 +135,7 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
 
      */
-    var title0 = await _ideaService.getAll();
+    List<Idea> title0 = (await _ideaService.getAll()).cast<Idea>();
     print('from getAll(): $title0');
     await new Future.delayed(const Duration(seconds: 3));
    // var title1 = await _ideaService.getAllIdeas();
@@ -233,7 +239,8 @@ class TestServices {
         _sprintTest1, UpdateSprint.deleteMember, 'member4');
     await new Future.delayed(const Duration(seconds: 3));
      */
-    var title0 = await _sprintService.getAll();
+    List<Sprint> title0 = (await _sprintService.getAll()).cast<Sprint>();
     print('Sprint from getAll(): $title0');
+
   }
 }
