@@ -145,7 +145,10 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                       RaisedButton(
                                         child: Row(
                                           children: [
-                                            Icon(Icons.hail),
+                                            Icon(
+                                              Icons.hail,
+                                              //color: Colors.lightGreen,
+                                            ),
                                             SizedBox(width: 5.0,),
                                             Text('I\'M IN'),
                                           ],
