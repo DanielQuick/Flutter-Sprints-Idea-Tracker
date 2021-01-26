@@ -41,13 +41,13 @@ class UserService {
     switch (update) {
       case UpdateUser.userName:
         {
-          updatedUser = await _updateUserName(user);
+          updatedUser = await _updateUserName(user, updateString);
           return updatedUser;
         }
         break;
       case UpdateUser.photo:
         {
-          updatedUser = await _updateUserPhotoURL(user);
+          updatedUser = await _updateUserPhotoURL(user, updateString);
           return updatedUser;
         }
         break;
@@ -105,9 +105,9 @@ class UserService {
   }
 
   ///to update the user name in the database
-  Future<User> _updateUserName(User user) async {
+  Future<User> _updateUserName(User user, String newUserName) async {
     print("updateUserName(String userName): ${user.id} / ${user.userName}");
-    await _userRef.doc(user.id).update({'userName': user.userName});
+    await _userRef.doc(user.id).update({'userName': newUserName});
     debugPrint('User ${user.id} updated userName: ${user.userName} DB');
     await _setAuthenticatedUserFromFirestore(user);
     return getCurrentAuthenticatedUser(user);
@@ -115,8 +115,8 @@ class UserService {
 
   ///used to update a photoURL if someone wants to include a picture with their
   ///user profile
-  Future<User> _updateUserPhotoURL(User user) async {
-    await _userRef.doc(user.id).update({'photoURL': user.photoURL});
+  Future<User> _updateUserPhotoURL(User user, String updatePhotoURL) async {
+    await _userRef.doc(user.id).update({'photoURL': updatePhotoURL});
     debugPrint('User ${user.id} updated PhotoUrl DB');
     await _setAuthenticatedUserFromFirestore(user);
     return getCurrentAuthenticatedUser(user);

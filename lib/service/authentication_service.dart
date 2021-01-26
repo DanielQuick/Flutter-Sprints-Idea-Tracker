@@ -13,23 +13,25 @@ class AuthenticationService {
   ///this initializes the class variables
   initialize() {
     _auth = auth.FirebaseAuth.instance;
-    _userService  = locator<UserService>();
+    _userService = locator<UserService>();
   }
 
   ///Sign up with email/password
-  Future<String> signUp(
-      String email, String userName, String password, String passwordVerify) async {
+  Future<String> signUp(String email, String userName, String password,
+      String passwordVerify) async {
     if (password == passwordVerify) {
       try {
         auth.UserCredential credential = await _auth
-            .createUserWithEmailAndPassword(email: email, password: password);
-        print('${credential.user.metadata}');
-        User user = (User(
-            id: credential.user.uid,
-            email: email,
-            userName: userName,
-            photoURL: '_'));
-        _userService.getCurrentAuthenticatedUser(user);
+            .createUserWithEmailAndPassword(email: email, password: password)
+            .then((credential) {
+          User user = (User(
+              id: credential.user.uid,
+              email: email,
+              userName: userName,
+              photoURL: '_'));
+          user = _userService.getCurrentAuthenticatedUser(user);
+          return credential;
+        });
         print('credential: ${credential.user.uid}');
         debugPrint('Signed Up');
         return 'Signed Up';
@@ -54,8 +56,18 @@ class AuthenticationService {
   ///Sign in user with e-mail
   Future<String> signIn(String email, String password) async {
     try {
-      auth.UserCredential credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      auth.UserCredential credential = await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((credential) {
+        //print('${credential.user.metadata}');
+        User user = (User(
+            id: credential.user.uid,
+            email: email,
+            userName: email,
+            photoURL: '_'));
+        _userService.getCurrentAuthenticatedUser(user);
+        return credential;
+      });
       await new Future.delayed(const Duration(microseconds: 5));
       User user = (User(
           id: credential.user.uid,
@@ -93,23 +105,25 @@ class AuthenticationService {
   ///returns the current authenticated user as User object
   User authenticatedUser() {
     User _authenticatedUser;
-      auth.User user = _auth.currentUser;
-      if (user == null) {
-        _authenticatedUser = null;
-        print('User is currently signed out!');
-        return _authenticatedUser;
-      } else {
-        _authenticatedUser = User(
-            id: user.uid,);
-        new Future.delayed(const Duration(microseconds: 20));
-        _authenticatedUser = _userService.getCurrentAuthenticatedUser(_authenticatedUser);
-        print('User is signed in!');
-        return _authenticatedUser;
-      }
+    auth.User user = _auth.currentUser;
+    if (user == null) {
+      _authenticatedUser = null;
+      print('User is currently signed out!');
+      return _authenticatedUser;
+    } else {
+      _authenticatedUser = User(
+        id: user.uid,
+      );
+      new Future.delayed(const Duration(microseconds: 20));
+      _authenticatedUser =
+          _userService.getCurrentAuthenticatedUser(_authenticatedUser);
+      print('User is signed in!');
+      return _authenticatedUser;
+    }
   }
 
   ///return
-  bool isSignedIn(){
+  bool isSignedIn() {
     auth.User user = _auth.currentUser;
     if (user == null) {
       return false;
