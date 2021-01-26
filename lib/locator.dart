@@ -9,6 +9,8 @@ import 'package:idea_tracker/service/idea_service.dart';
 import 'package:idea_tracker/service/sprint_service.dart';
 import 'package:idea_tracker/service/user_service.dart';
 
+import 'controller/page/profile_page_controller.dart';
+
 GetIt locator = GetIt.instance;
 
 void setupLocator() {
@@ -17,6 +19,7 @@ void setupLocator() {
   locator.registerFactory(() => IdeaEditDetailsPageController());
   locator.registerFactory(() => IdeaEditDetailsPageDeleteDialogController());
   locator.registerFactory(() => LandingPageRecoverPasswordDialogController());
+  locator.registerFactory(() => ProfilePageController());
 
   // Services
   locator.registerSingleton(IdeaService());

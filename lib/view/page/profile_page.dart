@@ -14,7 +14,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return BaseView<ProfilePageController>(
       onControllerReady: (controller) {
         controller.onLogoutSuccess = () {
-          Navigator.popAndPushNamed(context, "/landing");
+          Navigator.of(context, rootNavigator: true)
+              .popAndPushNamed("/landing");
         };
       },
       builder: (context, controller, child) {
@@ -48,9 +49,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           builder: (context) => Confim_Logout_Dialog(),
                         );
                         if (confirmed) {
-                          Navigator.of(context, rootNavigator: true)
-                              .popAndPushNamed("/landing");
-                          // ProfilePageController().logout();
+                          // Navigator.of(context, rootNavigator: true)
+                          //     .popAndPushNamed("/landing");
+                          controller.logout();
                         }
                       }
                       break;
