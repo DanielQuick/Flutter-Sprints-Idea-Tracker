@@ -12,6 +12,6 @@ setupFirebase() async {
   debugPrint('Firebase Crashlytics collection enabled...');
 
   /// Pass all uncaught errors from the framework to Crashlytics.
-  FlutterError.onError = await FirebaseCrashlytics.instance.recordFlutterError;
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   debugPrint('Firebase Crashlytics flutter errors enabled...');
 }

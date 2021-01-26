@@ -39,7 +39,7 @@ class SprintService {
     await sprintRef.doc(sprint.id).delete();
     debugPrint('removed Sprint ${sprint.id} from DB');
   }
-
+/*
   Future<Sprint> update(Sprint sprint, List<UpdateSprint> updates,
       List<String> updateStrings) async {
     for (var i = 0; i < updates.length; i++) {
@@ -49,9 +49,11 @@ class SprintService {
     return sprint;
   }
 
+ */
+
   ///Switch to update sprint object...use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
   ///returns the updated Sprint
-  Future<Sprint> _update(
+  Future<Sprint> update(
       Sprint sprint, UpdateSprint update, String updateString) async {
     switch (update) {
       case UpdateSprint.title:
@@ -132,15 +134,18 @@ class SprintService {
     }
   }
 
-  /// The idea here is to get a document ID from a Stream of multiple documents
-  /// then store it to the current sprint for use of display and updates for Sprint Services.
+  /// Returns requested Sprint object
+  /// Use case example: Sprint sprint = get('TodjI69eQV4xwSkuQx2T');
+  /// The methodology here is to get a document ID from a Stream/List of
+  /// multiples
   ///
-  /// To get the document ID to pass to this function:
-  ///  1. StreamBuilder -> store as AsyncSnapshot<QuerySnapshot> snapshot using
-  ///    getAllIdeasFromDBStream(), getIdeasFromDBForCurrentMonthStream(), or searchIdeasByTitle()
-  ///  2. ListView -> children: snapshot.data.docs.map((document) widgets for each document)
-  ///  3. access a specific sprint's details "onTapped" with this method passing "document.id"
-  ///     to this method
+  /// One of many ways get the document ID to pass to this function:
+  ///  1. FutureBuilder -> store as AsyncSnapshot<QuerySnapshot> snapshot using
+  ///     getAll()
+  ///  2. ListView -> children: snapshot.data.docs.map((document) widgets for
+  ///     each document)
+  ///  3. access a specific idea's details "onTapped" with this function by
+  ///     passing "document.id" to this function
   Future<Sprint> get(String documentId) async {
     DocumentSnapshot doc;
     Sprint sprint;
@@ -153,6 +158,15 @@ class SprintService {
       }
     });
     return sprint;
+  }
+
+  ///get all sprint documents from database,returns List<Sprints>'
+  Future<List<Sprint>> getAll() async {
+    debugPrint('getAllSprintsFromDBStream() performing...');
+    QuerySnapshot querySnapshots = await sprintRef
+        .get()
+        .catchError((error) => debugPrint("Failed to get all Sprints: $error"));
+    return querySnapshots.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
   ///Create Sprint object from a Firestore DocumentSnapshot
@@ -242,48 +256,58 @@ class SprintService {
 
   /// updates class sprint updatedAt in database
   Future<Sprint> _updateUpdatedAt(Sprint sprint) async {
-    await sprintRef.doc(sprint.id).update({'updatedAt': _getUpdatedAt()});
-    sprint = sprint.copyWith(updatedAt: _getUpdatedAt());
-    debugPrint('updated updatedAt DB');
+    await sprintRef
+        .doc(sprint.id)
+        .update({'updatedAt': _getUpdatedAt()}).then((_) {
+      debugPrint(
+          'updatedAt: ${_getUpdatedAt()} for sprint ${sprint.id}');
+    }).catchError((error) => debugPrint("Failed to update updatedAt: $error"));
     return sprint = await get(sprint.id);
   }
 
   /// updates class sprint updateTeamLeader in database
   Future<Sprint> _updateTeamLeader(Sprint sprint, String teamLeader) async {
-    await sprintRef.doc(sprint.id).update({'teamLeader': teamLeader});
-    sprint = sprint.copyWith(teamLeader: teamLeader);
-    _updateUpdatedAt(sprint);
-    debugPrint('updated teamLeader DB');
+    await sprintRef
+        .doc(sprint.id)
+        .update({'teamLeader': teamLeader}).then((_) async {
+      debugPrint('Updated teamLeader: $teamLeader for sprint ${sprint.id}');
+      await _updateUpdatedAt(sprint);
+    }).catchError((error) => debugPrint("Failed to update teamLeader: $error"));
     return sprint = await get(sprint.id);
   }
 
-  /// updates class sprint potentialLeaders in database
+  /// updates sprint potentialLeaders in database
   /// Please note that every potentialLeader stored in the list must be unique,
   /// or firestore will overwrite stored String potentialLeaders with
   /// this String potentialLeaders
+  ///Returns updated sprint object
   Future<Sprint> _addPotentialLeaders(
       Sprint sprint, String potentialLeader) async {
-    sprintRef.doc(sprint.id).update({
+    await sprintRef.doc(sprint.id).update({
       "potentialLeaders": FieldValue.arrayUnion(['$potentialLeader'])
-    }).then((_) {
+    }).then((_) async {
       debugPrint(
           'Added potentialLeader: $potentialLeader to sprint ${sprint.id}');
-    });
-    _updateUpdatedAt(sprint);
+      await _updateUpdatedAt(sprint);
+    }).catchError(
+        (error) => debugPrint("Failed to add potential leader: $error"));
 
     ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
 
+  /// updates sprint potentialLeaders list in database
+  ///Returns updated sprint object
   Future<Sprint> _deletePotentialLeaders(
       Sprint sprint, String potentialLeader) async {
     sprintRef.doc(sprint.id).update({
       "potentialLeaders": FieldValue.arrayRemove(['$potentialLeader'])
-    }).then((_) {
+    }).then((_) async {
       debugPrint(
           'Deleted potentialLeaders: $potentialLeader to sprint ${sprint.id}');
-    });
-    _updateUpdatedAt(sprint);
+      await _updateUpdatedAt(sprint);
+    }).catchError(
+        (error) => debugPrint("Failed to delete potential leader $error"));
 
     ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
@@ -296,10 +320,10 @@ class SprintService {
   Future<Sprint> _addMember(Sprint sprint, String member) async {
     sprintRef.doc(sprint.id).update({
       "members": FieldValue.arrayUnion(['$member'])
-    }).then((_) {
+    }).then((_) async {
       debugPrint('Added member: $member to sprint ${sprint.id}');
-    });
-    _updateUpdatedAt(sprint);
+      await _updateUpdatedAt(sprint);
+    }).catchError((error) => debugPrint("Failed to add member: $error"));
 
     ///return sprint to user
     return sprint = await get(sprint.id);
@@ -309,15 +333,15 @@ class SprintService {
   /// Please note that every member stored in the list must be unique,
   /// or firestore will overwrite stored String member with
   /// this String member
+  ///Returns updated sprint object
   Future<Sprint> _deleteMember(Sprint sprint, String member) async {
     sprintRef.doc(sprint.id).update({
       "members": FieldValue.arrayRemove(['$member'])
-    }).then((_) {
+    }).then((_) async {
       debugPrint('removed member: $member from sprint ${sprint.id}');
-    });
-    _updateUpdatedAt(sprint);
+      await _updateUpdatedAt(sprint);
+    }).catchError((error) => debugPrint("Failed to remove member: $error"));
 
-    ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
 
@@ -325,35 +349,29 @@ class SprintService {
   /// Please note that every SprintPost stored in the list must be unique,
   /// or firestore will overwrite stored SprintPost with
   /// this SprintPost
+  /// Returns updated sprint object
   Future<Sprint> _createPost(Sprint sprint, SprintPost post) async {
     sprintRef.doc(sprint.id).update({
       "posts": FieldValue.arrayUnion([_sprintPostToJson(post)])
-    }).then((_) {
+    }).then((_) async {
       debugPrint('Added post: $post to sprint ${sprint.id}');
-    });
-    _updateUpdatedAt(sprint);
+      await _updateUpdatedAt(sprint);
+    }).catchError((error) => debugPrint("Failed to create Post: $error"));
 
-    ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
   }
 
   /// deletes SprintPost object to sprint in database
+  /// uses the specific sprint post object
+  /// returns the updated sprint object
   Future<Sprint> _deletePost(Sprint sprint, SprintPost post) async {
     sprintRef.doc(sprint.id).update({
       "posts": FieldValue.arrayRemove([_sprintPostToJson(post)])
     }).then((_) {
       debugPrint('Removed post: $post from sprint ${sprint.id}');
-    });
-    _updateUpdatedAt(sprint);
+      _updateUpdatedAt(sprint);
+    }).catchError((error) => debugPrint("Failed to delete post: $error"));
 
-    ///to get and store correct properties into class sprint object
     return sprint = await get(sprint.id);
-  }
-
-  ///get all sprint documents from database,returns List<Sprints>'
-  Future<List<Sprint>> getAll() async {
-    debugPrint('getAllSprintsFromDBStream() performing...');
-    QuerySnapshot querySnapshots = await sprintRef.get();
-    return querySnapshots.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 }
