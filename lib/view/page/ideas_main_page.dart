@@ -14,7 +14,7 @@ class IdeasMainPage extends StatelessWidget {
       return Scaffold(
         backgroundColor: Colors.white.withOpacity(0.9),
         appBar: AppBar(
-          title: Text('Ideas'),
+          title: Text('Ideas Main Page'),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -25,15 +25,59 @@ class IdeasMainPage extends StatelessWidget {
           },
           child: Icon(Icons.add),
         ),
-        body: ListView.builder(
-            itemCount: controller.ideas.length,
-            itemBuilder: (context, index) {
-              return IdeaCard(
-                idea: controller.ideas[index],
-              );
-            }),
+        body: controller.ideas.isEmpty ? NoIdeasPage() : IdeaCardsList(),
       );
     });
+  }
+}
+
+class IdeaCardsList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BaseView<IdeasMainPageController>(
+      onControllerReady: (controller) {
+        controller.initialize();
+      },
+      builder: (context, controller, child) {
+        return ListView.builder(
+          itemCount: controller.ideas.length,
+          itemBuilder: (context, index) {
+            return IdeaCard(
+              idea: controller.ideas[index],
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class NoIdeasPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BaseView<IdeasMainPageController>(
+      onControllerReady: (controller) {
+        controller.initialize();
+      },
+      builder: (context, controller, child) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'No ideas available now',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+              SizedBox(height: 20.0),
+              Text(
+                'Tap the button below to create a new one!',
+                style: Theme.of(context).textTheme.headline6,
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }
 
