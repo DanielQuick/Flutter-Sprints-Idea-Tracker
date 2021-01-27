@@ -5,8 +5,6 @@ class Idea {
   final String creatorId;
   final int createdAt;
   final int updatedAt;
-  final int voteYes;
-  final int voteNo;
   final List<String> voters;
 
   Idea({
@@ -16,8 +14,6 @@ class Idea {
     this.creatorId,
     this.createdAt,
     this.updatedAt,
-    this.voteYes,
-    this.voteNo,
     this.voters,
   });
 
@@ -39,23 +35,19 @@ class Idea {
       creatorId: creatorId ?? this.creatorId,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      voteYes: voteYes ?? this.voteYes,
-      voteNo: voteNo ?? this.voteNo,
       voters: voters ?? this.voters,
     );
   }
 
   /// print the current stored idea to a string for debugging purposes
   toString() {
-    return 'Idea: id: ${this.id}, '
-        'title: ${this.title}, '
-        'description: ${this.description}, '
-        'creatorId: ${this.creatorId}, '
-        'createdAt: ${this.createdAt}, '
-        'updatedAt: ${this.updatedAt}, '
-        'creatorId: ${this.creatorId}, '
-        'voteYes: ${this.voteYes}, '
-        'voteNo: ${this.voteNo}, '
-        'voters: ${this.voters}';
+    return 'Idea: id: ${this.id ?? 'null'}, '
+        'title: ${this.title ?? 'null'}, '
+        'description: ${this.description ?? 'null'}, '
+        'creatorId: ${this.creatorId ?? 'null'}, '
+        'createdAt: ${this.createdAt ?? 'null'}, '
+        'updatedAt: ${this.updatedAt  ?? 'null'}, '
+        'creatorId: ${this.creatorId ?? 'null'}, '
+        'voters: ${this.voters ?? 'null'}';
   }
 }

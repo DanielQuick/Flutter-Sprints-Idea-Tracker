@@ -9,27 +9,37 @@ class AuthenticationService {
   ///create variable instances for use with Firebase
   auth.FirebaseAuth _auth;
   UserService _userService;
+  User _authenticatedUser;
 
   ///this initializes the class variables
   initialize() {
     _auth = auth.FirebaseAuth.instance;
-    _userService  = locator<UserService>();
+    _userService = locator<UserService>();
   }
 
   ///Sign up with email/password
-  Future<String> signUp(
-      String email, String userName, String password, String passwordVerify) async {
+  Future<String> signUp(String email, String userName, String password,
+      String passwordVerify) async {
     if (password == passwordVerify) {
       try {
         auth.UserCredential credential = await _auth
-            .createUserWithEmailAndPassword(email: email, password: password);
-        print('${credential.user.metadata}');
-        User user = (User(
-            id: credential.user.uid,
-            email: email,
-            userName: userName,
-            photoURL: '_'));
-        _userService.getUser(user);
+            .createUserWithEmailAndPassword(email: email, password: password)
+            .then((credential) async {
+          User user0 = (User(
+              id: credential.user.uid,
+              email: email,
+              userName: userName,
+              photoURL: '_'));
+          await _userService
+              .setAuthenticatedUserFromFirestore(user0)
+              .then((snapshot) =>
+          _authenticatedUser = User(
+              id: snapshot.data()["id"],
+              userName: snapshot.data()["userName"],
+              email: snapshot.data()["email"],
+              photoURL: snapshot.data()["photoURL"]));
+          return credential;
+        });
         print('credential: ${credential.user.uid}');
         debugPrint('Signed Up');
         return 'Signed Up';
@@ -54,16 +64,26 @@ class AuthenticationService {
   ///Sign in user with e-mail
   Future<String> signIn(String email, String password) async {
     try {
-      auth.UserCredential credential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      auth.UserCredential credential = await _auth
+          .signInWithEmailAndPassword(email: email, password: password)
+          .then((credential) async {
+        User user0 = (User(
+            id: credential.user.uid,
+            email: email,
+            userName: email,
+            photoURL: '_'));
+        await _userService
+            .setAuthenticatedUserFromFirestore(user0)
+            .then((snapshot) =>
+        _authenticatedUser = User(
+            id: snapshot.data()["id"],
+            userName: snapshot.data()["userName"],
+            email: snapshot.data()["email"],
+            photoURL: snapshot.data()["photoURL"]));
+        return credential;
+      });
       await new Future.delayed(const Duration(microseconds: 5));
-      User user = (User(
-          id: credential.user.uid,
-          email: email,
-          userName: email,
-          photoURL: '_'));
       print('credential: ${credential.user.uid}');
-      _userService.getUser(user);
       await new Future.delayed(const Duration(microseconds: 5));
       debugPrint('Signed In');
       return 'Signed In';
@@ -79,9 +99,10 @@ class AuthenticationService {
         return 'Something went wrong, please try again.';
       }
     } catch (e) {
+      debugPrint('Something went wrong, please try again.');
       print(e);
+      return 'Something went wrong, please try again.';
     }
-    return null;
   }
 
   ///sign out
@@ -91,26 +112,29 @@ class AuthenticationService {
   }
 
   ///returns the current authenticated user as User object
-  User authenticatedUser() {
-    User _authenticatedUser;
-      auth.User user = _auth.currentUser;
-      if (user == null) {
-        _authenticatedUser = null;
-        print('User is currently signed out!');
-        return _authenticatedUser;
-      } else {
-        _authenticatedUser = User(
-            id: user.uid,);
-        new Future.delayed(const Duration(microseconds: 20));
-        _authenticatedUser = _userService.getUser(_authenticatedUser);
-        print('2. User from _authenticatedUser function: '+ _authenticatedUser.toString());
-        print('User is signed in!');
-        return _authenticatedUser;
-      }
+  Future<User> authenticatedUser() async {
+    if (_auth.currentUser == null) {
+      _authenticatedUser = null;
+      print('User is currently signed out!');
+      return _authenticatedUser;
+    } else {
+      _authenticatedUser =
+      await _userService.get(_auth.currentUser.uid).then((user) {
+        debugPrint('authenticatedUser() ' + _authenticatedUser.toString());
+        return user;
+      });
+      print('User is signed in!');
+      return _authenticatedUser;
+    }
   }
 
+  User getAuthenticatedUser() {
+    return this._authenticatedUser;
+  }
+
+
   ///return
-  bool isSignedIn(){
+  bool isSignedIn() {
     auth.User user = _auth.currentUser;
     if (user == null) {
       return false;
@@ -133,7 +157,11 @@ class AuthenticationService {
     await _auth.sendPasswordResetEmail(email: email);
   }
 
-  ///enable a change password from within app
+  /// this enables a change password from within app and always returns a string
+  /// if passwords supplied match and the change goes through: 'Your password changed Successfully!'
+  /// if there is an error: "You can't change the Password" + err.toString()
+  /// if the passwords do not match: 'Your passwords do not match, please try again.'
+  /// await locator<AuthenticationService>().changePassword(String password, String passwordVerify)
   Future<String> changePassword(String password, String passwordVerify) async {
     ///Create an instance of the current user.
     auth.User user = _auth.currentUser;
@@ -153,4 +181,5 @@ class AuthenticationService {
     }
     return null;
   }
+
 }
