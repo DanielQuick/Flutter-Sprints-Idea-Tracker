@@ -169,7 +169,7 @@ class SprintService {
     return querySnapshots.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
-  /// returns all ideas that were created for the current month as Future List<Idea>
+  /// returns all ideas that were created for the current month as Future List<Sprint>
   Future<List<Sprint>> getAllCurrent() async {
     DateTime now = DateTime.now();
     DateTime startOfMonth = DateTime(now.year, now.month);
