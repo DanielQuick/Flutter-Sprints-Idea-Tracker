@@ -169,6 +169,19 @@ class SprintService {
     return querySnapshots.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
+  /// returns all ideas that were created for the current month as Future List<Idea>
+  Future<List<Sprint>> getAllCurrent() async {
+    DateTime now = DateTime.now();
+    DateTime startOfMonth = DateTime(now.year, now.month);
+    debugPrint('getAllCurrent() performing...');
+    QuerySnapshot querySnapshot = await sprintRef
+        .where('createdAt',
+        isGreaterThanOrEqualTo: startOfMonth.millisecondsSinceEpoch)
+        .get()
+        .catchError((error) => print("Failed to get all Current Sprints: $error"));
+    return querySnapshot.docs.map((doc) => _fromFirestore(doc)).toList();
+  }
+
   ///Create Sprint object from a Firestore DocumentSnapshot
   Sprint _fromFirestore(DocumentSnapshot doc) {
     ///converts _InternalLinkedHashMap<String, dynamic> to List<SprintPost>
