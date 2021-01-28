@@ -1,8 +1,8 @@
 import 'dart:core';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
+import 'package:idea_tracker/model/user.dart';
 import '../locator.dart';
-import '../model/user.dart';
 import 'services.dart';
 
 class AuthenticationService {
@@ -30,14 +30,12 @@ class AuthenticationService {
               email: email,
               userName: userName,
               photoURL: '_'));
-          await _userService
-              .setAuthenticatedUserFromFirestore(user0)
-              .then((snapshot) =>
-          _authenticatedUser = User(
-              id: snapshot.data()["id"],
-              userName: snapshot.data()["userName"],
-              email: snapshot.data()["email"],
-              photoURL: snapshot.data()["photoURL"]));
+          await _userService.setAuthenticatedUserFromFirestore(user0).then(
+              (snapshot) => _authenticatedUser = User(
+                  id: snapshot.data()["id"],
+                  userName: snapshot.data()["userName"],
+                  email: snapshot.data()["email"],
+                  photoURL: snapshot.data()["photoURL"]));
           return credential;
         });
         print('credential: ${credential.user.uid}');
@@ -72,14 +70,12 @@ class AuthenticationService {
             email: email,
             userName: email,
             photoURL: '_'));
-        await _userService
-            .setAuthenticatedUserFromFirestore(user0)
-            .then((snapshot) =>
-        _authenticatedUser = User(
-            id: snapshot.data()["id"],
-            userName: snapshot.data()["userName"],
-            email: snapshot.data()["email"],
-            photoURL: snapshot.data()["photoURL"]));
+        await _userService.setAuthenticatedUserFromFirestore(user0).then(
+            (snapshot) => _authenticatedUser = User(
+                id: snapshot.data()["id"],
+                userName: snapshot.data()["userName"],
+                email: snapshot.data()["email"],
+                photoURL: snapshot.data()["photoURL"]));
         return credential;
       });
       await new Future.delayed(const Duration(microseconds: 5));
@@ -119,7 +115,7 @@ class AuthenticationService {
       return _authenticatedUser;
     } else {
       _authenticatedUser =
-      await _userService.get(_auth.currentUser.uid).then((user) {
+          await _userService.get(_auth.currentUser.uid).then((user) {
         debugPrint('authenticatedUser() ' + _authenticatedUser.toString());
         return user;
       });
@@ -131,7 +127,6 @@ class AuthenticationService {
   User getAuthenticatedUser() {
     return this._authenticatedUser;
   }
-
 
   ///return
   bool isSignedIn() {
@@ -181,5 +176,4 @@ class AuthenticationService {
     }
     return null;
   }
-
 }

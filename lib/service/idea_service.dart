@@ -34,11 +34,21 @@ class IdeaService {
     return idea;
   }
 
+  Future<Idea> update(
+      Idea idea, List<UpdateIdea> updates, List<String> updateStrings) async {
+    for (var i = 0; i < updates.length; i++) {
+      idea = await _update(idea, updates[i], updateStrings[i]);
+    }
+
+    return idea;
+  }
+
   ///Returns the updated idea
   ///Switch to update idea object...this uses the Enum UpdateIdea above
   ///this class.
   ///use case example: _ideaService.update(idea, Update.title, "new Title');
-  Future<Idea> update(Idea idea, UpdateIdea update, String updateString) async {
+  Future<Idea> _update(
+      Idea idea, UpdateIdea update, String updateString) async {
     User user;
     debugPrint(idea.toString());
     Idea updatedIdea = await get(idea.id).then((idea) async {
@@ -262,7 +272,6 @@ class IdeaService {
 
     return idea = await get(idea.id);
   }
-
 
   ///the below functions are for future use in case someone wants to use streams
 
