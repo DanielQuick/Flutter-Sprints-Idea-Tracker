@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/sprint.dart';
+import 'package:idea_tracker/model/sprint.dart';
 
 ///Use these enums to update parts of the Sprint Object
 enum UpdateSprint {
@@ -39,7 +39,7 @@ class SprintService {
     await sprintRef.doc(sprint.id).delete();
     debugPrint('removed Sprint ${sprint.id} from DB');
   }
-/*
+
   Future<Sprint> update(Sprint sprint, List<UpdateSprint> updates,
       List<String> updateStrings) async {
     for (var i = 0; i < updates.length; i++) {
@@ -49,11 +49,9 @@ class SprintService {
     return sprint;
   }
 
- */
-
   ///Switch to update sprint object...use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
   ///returns the updated Sprint
-  Future<Sprint> update(
+  Future<Sprint> _update(
       Sprint sprint, UpdateSprint update, String updateString) async {
     switch (update) {
       case UpdateSprint.title:
@@ -176,9 +174,10 @@ class SprintService {
     debugPrint('getAllCurrent() performing...');
     QuerySnapshot querySnapshot = await sprintRef
         .where('createdAt',
-        isGreaterThanOrEqualTo: startOfMonth.millisecondsSinceEpoch)
+            isGreaterThanOrEqualTo: startOfMonth.millisecondsSinceEpoch)
         .get()
-        .catchError((error) => print("Failed to get all Current Sprints: $error"));
+        .catchError(
+            (error) => print("Failed to get all Current Sprints: $error"));
     return querySnapshot.docs.map((doc) => _fromFirestore(doc)).toList();
   }
 
@@ -272,8 +271,7 @@ class SprintService {
     await sprintRef
         .doc(sprint.id)
         .update({'updatedAt': _getUpdatedAt()}).then((_) {
-      debugPrint(
-          'updatedAt: ${_getUpdatedAt()} for sprint ${sprint.id}');
+      debugPrint('updatedAt: ${_getUpdatedAt()} for sprint ${sprint.id}');
     }).catchError((error) => debugPrint("Failed to update updatedAt: $error"));
     return sprint = await get(sprint.id);
   }
