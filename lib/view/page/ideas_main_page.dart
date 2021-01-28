@@ -4,6 +4,7 @@ import 'package:idea_tracker/model/idea.dart';
 import 'package:idea_tracker/view/page/create_idea_page.dart';
 import 'package:idea_tracker/view/page/idea_details_page.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
+import 'package:provider/provider.dart';
 
 class IdeasMainPage extends StatelessWidget {
   @override
@@ -25,33 +26,53 @@ class IdeasMainPage extends StatelessWidget {
           },
           child: Icon(Icons.add),
         ),
-        body: controller.ideas.isEmpty
-            ? Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'No ideas available now',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                    SizedBox(height: 20.0),
-                    Text(
-                      'Tap the button below to create a new one!',
-                      style: Theme.of(context).textTheme.headline6,
-                    ),
-                  ],
-                ),
-              )
-            : ListView.builder(
-                itemCount: controller.ideas.length,
-                itemBuilder: (context, index) {
-                  return IdeaCard(
-                    idea: controller.ideas[index],
-                  );
-                },
-              ),
+        body: controller.ideas.isEmpty ? NoIdeasPage() : IdeaCardsList(),
       );
     });
+  }
+}
+
+class IdeaCardsList extends StatelessWidget {
+  const IdeaCardsList({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Provider.of<IdeasMainPageController>(context);
+    return ListView.builder(
+      itemCount: controller.ideas.length,
+      itemBuilder: (context, index) {
+        return IdeaCard(
+          idea: controller.ideas[index],
+        );
+      },
+    );
+  }
+}
+
+class NoIdeasPage extends StatelessWidget {
+  const NoIdeasPage({
+    Key key,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'No ideas available now',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: 20.0),
+          Text(
+            'Tap the button below to create a new one!',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+        ],
+      ),
+    );
   }
 }
 
