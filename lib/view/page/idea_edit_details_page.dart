@@ -104,7 +104,7 @@ class IdeaEditDetailsPage extends StatelessWidget {
                     textColor: Colors.white,
                     onPressed: () {
                       if (_formKey.currentState.validate()) {
-                        //controller.saveChanges();
+                        controller.saveChanges();
                       }
                     },
                   ),
