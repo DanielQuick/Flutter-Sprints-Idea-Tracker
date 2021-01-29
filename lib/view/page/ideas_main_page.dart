@@ -76,11 +76,17 @@ class NoIdeasPage extends StatelessWidget {
   }
 }
 
-class IdeaCard extends StatelessWidget {
+class IdeaCard extends StatefulWidget {
   final Idea idea;
 
   IdeaCard({this.idea});
 
+  @override
+  _IdeaCardState createState() => _IdeaCardState();
+}
+
+class _IdeaCardState extends State<IdeaCard> {
+  int voteCount = 0;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -88,13 +94,13 @@ class IdeaCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => IdeaDetailsPage(idea: idea),
+            builder: (context) => IdeaDetailsPage(idea: widget.idea),
           ),
         );
       },
       child: Container(
         height: 180.0,
-        width: 400.0,
+        width: 420.0,
         margin: EdgeInsets.all(8.0),
         child: Card(
           color: Colors.white,
@@ -106,16 +112,45 @@ class IdeaCard extends StatelessWidget {
             children: [
               Container(
                 padding: EdgeInsets.only(top: 20.0, left: 10.0),
-                child: Text(
-                  idea.title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.idea.title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.remove),
+                          onPressed: () {
+                            setState(() {
+                              if (voteCount >= 1) {
+                                voteCount--;
+                              }
+                            });
+                          },
+                        ),
+                        Text('$voteCount'),
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            setState(() {
+                              voteCount++;
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 15.0),
               Container(
                 padding: EdgeInsets.only(left: 10.0, right: 5.0),
                 child: Text(
-                  idea.description,
+                  widget.idea.description,
                   style: TextStyle(fontSize: 17.0),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
