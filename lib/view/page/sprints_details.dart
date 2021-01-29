@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:idea_tracker/model/sprint.dart';
+import 'package:time_formatter/time_formatter.dart';
 
 class SprintsDetails extends StatefulWidget {
 
@@ -84,7 +85,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Text(
-                                    widget.sprint.title,
+                                    _title(widget.sprint),
                                     maxLines: 1,
                                     style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
                                   ),
@@ -99,7 +100,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                     child: Container(
                                       width: 365,
                                       child: Text(
-                                        widget.sprint.description,
+                                        _description(widget.sprint),
                                         maxLines: 5,
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -226,7 +227,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
         children: [
           ListTile(
             leading: Icon(Icons.military_tech),
-            title: Text(sprint.teamLeader),
+            title: Text(_teamleader(sprint)),
             subtitle: Text("Teamleader"),
           ),
           Column(
@@ -258,9 +259,25 @@ class _SprintsDetailsState extends State<SprintsDetails> {
     }
   }
 
+  String _title(Sprint sprint){
+    if(sprint.title == null){
+      return 'Nameless Sprint';
+    } else {
+      return sprint.title;
+    }
+  }
+
+  String _description(Sprint sprint){
+    if(sprint.description == null){
+      return 'No description';
+    } else {
+      return sprint.description;
+    }
+  }
+
   String _teamleader(Sprint sprint){
     if(sprint.teamLeader == null){
-      return 'There is no teamleader';
+      return 'No teamleader';
     } else {
       return sprint.teamLeader;
     }
@@ -271,7 +288,7 @@ class _SprintsDetailsState extends State<SprintsDetails> {
       return null;
     } else {
       return Text(
-          '-   ${sprint.createdAt}',
+          '-   ${formatTime(sprint.createdAt)}',
           style: TextStyle(color: Colors.black.withOpacity(0.6)),
       );
     }
