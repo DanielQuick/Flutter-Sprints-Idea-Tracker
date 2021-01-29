@@ -1,10 +1,15 @@
 import 'package:flutter/foundation.dart';
-
-enum RecoverPasswordStatus { initial, waiting, success, failed }
+import 'package:idea_tracker/locator.dart';
+import 'package:idea_tracker/service/authentication_service.dart';
 
 class LandingPageRecoverPasswordDialogController extends ChangeNotifier {
   String _email;
-  RecoverPasswordStatus status = RecoverPasswordStatus.initial;
+  String _message;
+  bool requestSubmited = false;
+
+  final _authService = locator<AuthenticationService>();
+
+  String get message => _message;
 
   void setEmail(String value) {
     _email = value;
@@ -23,24 +28,14 @@ class LandingPageRecoverPasswordDialogController extends ChangeNotifier {
     }
   }
 
-  void resetPassword() async {
-    print("Reseting password for $_email");
-
-    status = RecoverPasswordStatus.waiting;
+  void retry() {
+    requestSubmited = false;
     notifyListeners();
+  }
 
-    // TODO: reset password throught AuthenticationService
-    final success = await Future.delayed(
-      Duration(milliseconds: 5000),
-      () => true,
-    );
-
-    if (success) {
-      status = RecoverPasswordStatus.success;
-    } else {
-      status = RecoverPasswordStatus.failed;
-    }
-
+  void resetPassword() async {
+    _message = await _authService.forgotPassword(_email);
+    requestSubmited = true;
     notifyListeners();
   }
 }
