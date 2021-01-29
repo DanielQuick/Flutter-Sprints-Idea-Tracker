@@ -89,7 +89,7 @@ class UserService {
         setAuthenticatedUserFromFirestore(user);
         return null;
       }
-    }).catchError((error) => debugPrint("Failed to get user document: $error"));;
+    }).catchError((error) => debugPrint("Failed to get user document: $error"));
     return snapshot;
   }
 

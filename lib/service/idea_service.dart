@@ -28,16 +28,14 @@ class IdeaService {
     await _ideaRef
         .doc(docReference.id)
         .set(await _toJson(idea, docReference.id));
-    idea = idea.copyWith(
-        id: docReference.id, createdAt: DateTime.now().millisecondsSinceEpoch);
     debugPrint('Added idea id: ${idea.id} to DB');
-    return idea;
+    return get(docReference.id);
   }
 
   ///Returns the updated idea
   ///Switch to update idea object...this uses the Enum UpdateIdea above
   ///this class.
-  ///use case example: _ideaService.update(idea, Update.title, "new Title');
+  ///use case example: _ideaService.update(idea, Update.title, "new Title");
   Future<Idea> update(Idea idea, UpdateIdea update, String updateString) async {
     User user;
     debugPrint(idea.toString());
@@ -48,6 +46,7 @@ class IdeaService {
     switch (update) {
       case UpdateIdea.title:
         {
+          ///only the creator of an Idea object can update that idea object.
           if (user.id == idea.creatorId) {
             updatedIdea = await _updateTitle(idea, updateString);
           } else {
@@ -86,7 +85,8 @@ class IdeaService {
         break;
       default:
         {
-          debugPrint('Nothing was updated, please try again.');
+          debugPrint('Nothing was updated, please try again. Make sure you are '
+              'using the correct enum name');
           updatedIdea = await get(idea.id);
           return updatedIdea;
         }
@@ -95,12 +95,12 @@ class IdeaService {
 
   /// Returns requested Idea object
   /// Use case example: Idea idea = get('jmECu4ce5aTWL6EnCpP2');
-  /// The methodology here is to get a document ID from a Stream/List of multiple documents
+  /// The methodology here is to get a document ID from a Stream/List of multiple Ideas/documents
   ///
   /// To get the document ID to pass to this function:
   ///  1. StreamBuilder/FutureBuilder -> store as AsyncSnapshot<QuerySnapshot> snapshot using
   ///    getAll(), getIdeasFromDBForCurrentMonthStream(), or searchIdeasByTitle()
-  ///  2. ListView -> children: snapshot.data.docs.map((document) widgets for each document)
+  ///  2. ListView -> children: snapshot.data.docs.map((document) <widgets for each document>)
   ///  3. access a specific idea's details "onTapped" with this function by passing "document.id"
   ///     to this function
   Future<Idea> get(String documentId) async {
@@ -144,6 +144,7 @@ class IdeaService {
   ///Below are all of the functions within this class for internal use
 
   ///gets user from Authentication Service to utilize the user ID for idea voting
+  ///and idea creation
   Future<User> _getUser() async {
     AuthenticationService _auth = locator<AuthenticationService>();
     User user = _auth.getAuthenticatedUser();
@@ -153,14 +154,17 @@ class IdeaService {
 
   ///used to input the idea into the database.
   ///This is only used the first time an idea is input into the database
+  ///automatically fills creatorId the titleArray createdAt and updatedAt with
+  /// required data ... Minimum data required to create an Idea object is Title
+  /// and description
   Future<Map<String, dynamic>> _toJson(Idea idea, String id) async {
     User user = await _getUser();
     return {
       "id": id,
-      "title": idea.title,
+      "title": idea.title ?? '',
       "titleArray": idea.title.toLowerCase().split(new RegExp('\\s+')).toList(),
       "creatorId": user.id,
-      "description": idea.description,
+      "description": idea.description ?? '',
       "createdAt": idea.createdAt ?? DateTime.now().millisecondsSinceEpoch,
       "updatedAt": idea.updatedAt ?? DateTime.now().millisecondsSinceEpoch,
       "voters": idea.voters ?? new List<String>(),
