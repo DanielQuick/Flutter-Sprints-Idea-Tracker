@@ -16,8 +16,23 @@ class SprintsDetailsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addSprintMember() async {
-    currentSprint = await _sprintService.update(currentSprint, [UpdateSprint.addMember], [_authService.getAuthenticatedUser().id]);
+  addOrDeleteSprintMember() async {
+    if(currentSprint.members.contains(_authService.getAuthenticatedUser().id)) {
+      currentSprint = await _sprintService.update(
+          currentSprint, [UpdateSprint.deleteMember], [_authService
+          .getAuthenticatedUser()
+          .id
+      ]);
+    } else {
+      currentSprint = await _sprintService.update(
+          currentSprint, [UpdateSprint.addMember], [_authService
+          .getAuthenticatedUser()
+          .id
+      ]);
+    }
   }
 
+  initialize(){
+
+  }
 }
