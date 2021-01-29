@@ -148,8 +148,21 @@ class AuthenticationService {
   }
 
   ///enables send user a password reset by e-mail...Link to forgot password logic
-  Future<void> forgotPassword(String email) async {
-    await _auth.sendPasswordResetEmail(email: email);
+  Future<String> forgotPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      return "Please, check your inbox";
+    } on auth.FirebaseAuthException catch (e) {
+      if (e.code == "user-not-found") {
+        print("No user associated to this email.");
+        return "No user associated to this email.";
+      }
+      print("Something went wrong, please try again.");
+      return 'Something went wrong, please try again.';
+    } catch (e) {
+      print("Something went wrong, please try again.");
+      return 'Something went wrong, please try again.';
+    }
   }
 
   /// this enables a change password from within app and always returns a string
