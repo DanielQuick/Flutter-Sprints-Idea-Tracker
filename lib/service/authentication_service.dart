@@ -1,8 +1,8 @@
 import 'dart:core';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
+import 'package:idea_tracker/model/user.dart';
 import '../locator.dart';
-import '../model/user.dart';
 import 'services.dart';
 
 class AuthenticationService {

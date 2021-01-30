@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:idea_tracker/model/models.dart';
 import '../lib/locator.dart';
 import '../lib/service/services.dart';
-import '../lib/model/models.dart';
 
 class TestServices {
   UserService _userService = locator<UserService>();
@@ -90,45 +90,47 @@ class TestServices {
     await new Future.delayed(const Duration(seconds: 3));
     print('_testIdea1: ' + _testIdea1.toString());
     await new Future.delayed(const Duration(seconds: 3));
-    _testIdea1 = await _ideaService.update(
-        _testIdea1, UpdateIdea.title, 'New Idea Title');
+    _testIdea1 = await _ideaService
+        .update(_testIdea1, [UpdateIdea.title], ['New Idea Title']);
     await new Future.delayed(const Duration(seconds: 3));
     print(_testIdea1.toString());
 
     _testIdea = await _ideaService.create(_testIdea);
     await new Future.delayed(const Duration(seconds: 3));
-    _testIdea = await _ideaService.update(
-        _testIdea, UpdateIdea.title, 'New Idea Title');
+    _testIdea = await _ideaService
+        .update(_testIdea, [UpdateIdea.title], ['New Idea Title']);
     await new Future.delayed(const Duration(seconds: 3));
+    _testIdea = await _ideaService
+        .update(_testIdea, [UpdateIdea.title], ['Updated Title']);
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea = await _ideaService
+        .update(_testIdea, [UpdateIdea.title], ['Updated Title Again']);
+    await new Future.delayed(const Duration(seconds: 3));
+    print(_testIdea.toString());
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea = await _ideaService
+        .update(_testIdea, [UpdateIdea.description], ["New Description"]);
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea = await _ideaService
+        .update(_testIdea, [UpdateIdea.description], ["Updated Description"]);
+    await new Future.delayed(const Duration(seconds: 3));
+    _testIdea = await _ideaService.update(
+        _testIdea, [UpdateIdea.description], ['Updated Description Again']);
+    await new Future.delayed(const Duration(seconds: 3));
+    print(_testIdea.toString());
     _testIdea =
-        await _ideaService.update(_testIdea, UpdateIdea.title, 'Updated Title');
-    await new Future.delayed(const Duration(seconds: 3));
-    _testIdea = await _ideaService.update(
-        _testIdea, UpdateIdea.title, 'Updated Title Again');
-    await new Future.delayed(const Duration(seconds: 3));
-    print(_testIdea.toString());
-    await new Future.delayed(const Duration(seconds: 3));
-    _testIdea = await _ideaService.update(
-        _testIdea, UpdateIdea.description, "New Description");
-    await new Future.delayed(const Duration(seconds: 3));
-    _testIdea = await _ideaService.update(
-        _testIdea, UpdateIdea.description, "Updated Description");
-    await new Future.delayed(const Duration(seconds: 3));
-    _testIdea = await _ideaService.update(
-        _testIdea, UpdateIdea.description, 'Updated Description Again');
-    await new Future.delayed(const Duration(seconds: 3));
-    print(_testIdea.toString());
-    _testIdea = await _ideaService.update(_testIdea, UpdateIdea.vote, "Yes");
+        await _ideaService.update(_testIdea, [UpdateIdea.vote], ["Yes"]);
     await new Future.delayed(const Duration(seconds: 3));
     print('Should add back:  ${_testIdea.voters}...');
 
     ///Removes voter from Idea
-    _testIdea = await _ideaService.update(_testIdea, UpdateIdea.vote, "No");
+    _testIdea = await _ideaService.update(_testIdea, [UpdateIdea.vote], ["No"]);
     await new Future.delayed(const Duration(seconds: 3));
     print('Should remove:  ${_testIdea.voters}...');
 
     ///re-add same voter to Idea
-    _testIdea = await _ideaService.update(_testIdea, UpdateIdea.vote, "Yes");
+    _testIdea =
+        await _ideaService.update(_testIdea, [UpdateIdea.vote], ["Yes"]);
     print('Should add back:  ${_testIdea.voters}...');
     await _ideaService.delete(_testIdea);
 
@@ -149,7 +151,6 @@ class TestServices {
       print('Ideas from getAll() length: ${list.length}');
       return list;
     });
-
   } //end test
 
   runSprintServicesTest() async {
@@ -205,17 +206,17 @@ class TestServices {
     _sprintTest1 = await _sprintService.updatePost(
         _sprintTest1, UpdatePost.create, _post2);
     await new Future.delayed(const Duration(seconds: 3));
-    _sprintTest = await _sprintService.update(
-        _sprintTest, UpdateSprint.title, "Update Sprint Title");
+    _sprintTest = await _sprintService
+        .update(_sprintTest, [UpdateSprint.title], ["Update Sprint Title"]);
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest = await _sprintService.update(
-        _sprintTest, UpdateSprint.description, "Update Sprint Description");
+        _sprintTest, [UpdateSprint.description], ["Update Sprint Description"]);
     await new Future.delayed(const Duration(seconds: 3));
-    _sprintTest = await _sprintService.update(
-        _sprintTest, UpdateSprint.addMember, "member3");
+    _sprintTest = await _sprintService
+        .update(_sprintTest, [UpdateSprint.addMember], ["member3"]);
     await new Future.delayed(const Duration(seconds: 3));
-    _sprintTest = await _sprintService.update(
-        _sprintTest, UpdateSprint.teamLeader, "potentialLeader2");
+    _sprintTest = await _sprintService
+        .update(_sprintTest, [UpdateSprint.teamLeader], ["potentialLeader2"]);
     await new Future.delayed(const Duration(seconds: 3));
     print(_sprintTest.toString());
     _sprintService.delete(_sprintTest);
@@ -224,10 +225,12 @@ class TestServices {
     _sprintTest1 = await _sprintService.get("TodjI69eQV4xwSkuQx2T");
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest1 = await _sprintService.update(
-        _sprintTest1, UpdateSprint.addPotentialLeader, "added leader");
+        _sprintTest1, [UpdateSprint.addPotentialLeader], ["added leader"]);
     await new Future.delayed(const Duration(seconds: 3));
-    _sprintTest1 = await _sprintService.update(_sprintTest1,
-        UpdateSprint.deletePotentialLeader, _sprintTest1.potentialLeaders[2]);
+    _sprintTest1 = await _sprintService.update(
+        _sprintTest1,
+        [UpdateSprint.deletePotentialLeader],
+        [_sprintTest1.potentialLeaders[2]]);
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest1 = await _sprintService.updatePost(
         _sprintTest1, UpdatePost.create, _post0);
@@ -245,11 +248,11 @@ class TestServices {
     _sprintTest1 = await _sprintService.updatePost(
         _sprintTest1, UpdatePost.delete, _sprintTest1.posts[0]);
     await new Future.delayed(const Duration(seconds: 3));
-    _sprintTest1 = await _sprintService.update(
-        _sprintTest1, UpdateSprint.addMember, 'member4');
+    _sprintTest1 = await _sprintService
+        .update(_sprintTest1, [UpdateSprint.addMember], ['member4']);
     await new Future.delayed(const Duration(seconds: 3));
-    _sprintTest1 = await _sprintService.update(
-        _sprintTest1, UpdateSprint.deleteMember, 'member4');
+    _sprintTest1 = await _sprintService
+        .update(_sprintTest1, [UpdateSprint.deleteMember], ['member4']);
     await new Future.delayed(const Duration(seconds: 3));
     await _sprintService.getAll().then((list) {
       print('Sprint from getAll(): $list');
