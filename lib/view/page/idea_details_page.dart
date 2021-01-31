@@ -28,6 +28,9 @@ class IdeaDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final title = idea.title ?? "";
+    final description = idea.description ?? "";
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Idea Details'),
@@ -41,7 +44,7 @@ class IdeaDetailsPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 10.0, top: 25.0),
             child: Text(
-              idea.title,
+              title,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,
@@ -52,7 +55,7 @@ class IdeaDetailsPage extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(left: 10.0, right: 5.0),
             child: Text(
-              idea.description,
+              description,
               style: TextStyle(
                 fontSize: 18.0,
               ),

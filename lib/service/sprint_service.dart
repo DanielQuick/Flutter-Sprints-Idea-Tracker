@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/sprint.dart';
+import 'package:idea_tracker/model/sprint.dart';
 
 ///Use these enums to update parts of the Sprint Object
 enum UpdateSprint {
@@ -85,13 +85,15 @@ class SprintService {
         break;
       case UpdateSprint.addPotentialLeader:
         {
-          updatedSprint = await _addPotentialLeaders(updatedSprint, updateString);
+          updatedSprint =
+              await _addPotentialLeaders(updatedSprint, updateString);
           return updatedSprint;
         }
         break;
       case UpdateSprint.deletePotentialLeader:
         {
-          updatedSprint = await _deletePotentialLeaders(updatedSprint, updateString);
+          updatedSprint =
+              await _deletePotentialLeaders(updatedSprint, updateString);
           return updatedSprint;
         }
         break;
@@ -102,7 +104,8 @@ class SprintService {
           /// within the Sprint object
           if (!updatedSprint.members.contains(updateString)) {
             updatedSprint = await _addMember(updatedSprint, updateString);
-            debugPrint('User $updateString added to member list for this sprint.');
+            debugPrint(
+                'User $updateString added to member list for this sprint.');
           } else {
             debugPrint('User $updateString is already member of this sprint.');
             updatedSprint = await _deleteMember(updatedSprint, updateString);

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import '../model/user.dart';
+import 'package:idea_tracker/model/user.dart';
 
 enum UpdateUser { userName, photo }
 
@@ -146,13 +146,14 @@ class UserService {
         .update({'photoURL': updatePhotoURL}).then((_) {
       debugPrint('User ${user.id} updated PhotoUrl DB');
       return get(user.id);
-    }).catchError((error) => debugPrint("Failed to update user photoURL: $error"));
+    }).catchError(
+            (error) => debugPrint("Failed to update user photoURL: $error"));
   }
 
   ///Below method for future use
 
   ///Used to get the user as a stream
-  Stream getCurrentUserAsStream(User user)  {
-    return  _userRef.doc(user.id).get().asStream();
+  Stream getCurrentUserAsStream(User user) {
+    return _userRef.doc(user.id).get().asStream();
   }
 }
