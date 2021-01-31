@@ -147,16 +147,19 @@ class AuthenticationService {
   }
 
   ///enables send user a password reset by e-mail...Link to forgot password logic
-  Future<void> forgotPassword(String email) async {
+  Future<String> forgotPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
+      return "Please, check your inbox";
     } on auth.FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
+      if (e.code == "user-not-found") {
+        print("No user associated to this email.");
+        return "No user associated to this email.";
       }
+      print("Something went wrong, please try again.");
+      return 'Something went wrong, please try again.';
     } catch (e) {
-      debugPrint('Something went wrong, please try again.');
-      print(e);
+      print("Something went wrong, please try again.");
       return 'Something went wrong, please try again.';
     }
   }
