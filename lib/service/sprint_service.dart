@@ -8,8 +8,7 @@ enum UpdateSprint {
   description,
   addPotentialLeader,
   deletePotentialLeader,
-  addMember,
-  deleteMember,
+  member,
   teamLeader
 }
 enum UpdatePost { create, delete }
@@ -40,73 +39,95 @@ class SprintService {
     debugPrint('removed Sprint ${sprint.id} from DB');
   }
 
+  /// Uses the switch to update multiple properties within a sprint
+  /// Requires use of enum above this class
+  /// Use Case example:
+  /// _sprintServices.update(sprint, [UpdateSprint.title,
+  ///      UpdateSprint.description], ['New Title', 'New Description sequence'])
   Future<Sprint> update(Sprint sprint, List<UpdateSprint> updates,
       List<String> updateStrings) async {
-    for (var i = 0; i < updates.length; i++) {
-      sprint = await _update(sprint, updates[i], updateStrings[i]);
+    if (updates.length == updateStrings.length) {
+      for (var i = 0; i < updates.length; i++) {
+        sprint = await _update(sprint, updates[i], updateStrings[i]);
+      }
+      return sprint;
+    } else {
+      debugPrint(
+          'The update will not work unless both lists have the same length');
     }
-
     return sprint;
   }
 
-  ///Switch to update sprint object...use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
-  ///returns the updated Sprint
+  /// Switch to update sprint object...
+  /// use case: sprintService.update(idea, UpdateSprint.title, 'new Title');
+  /// returns the updated Sprint
   Future<Sprint> _update(
       Sprint sprint, UpdateSprint update, String updateString) async {
+    Sprint updatedSprint = sprint;
     switch (update) {
       case UpdateSprint.title:
         {
-          sprint = await _updateTitle(sprint, updateString);
-          return sprint;
+          updatedSprint = await _updateTitle(updatedSprint, updateString);
+          return updatedSprint;
         }
         break;
       case UpdateSprint.description:
         {
-          sprint = await _updateDescription(sprint, updateString);
-          return sprint;
+          updatedSprint = await _updateDescription(updatedSprint, updateString);
+          return updatedSprint;
         }
         break;
       case UpdateSprint.teamLeader:
         {
-          sprint = await _updateTeamLeader(sprint, updateString);
-          return sprint;
+          updatedSprint = await _updateTeamLeader(updatedSprint, updateString);
+          return updatedSprint;
         }
         break;
       case UpdateSprint.addPotentialLeader:
         {
-          sprint = await _addPotentialLeaders(sprint, updateString);
-          return sprint;
+          updatedSprint =
+              await _addPotentialLeaders(updatedSprint, updateString);
+          return updatedSprint;
         }
         break;
       case UpdateSprint.deletePotentialLeader:
         {
-          sprint = await _deletePotentialLeaders(sprint, updateString);
-          return sprint;
+          updatedSprint =
+              await _deletePotentialLeaders(updatedSprint, updateString);
+          return updatedSprint;
         }
         break;
-      case UpdateSprint.addMember:
+      case UpdateSprint.member:
         {
-          sprint = await _addMember(sprint, updateString);
-          return sprint;
-        }
-        break;
-      case UpdateSprint.deleteMember:
-        {
-          sprint = await _deleteMember(sprint, updateString);
-          return sprint;
+          /// This checks to see if user already a member.
+          /// To get the number of members use list.length(); on the member list
+          /// within the Sprint object
+          if (!updatedSprint.members.contains(updateString)) {
+            updatedSprint = await _addMember(updatedSprint, updateString);
+            debugPrint(
+                'User $updateString added to member list for this sprint.');
+          } else {
+            debugPrint('User $updateString is already member of this sprint.');
+            updatedSprint = await _deleteMember(updatedSprint, updateString);
+            debugPrint('User $updateString removed from voters for this idea.');
+          }
+          return updatedSprint;
         }
         break;
       default:
         {
           print(
-              "Nothing was updated, please use Enum UpdateSprint your Sprint ${sprint.id}.");
-          return sprint;
+              "Nothing was updated, please use Enum UpdateSprint your Sprint ${updatedSprint.id}.");
+          return updatedSprint;
         }
     }
   }
 
-  ///update posts within Sprint
+  /// update posts within Sprint
   ///...to update a post first delete post then create new post
+  /// list class here just adds new posts to the end of the list,
+  /// Firestore can only use arrays for lists so it follows typical array
+  /// addition and deletion functionality
   Future<Sprint> updatePost(
       Sprint sprint, UpdatePost updatePost, SprintPost sprintPost) async {
     switch (updatePost) {
@@ -229,13 +250,13 @@ class SprintService {
   _sprintToJson(Sprint sprint, String id) {
     return {
       'id': sprint.id ?? id,
-      "title": sprint.title,
+      "title": sprint.title ?? '',
       "titleArray":
           sprint.title.toLowerCase().split(new RegExp('\\s+')).toList(),
-      "description": sprint.description,
+      "description": sprint.description ?? '',
       "createdAt": DateTime.now().millisecondsSinceEpoch,
-      "teamLeader": sprint.teamLeader,
-      "updatedAt": sprint.updatedAt,
+      "teamLeader": sprint.teamLeader ?? '',
+      "updatedAt": sprint.updatedAt ?? DateTime.now().millisecondsSinceEpoch,
       "potentialLeaders": sprint.potentialLeaders ?? new List<String>(),
       "members": sprint.members ?? new List<String>(),
       "posts": sprint.posts ?? new List<SprintPost>(),
