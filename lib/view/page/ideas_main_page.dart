@@ -86,9 +86,11 @@ class IdeaCard extends StatefulWidget {
 }
 
 class _IdeaCardState extends State<IdeaCard> {
-  int voteCount = 0;
   @override
   Widget build(BuildContext context) {
+    final title = widget.idea.title ?? "";
+    final description = widget.idea.description ?? "";
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -111,36 +113,18 @@ class _IdeaCardState extends State<IdeaCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.only(top: 20.0, left: 10.0),
+                padding: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      widget.idea.title,
+                      title,
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
                     Row(
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.remove),
-                          onPressed: () {
-                            setState(() {
-                              if (voteCount >= 1) {
-                                voteCount--;
-                              }
-                            });
-                          },
-                        ),
-                        Text('$voteCount'),
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            setState(() {
-                              voteCount++;
-                            });
-                          },
-                        ),
+                        Text('0 votes'),
                       ],
                     ),
                   ],
@@ -150,7 +134,7 @@ class _IdeaCardState extends State<IdeaCard> {
               Container(
                 padding: EdgeInsets.only(left: 10.0, right: 5.0),
                 child: Text(
-                  widget.idea.description,
+                  description,
                   style: TextStyle(fontSize: 17.0),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
