@@ -122,11 +122,11 @@ class _IdeaCardState extends State<IdeaCard> {
                       style: TextStyle(
                           fontWeight: FontWeight.bold, fontSize: 20.0),
                     ),
-                    Row(
-                      children: [
-                        Text('0 votes'),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Text('0 votes'),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
