@@ -84,15 +84,13 @@ class AuthenticationService {
       debugPrint('Signed In');
       return 'Signed In';
     } on auth.FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-        return 'The password provided is too weak.';
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
-        return 'The account already exists for that email.';
+      if (e.code == 'user-not-found') {
+        return 'No user found for that email.';
+      } else if (e.code == 'wrong-password') {
+        return 'Wrong password provided for that user.';
       } else {
         debugPrint('Something went wrong, please try again.');
-        return 'Something went wrong, please try again.';
+        return 'Something went wrong, please try again.' + e.message;
       }
     } catch (e) {
       debugPrint('Something went wrong, please try again.');
@@ -104,6 +102,7 @@ class AuthenticationService {
   ///sign out
   Future<void> signOut() async {
     await _auth.signOut();
+    _authenticatedUser = null;
     debugPrint('Signed Out');
   }
 

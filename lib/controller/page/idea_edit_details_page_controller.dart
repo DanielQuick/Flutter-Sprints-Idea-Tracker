@@ -12,18 +12,20 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
 
   Idea get currentIdea => _currentIdea;
 
-  String get updateString => null;
+  String _updatedTitle, _updatedDescription;
 
   set currentIdea(Idea idea) {
     _currentIdea = idea;
+    _updatedTitle = idea.title;
+    _updatedDescription = idea.description;
   }
 
   void setIdeaTitle(String title) {
-    _currentIdea = _currentIdea.copyWith(title: title);
+    _updatedTitle = title;
   }
 
   void setIdeaDescription(String description) {
-    _currentIdea = _currentIdea.copyWith(description: description);
+    _updatedDescription = description;
   }
 
   String validateTitle(String value) {
@@ -44,18 +46,14 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
     return null;
   }
 
-  void saveTitleChange() async {
-    final idea = await _ideaService
-        .update(_currentIdea, [UpdateIdea.title], [updateString]);
+  void saveChanges() async {
+    final idea = await _ideaService.update(
+      _currentIdea,
+      [UpdateIdea.title, UpdateIdea.description],
+      [_updatedTitle, _updatedDescription],
+    );
     if (onDataUpdated != null) onDataUpdated("Success!");
-    print("Idea updated => ${idea.toString()}");
-  }
-
-  void saveDescriptionChange() async {
-    final idea = await _ideaService
-        .update(_currentIdea, [UpdateIdea.description], [updateString]);
-    if (onDataUpdated != null) onDataUpdated("Success!");
-    print("Idea updated => ${idea.toString()}");
+    print("Idea updated => $idea");
   }
 
   void openDeleteDialog() async {

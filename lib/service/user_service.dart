@@ -90,7 +90,6 @@ class UserService {
         return null;
       }
     }).catchError((error) => debugPrint("Failed to get user document: $error"));
-    ;
     return snapshot;
   }
 

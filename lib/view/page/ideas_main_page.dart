@@ -4,6 +4,7 @@ import 'package:idea_tracker/model/idea.dart';
 import 'package:idea_tracker/view/page/create_idea_page.dart';
 import 'package:idea_tracker/view/page/idea_details_page.dart';
 import 'package:idea_tracker/view/widget/state_management/base_view.dart';
+import 'package:provider/provider.dart';
 
 class IdeasMainPage extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class IdeasMainPage extends StatelessWidget {
       return Scaffold(
         backgroundColor: Colors.white.withOpacity(0.9),
         appBar: AppBar(
-          title: Text('Ideas'),
+          title: Text('Ideas Main Page'),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
@@ -25,37 +26,83 @@ class IdeasMainPage extends StatelessWidget {
           },
           child: Icon(Icons.add),
         ),
-        body: ListView.builder(
-            itemCount: controller.ideas.length,
-            itemBuilder: (context, index) {
-              return IdeaCard(
-                idea: controller.ideas[index],
-              );
-            }),
+        body: controller.ideas.isEmpty ? NoIdeasPage() : IdeaCardsList(),
       );
     });
   }
 }
 
-class IdeaCard extends StatelessWidget {
+class IdeaCardsList extends StatelessWidget {
+  const IdeaCardsList({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Provider.of<IdeasMainPageController>(context);
+    return ListView.builder(
+      itemCount: controller.ideas.length,
+      itemBuilder: (context, index) {
+        return IdeaCard(
+          idea: controller.ideas[index],
+        );
+      },
+    );
+  }
+}
+
+class NoIdeasPage extends StatelessWidget {
+  const NoIdeasPage({
+    Key key,
+  }) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            'No ideas available now',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          SizedBox(height: 20.0),
+          Text(
+            'Tap the button below to create a new one!',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class IdeaCard extends StatefulWidget {
   final Idea idea;
 
   IdeaCard({this.idea});
 
   @override
+  _IdeaCardState createState() => _IdeaCardState();
+}
+
+class _IdeaCardState extends State<IdeaCard> {
+  @override
   Widget build(BuildContext context) {
+    final title = widget.idea.title ?? "";
+    final description = widget.idea.description ?? "";
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => IdeaDetailsPage(idea: idea),
+            builder: (context) => IdeaDetailsPage(idea: widget.idea),
           ),
         );
       },
       child: Container(
         height: 180.0,
-        width: 400.0,
+        width: 420.0,
         margin: EdgeInsets.all(8.0),
         child: Card(
           color: Colors.white,
@@ -66,17 +113,28 @@ class IdeaCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.only(top: 20.0, left: 10.0),
-                child: Text(
-                  idea.title,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
+                padding: EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                    ),
+                    Row(
+                      children: [
+                        Text('0 votes'),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               SizedBox(height: 15.0),
               Container(
                 padding: EdgeInsets.only(left: 10.0, right: 5.0),
                 child: Text(
-                  idea.description,
+                  description,
                   style: TextStyle(fontSize: 17.0),
                   maxLines: 5,
                   overflow: TextOverflow.ellipsis,
