@@ -213,7 +213,7 @@ class TestServices {
         _sprintTest, [UpdateSprint.description], ["Update Sprint Description"]);
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest = await _sprintService
-        .update(_sprintTest, [UpdateSprint.addMember], ["member3"]);
+        .update(_sprintTest, [UpdateSprint.member], ["member3"]);
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest = await _sprintService
         .update(_sprintTest, [UpdateSprint.teamLeader], ["potentialLeader2"]);
@@ -249,10 +249,10 @@ class TestServices {
         _sprintTest1, UpdatePost.delete, _sprintTest1.posts[0]);
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest1 = await _sprintService
-        .update(_sprintTest1, [UpdateSprint.addMember], ['member4']);
+        .update(_sprintTest1, [UpdateSprint.member], ['member4']);
     await new Future.delayed(const Duration(seconds: 3));
     _sprintTest1 = await _sprintService
-        .update(_sprintTest1, [UpdateSprint.deleteMember], ['member4']);
+        .update(_sprintTest1, [UpdateSprint.member], ['member4']);
     await new Future.delayed(const Duration(seconds: 3));
     await _sprintService.getAll().then((list) {
       print('Sprint from getAll(): $list');
