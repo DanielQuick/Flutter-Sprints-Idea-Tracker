@@ -10,11 +10,6 @@ class Landing extends StatefulWidget {
 
 class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
   TabController _tabController;
-  final _focusNode = FocusNode();
-
-  void _onFieldSubmitted(String value) {
-    _focusNode.requestFocus();
-  }
 
   @override
   void initState() {
@@ -100,8 +95,6 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
   }
 
   Widget signIn(LandingController controller, BuildContext context) {
-    String email;
-    String pwd;
     Key _formKey;
     return SingleChildScrollView(
       child: Column(
@@ -126,7 +119,6 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
                       ),
                       hintText: 'Enter your Email',
                     ),
-                    onChanged: (value) => email,
                   ),
                   SizedBox(
                     height: 20,
@@ -136,7 +128,6 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
                     labelText: 'Password',
                     helperText: 'must be 8 characters',
                     color: Colors.purple[200],
-                    onFieldSubmitted: (value) => pwd,
                   ),
                   RaisedButton(
                     shape: StadiumBorder(),
@@ -148,7 +139,9 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
-                    onPressed: () => {controller.signIn(email, pwd)},
+                    onPressed: () => {
+                      controller.signIn()
+                    },
                   ),
                 ],
               ),
@@ -160,10 +153,7 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
   }
 
   Widget signUp(LandingController controller, BuildContext context) {
-    String userName;
-    String email;
     String pwd;
-    String pwdVerify;
     Key _formKey;
     return SingleChildScrollView(
       child: Column(children: [
@@ -220,6 +210,7 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
                   labelText: 'Password',
                   helperText: 'must be 8 characters',
                   onFieldSubmitted: (value) => pwd,
+                  controller: controller.pwdController,
                 ),
                 SizedBox(
                   height: 10,
@@ -228,7 +219,7 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
                   fieldKey: _formKey,
                   labelText: 'Verify Password',
                   helperText: 'must match the other password',
-                  onFieldSubmitted: (value) => pwdVerify,
+                  controller: controller.pwdVerifyController,
                 ),
                 RaisedButton(
                   shape: StadiumBorder(),
@@ -241,8 +232,7 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
                     ),
                   ),
                   onPressed: () => {
-                    controller.signUp(controller.userNameController.text,
-                        controller.emailController.text, pwd, pwdVerify)
+                    controller.signUp()
                   },
                 ),
               ],
@@ -254,52 +244,54 @@ class _LandingState extends State<Landing> with SingleTickerProviderStateMixin {
   }
 
   forgotPassword(LandingController controller, BuildContext context) {
-    String email;
-    return Column(children: [
-      Text('Forgot Password? Reset it here through email.'),
-      SizedBox(
-        height: 20,
-      ),
-      Card(
-        child: Form(
-          child: Column(
-            children: [
-              TextFormField(
-                textCapitalization: TextCapitalization.words,
-                keyboardType: TextInputType.emailAddress,
-                style: TextStyle(
-                  color: Colors.purple[200],
-                  fontFamily: 'OpenSans',
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.only(top: 14.0),
-                  prefixIcon: Icon(
-                    Icons.email,
-                    color: Colors.purple[200],
-                  ),
-                  labelText: 'Email',
-                  hintText: 'Enter your Email',
-                ),
-                controller: controller.emailController,
-                onFieldSubmitted: (value) => email,
-              ),
-              RaisedButton(
-                shape: StadiumBorder(),
-                child: Text(
-                  "Submit",
+    return SingleChildScrollView(
+      child: Column(children: [
+        Text('Forgot Password? Reset it here through email.'),
+        SizedBox(
+          height: 20,
+        ),
+        Card(
+          child: Form(
+            child: Column(
+              children: [
+                TextFormField(
+                  textCapitalization: TextCapitalization.words,
+                  keyboardType: TextInputType.emailAddress,
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
+                    color: Colors.purple[200],
+                    fontFamily: 'OpenSans',
                   ),
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.only(top: 14.0),
+                    prefixIcon: Icon(
+                      Icons.email,
+                      color: Colors.purple[200],
+                    ),
+                    labelText: 'Email',
+                    hintText: 'Enter your Email',
+                  ),
+                  controller: controller.emailController,
                 ),
-                onPressed: () => {controller.forgotPassword(email)},
-              ),
-            ],
+                RaisedButton(
+                  shape: StadiumBorder(),
+                  child: Text(
+                    "Submit",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                  onPressed: () => {
+                    controller.forgotPassword()
+                  },
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    ]);
+      ]),
+    );
   }
 }

@@ -10,13 +10,17 @@ class LandingController extends ChangeNotifier {
   Function(String) onAuthorization;
   TextEditingController emailController = new TextEditingController();
   TextEditingController userNameController = new TextEditingController();
+  TextEditingController pwdController = new TextEditingController();
+  TextEditingController pwdVerifyController = new TextEditingController();
+
   User _user;
 
   final _auth = locator<AuthenticationService>();
 
-  Future<bool> signIn(String email, String pwd) async {
-    String signIn = await  _auth.signIn(email, pwd);
-    if(signIn == 'Signed In') {
+  Future<bool> signIn() async {
+    String signIn =
+        await _auth.signIn(emailController.text, pwdController.text);
+    if (signIn == 'Signed In') {
       _user = _auth.getAuthenticatedUser();
       print(_user.toString());
       if (onAuthorization != null) onAuthorization("Authenticated");
@@ -28,9 +32,10 @@ class LandingController extends ChangeNotifier {
     }
   }
 
-  Future<bool> signUp(String userName, String email, String pwd, String pwdVerify) async {
-    String signUp = await _auth.signUp(email, userName, pwd, pwdVerify);
-    if(signUp == 'Signed Up') {
+  Future<bool> signUp() async {
+    String signUp = await _auth.signUp(emailController.text,
+        userNameController.text, pwdController.text, pwdVerifyController.text);
+    if (signUp == 'Signed Up') {
       _user = _auth.getAuthenticatedUser();
       print(_user.toString());
       if (onAuthorization != null) onAuthorization("Authenticated");
@@ -42,12 +47,11 @@ class LandingController extends ChangeNotifier {
     }
   }
 
-  void forgotPassword(String email) async {
-    await _auth.forgotPassword(email);
+  void forgotPassword() async {
+    await _auth.forgotPassword(emailController.text);
   }
 
   void resetPassword(String pwd, String pwdVerify) async {
-    _auth.changePassword(pwd, pwdVerify);
+    _auth.changePassword(pwdController.text, pwdVerifyController.text);
   }
-
 }
