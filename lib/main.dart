@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:idea_tracker/locator.dart';
 import 'package:idea_tracker/view/page/main_page.dart';
 import 'package:idea_tracker/view/page/splash_page.dart';
+import 'package:idea_tracker/view/page/landing_page.dart';
 
 void main() {
   setupLocator();
@@ -22,14 +23,7 @@ class MyApp extends StatelessWidget {
         "/": (context) => SplashPage(
               onComplete: () => Navigator.popAndPushNamed(context, "/landing"),
             ),
-        "/landing": (context) => Scaffold(
-              body: Center(
-                child: TextButton(
-                  onPressed: () => Navigator.popAndPushNamed(context, "/main"),
-                  child: Text("Fake sign in"),
-                ),
-              ),
-            ),
+        "/landing": (context) => Landing(),
         "/main": (context) => MainPage(),
       },
     );

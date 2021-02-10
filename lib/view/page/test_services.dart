@@ -68,7 +68,7 @@ class TestServices {
     _testUser = _authenticationService.getAuthenticatedUser();
     print("Authenticated user is: " + _testUser.toString());
     await new Future.delayed(const Duration(seconds: 3));
-    var userStream = await _userService.getCurrentUserAsStream(_testUser);
+    var userStream =  _userService.getCurrentUserAsStream(_testUser);
     await new Future.delayed(const Duration(seconds: 3));
     print('getCurrentUserAsStream(): ${userStream.toString()}');
     await new Future.delayed(const Duration(seconds: 3));

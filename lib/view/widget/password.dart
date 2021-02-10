@@ -10,9 +10,11 @@ class PasswordField extends StatefulWidget {
     this.validator,
     this.onFieldSubmitted,
     this.controller,
+    this.color,
 
   });
 
+  final Color  color;
   final Key fieldKey;
   final String hintText;
   final String labelText;
@@ -45,7 +47,8 @@ class _PasswordFieldState extends State<PasswordField> {
         hintText: widget.hintText,
         labelText: widget.labelText,
         helperText: widget.helperText,
-        prefixIcon: Icon(Icons.lock),
+
+        prefixIcon: Icon(Icons.lock,color: widget.color,),
         suffixIcon: new GestureDetector(
           onTap: () {
             setState(() {

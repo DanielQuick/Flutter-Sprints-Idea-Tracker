@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:idea_tracker/view/page/splash_page.dart';
 
-class Confim_Logout_Dialog extends StatelessWidget {
-  const Confim_Logout_Dialog({Key key}) : super(key: key);
+class ConfirmLogoutDialog extends StatelessWidget {
+  const ConfirmLogoutDialog({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return AlertDialog(

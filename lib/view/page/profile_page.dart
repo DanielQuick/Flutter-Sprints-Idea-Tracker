@@ -46,7 +46,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         bool confirmed = await showDialog<bool>(
                           barrierDismissible: false,
                           context: context,
-                          builder: (context) => Confim_Logout_Dialog(),
+                          builder: (context) => ConfirmLogoutDialog(),
                         );
                         if (confirmed) {
                           // Navigator.of(context, rootNavigator: true)
