@@ -46,14 +46,14 @@ class IdeaEditDetailsPageController extends ChangeNotifier {
 
   void saveTitleChange() async {
     final idea = await _ideaService
-        .update(_currentIdea, [UpdateIdea.title], [updateString]);
+        .update(_currentIdea, UpdateIdea.title, updateString);
     if (onDataUpdated != null) onDataUpdated("Success!");
     print("Idea updated => ${idea.toString()}");
   }
 
   void saveDescriptionChange() async {
     final idea = await _ideaService
-        .update(_currentIdea, [UpdateIdea.description], [updateString]);
+        .update(_currentIdea, UpdateIdea.description, updateString);
     if (onDataUpdated != null) onDataUpdated("Success!");
     print("Idea updated => ${idea.toString()}");
   }

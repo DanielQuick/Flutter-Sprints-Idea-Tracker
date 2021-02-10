@@ -24,18 +24,16 @@ class Idea {
     String creatorId,
     int createdAt,
     int updatedAt,
-    int voteYes,
-    int voteNo,
     List<String> voters,
   }) {
     return Idea(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      creatorId: creatorId ?? this.creatorId,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      voters: voters ?? this.voters,
+      id: id ?? this.id ?? '',
+      title: title ?? this.title ?? '',
+      description: description ?? this.description ?? '',
+      creatorId: creatorId ?? this.creatorId ?? '',
+      createdAt: createdAt ?? this.createdAt ?? '',
+      updatedAt: updatedAt ?? this.updatedAt ?? '',
+      voters: voters ?? this.voters ?? new List<String>(),
     );
   }
 
