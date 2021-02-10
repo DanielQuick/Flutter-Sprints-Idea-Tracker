@@ -76,11 +76,11 @@ class _SprintsPageState extends State<SprintsPage> {
 
   List<Widget> _loadActiveSprintsOnCard(List<Sprint> sprints, BuildContext ctx){
     return sprints
-        .map((e) => _cardmaker(e.title, e.teamLeader, e.description, ctx)).toList();
+        .map((e) => _cardMaker(e.title, e.teamLeader, e.description, ctx)).toList();
   }
 
 
-  Widget _cardmaker(String title, String teamleader, String description, BuildContext ctx){
+  Widget _cardMaker(String title, String teamLeader, String description, BuildContext ctx){
     return Card(
       clipBehavior: Clip.antiAlias,
       child: Column(
@@ -89,7 +89,7 @@ class _SprintsPageState extends State<SprintsPage> {
             leading: Icon(Icons.run_circle),
             title: Text(title),
             subtitle: Text(
-              'Team leader: ${teamleader}',
+              'Team leader: $teamLeader',
               style: TextStyle(color: Colors.black.withOpacity(0.6)),
             ),
           ),
