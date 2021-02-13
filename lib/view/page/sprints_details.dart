@@ -161,8 +161,8 @@ class _SprintsDetailsState extends State<SprintsDetails> {
                                                 Text('I\'M IN'),
                                               ],
                                             ),
-                                            onPressed: //() => controller.addOrDeleteSprintMember(),
-                                            (){},
+                                            onPressed: () => controller.UpdateSprintMember(),
+
                                             color: Colors.white,
                                           ),
                                         ],
